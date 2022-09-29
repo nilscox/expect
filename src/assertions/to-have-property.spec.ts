@@ -19,6 +19,20 @@ describe("toHaveProperty", () => {
     expect({ foo: 1 }).toHaveProperty("foo", 1);
   });
 
+  it("object having the property with a matching object", () => {
+    expect({ foo: {} }).toHaveProperty("foo", {});
+  });
+
+  it("object having the property as a getter", () => {
+    const object = new (class {
+      get foo() {
+        return 1;
+      }
+    })();
+
+    expect(object).toHaveProperty("foo", 1);
+  });
+
   it("object having the property but without the given value", () => {
     testError(
       () => expect({ foo: 1 }).toHaveProperty("foo", 2),

@@ -1,6 +1,7 @@
 import { AssertionError } from "../errors/assertion-error";
 import { expect } from "../expect";
 import { GuardError } from "../errors/guard-error";
+import { deepEqual } from "../helpers/deep-equal";
 
 declare global {
   namespace Expect {
@@ -24,11 +25,11 @@ expect.addAssertion({
     }
   },
   execute(actual: Record<PropertyKey, unknown>, property: string, value?: unknown) {
-    if (!actual.hasOwnProperty(property)) {
+    if (!(property in actual)) {
       throw new ToHavePropertyAssertionError(actual, property, value);
     }
 
-    if (value !== undefined && actual[property] !== value) {
+    if (value !== undefined && !deepEqual(actual[property], value)) {
       throw new ToHavePropertyAssertionError(actual, property, value);
     }
   },
