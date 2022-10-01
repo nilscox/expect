@@ -14,9 +14,19 @@
   "devDependencies": {
     "@types/mocha": "^9.1.1",
     "@types/node": "^18.7.23",
+    "@types/sinon": "^10.0.13",
     "esbuild": "^0.15.9",
     "esbuild-register": "^3.3.3",
     "mocha": "^10.0.0",
+    "sinon": "^14.0.0",
     "typescript": "^4.8.3"
+  },
+  "peerDependencies": {
+    "sinon": "^14.0.0"
+  },
+  "peerDependenciesMeta": {
+    "sinon": {
+      "optional": true
+    }
   }
 }

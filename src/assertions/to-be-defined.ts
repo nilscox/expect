@@ -1,5 +1,6 @@
 import { AssertionError } from "../errors/assertion-error";
 import { expect } from "../expect";
+import { ValueFormatter } from "../helpers/format-value";
 
 declare global {
   namespace Expect {
@@ -13,6 +14,10 @@ class ToBeDefinedAssertionError extends AssertionError {
   constructor(actual: unknown) {
     super("toBeDefined", actual);
   }
+
+  format(formatValue: ValueFormatter): string {
+    return `expected ${formatValue(this.actual)} to be defined`;
+  }
 }
 
 expect.addAssertion({
@@ -21,8 +26,5 @@ expect.addAssertion({
     if (actual === null || actual === undefined) {
       throw new ToBeDefinedAssertionError(actual);
     }
-  },
-  formatError(error: ToBeDefinedAssertionError) {
-    return `expected ${this.formatValue(error.actual)} to be defined`;
   },
 });

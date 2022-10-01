@@ -1,6 +1,7 @@
 import { AssertionError } from "../errors/assertion-error";
 import { expect } from "../expect";
 import { deepEqual } from "../helpers/deep-equal";
+import { ValueFormatter } from "../helpers/format-value";
 import { get } from "../helpers/get";
 
 declare global {
@@ -16,6 +17,18 @@ type NonNullObject = {};
 export class ToHavePropertyAssertionError<T> extends AssertionError<T> {
   constructor(actual: T, public readonly property: string, public readonly value: unknown | undefined) {
     super("toHaveProperty", actual);
+  }
+
+  format(formatValue: ValueFormatter): string {
+    let message = `expected ${formatValue(this.actual)}`;
+
+    message += ` to have property ${formatValue(this.property)}`;
+
+    if (this.value !== undefined) {
+      message += ` = ${formatValue(this.value)}`;
+    }
+
+    return message;
   }
 }
 
@@ -35,16 +48,5 @@ expect.addAssertion({
     if (expectedValue !== undefined && !deepEqual(value, expectedValue)) {
       throw new ToHavePropertyAssertionError(actual, property, expectedValue);
     }
-  },
-  formatError(error: ToHavePropertyAssertionError<unknown>) {
-    let message = `expected ${this.formatValue(error.actual)}`;
-
-    message += ` to have property ${this.formatValue(error.property)}`;
-
-    if (error.value !== undefined) {
-      message += ` = ${this.formatValue(error.value)}`;
-    }
-
-    return message;
   },
 });

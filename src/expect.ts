@@ -1,6 +1,7 @@
 import { isPromise } from "util/types";
 import { AssertionError } from "./errors/assertion-error";
 import { GuardError } from "./errors/guard-error";
+import { any, anything, deepEqual } from "./helpers/deep-equal";
 import { formatValue } from "./helpers/format-value";
 import { mapObject } from "./helpers/map-object";
 
@@ -10,12 +11,22 @@ declare global {
   }
 }
 
+const helpers = {
+  deepEqual,
+  formatValue,
+};
+
+type Helpers = typeof helpers;
+
 export interface AssertionDefinition<Name extends AssertionNames, Actual> {
   name: Name;
   expectedType?: string;
   guard?(actual: unknown): actual is Actual;
-  assert(actual: Actual, ...args: Parameters<Expect.Assertions[Name]>): ReturnType<Expect.Assertions[Name]>;
-  formatError(this: { formatValue: typeof formatValue }, error: AssertionError<Actual>): string;
+  assert(
+    this: Helpers,
+    actual: Actual,
+    ...args: Parameters<Expect.Assertions[Name]>
+  ): ReturnType<Expect.Assertions[Name]>;
 }
 
 type AssertionNames = keyof Expect.Assertions;
@@ -38,6 +49,8 @@ interface ExpectFunction {
   assertions: AssertionDefinitions;
   addAssertion<Name extends AssertionNames, Actual>(assertion: AssertionDefinition<Name, Actual>): void;
   formatValue: typeof formatValue;
+  anything: typeof anything;
+  any: typeof any;
 }
 
 const createAssertion = <Name extends AssertionNames, Actual>(
@@ -53,7 +66,7 @@ const createAssertion = <Name extends AssertionNames, Actual>(
 
     const handleError = (error: unknown) => {
       if (error instanceof AssertionError) {
-        error.message = assertion.formatError.call(expect, error);
+        error.message = error.format(helpers.formatValue);
       }
 
       throw error;
@@ -62,10 +75,10 @@ const createAssertion = <Name extends AssertionNames, Actual>(
     if (isPromise(actual)) {
       return actual
         .then(
-          (resolved) => assertion.assert(resolved, ...args),
+          (resolved) => assertion.assert.call(helpers, resolved, ...args),
           (error) => {
             if (assertion.name === "toReject") {
-              return assertion.assert(Promise.reject(error), ...args);
+              return assertion.assert.call(helpers, Promise.reject(error), ...args);
             } else {
               // add test case
               throw error;
@@ -76,7 +89,7 @@ const createAssertion = <Name extends AssertionNames, Actual>(
     }
 
     try {
-      return assertion.assert(actual, ...args);
+      return assertion.assert.call(helpers, actual, ...args);
     } catch (error) {
       handleError(error);
     }
@@ -94,3 +107,5 @@ expect.addAssertion = <Name extends AssertionNames, Actual>(assertion: Assertion
 };
 
 expect.formatValue = formatValue;
+expect.anything = anything;
+expect.any = any;

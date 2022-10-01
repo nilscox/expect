@@ -2,6 +2,7 @@ import { AssertionError } from "../errors/assertion-error";
 import { expect } from "../expect";
 import { isFunction } from "../errors/guard-error";
 import { deepEqual } from "../helpers/deep-equal";
+import { ValueFormatter } from "../helpers/format-value";
 
 declare global {
   namespace Expect {
@@ -14,6 +15,20 @@ declare global {
 export class ToThrowAssertionError extends AssertionError {
   constructor(actual: unknown, public readonly func: Function, public readonly expected: unknown) {
     super("toThrow", actual);
+  }
+
+  format(formatValue: ValueFormatter): string {
+    let message = `expected ${this.func.name || "function"}`;
+
+    message += ` to throw ${formatValue(this.expected) ?? "anything"}`;
+
+    if (this.actual === undefined) {
+      message += ` but it did not throw`;
+    } else {
+      message += ` but it threw ${this.actual}`;
+    }
+
+    return message;
   }
 }
 
@@ -41,14 +56,5 @@ expect.addAssertion({
     }
 
     return actual;
-  },
-  formatError(error: ToThrowAssertionError) {
-    const message = `expected ${error.func.name || "function"} to throw ${error.expected ?? "anything"}`;
-
-    if (error.actual === undefined) {
-      return `${message} but it did not throw`;
-    } else {
-      return `${message} but it threw ${error.actual}`;
-    }
   },
 });

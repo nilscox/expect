@@ -1,6 +1,7 @@
 import { AssertionError } from "../errors/assertion-error";
 import { expect } from "../expect";
 import { isNumber } from "../errors/guard-error";
+import { ValueFormatter } from "../helpers/format-value";
 
 declare global {
   namespace Expect {
@@ -14,6 +15,14 @@ export class ToBeMoreThanAssertionError extends AssertionError<number> {
   constructor(actual: number, public readonly value: number, public readonly strict: boolean) {
     super("toBeMoreThan", actual);
   }
+
+  format(formatValue: ValueFormatter): string {
+    if (!this.strict) {
+      return `expected ${formatValue(this.actual)} to be more or equal to ${formatValue(this.value)}`;
+    }
+
+    return `expected ${formatValue(this.actual)} to be more than ${formatValue(this.value)}`;
+  }
 }
 
 expect.addAssertion({
@@ -24,12 +33,5 @@ expect.addAssertion({
     if (actual < value || (strict && actual == value)) {
       throw new ToBeMoreThanAssertionError(actual, value, strict);
     }
-  },
-  formatError(error: ToBeMoreThanAssertionError) {
-    if (!error.strict) {
-      return `expected ${error.actual} to be more or equal to ${error.value}`;
-    }
-
-    return `expected ${error.actual} to be more than ${error.value}`;
   },
 });

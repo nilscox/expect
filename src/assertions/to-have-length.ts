@@ -1,5 +1,6 @@
 import { AssertionError } from "../errors/assertion-error";
 import { expect } from "../expect";
+import { ValueFormatter } from "../helpers/format-value";
 
 declare global {
   namespace Expect {
@@ -14,6 +15,10 @@ type ObjectWithLength = { length: number };
 class ToHaveLengthAssertionError extends AssertionError<ObjectWithLength> {
   constructor(actual: ObjectWithLength, public readonly length: number) {
     super("toHaveLength", actual);
+  }
+
+  format(formatValue: ValueFormatter): string {
+    return `expected ${formatValue(this.actual)} to have length ${formatValue(this.length)}`;
   }
 }
 
@@ -33,8 +38,5 @@ expect.addAssertion({
     if (actual.length !== length) {
       throw new ToHaveLengthAssertionError(actual, length);
     }
-  },
-  formatError(error: ToHaveLengthAssertionError) {
-    return `expected ${error.actual} to have length ${error.length}`;
   },
 });

@@ -1,6 +1,7 @@
 import { isPromise } from "util/types";
 import { AssertionError } from "../errors/assertion-error";
 import { expect } from "../expect";
+import { ValueFormatter } from "../helpers/format-value";
 
 declare global {
   namespace Expect {
@@ -17,6 +18,22 @@ export class ToRejectAssertionError extends AssertionError {
     public readonly resolved?: unknown
   ) {
     super("toReject", actual);
+  }
+
+  format(formatValue: ValueFormatter): string {
+    let message = `expected promise to reject`;
+
+    if (this.expectedInstance) {
+      message += ` with an instance of ${this.expectedInstance.name}`;
+    }
+
+    if (this.actual === undefined) {
+      message += ` but it resolved with ${formatValue(this.resolved)}`;
+    } else {
+      message += ` but it rejected with ${formatValue(this.actual)}`;
+    }
+
+    return message;
   }
 }
 
@@ -41,20 +58,5 @@ expect.addAssertion({
     if (error) {
       throw error;
     }
-  },
-  formatError(error: ToRejectAssertionError) {
-    let message = `expected promise to reject`;
-
-    if (error.expectedInstance) {
-      message += ` with an instance of ${error.expectedInstance.name}`;
-    }
-
-    if (error.actual === undefined) {
-      message += ` but it resolved with ${error.resolved}`;
-    } else {
-      message += ` but it rejected with ${error.actual}`;
-    }
-
-    return message;
   },
 });
