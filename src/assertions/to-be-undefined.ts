@@ -3,7 +3,7 @@ import { expect } from "../expect";
 
 declare global {
   namespace Expect {
-    interface GenericAssertions {
+    interface Assertions {
       toBeUndefined(): void;
     }
   }
@@ -17,7 +17,7 @@ class ToBeUndefinedAssertionError extends AssertionError {
 
 expect.addAssertion({
   name: "toBeUndefined",
-  execute(actual) {
+  assert(actual) {
     if (actual !== undefined) {
       throw new ToBeUndefinedAssertionError(actual);
     }

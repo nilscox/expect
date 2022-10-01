@@ -3,23 +3,18 @@ import { ExpectError } from "./expect-error";
 export class GuardError<Actual> extends ExpectError {
   constructor(
     public readonly assertion: string,
-    public readonly expectedType: string,
-    public readonly actualType: string,
-    public readonly actual: Actual
+    public readonly actual: Actual,
+    public readonly expectedType?: string
   ) {
-    super(`expect(actual).${assertion}(): actual must be a ${expectedType}, got ${actualType}`);
+    const message = expectedType
+      ? `expect(actual).${assertion}(): actual must be ${expectedType}`
+      : `expect(actual).${assertion}(): actual has invalid type`;
+
+    super(message);
   }
 }
 
-const createGuard = (expectedType: "boolean" | "number" | "string" | "function") => {
-  return (assertion: string) => (actual: unknown) => {
-    if (typeof actual !== expectedType) {
-      throw new GuardError(assertion, expectedType, typeof actual, actual);
-    }
-  };
-};
-
-export const isBoolean = createGuard("boolean");
-export const isNumber = createGuard("number");
-export const isString = createGuard("string");
-export const isFunction = createGuard("function");
+export const isBoolean = (value: unknown): value is boolean => typeof value === "boolean";
+export const isNumber = (value: unknown): value is number => typeof value === "number";
+export const isString = (value: unknown): value is string => typeof value === "string";
+export const isFunction = (value: unknown): value is Function => typeof value === "function";

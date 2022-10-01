@@ -4,7 +4,7 @@ import { isNumber } from "../errors/guard-error";
 
 declare global {
   namespace Expect {
-    interface NumberAssertions {
+    interface Assertions<Actual> {
       toBeLessThan(value: number, options?: { strict?: boolean }): void;
     }
   }
@@ -18,8 +18,9 @@ export class ToBeLessThanAssertionError extends AssertionError<number> {
 
 expect.addAssertion({
   name: "toBeLessThan",
-  guard: isNumber("toBeLessThan"),
-  execute(actual: number, value: number, { strict = true } = {}) {
+  expectedType: "number",
+  guard: isNumber,
+  assert(actual: number, value: number, { strict = true } = {}) {
     if (actual > value || (strict && actual == value)) {
       throw new ToBeLessThanAssertionError(actual, value, strict);
     }

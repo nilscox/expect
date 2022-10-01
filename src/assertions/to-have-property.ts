@@ -1,15 +1,17 @@
 import { AssertionError } from "../errors/assertion-error";
 import { expect } from "../expect";
-import { GuardError } from "../errors/guard-error";
 import { deepEqual } from "../helpers/deep-equal";
+import { get } from "../helpers/get";
 
 declare global {
   namespace Expect {
-    interface GenericAssertions {
+    interface Assertions<Actual> {
       toHaveProperty(property: string, value?: unknown): void;
     }
   }
 }
+
+type NonNullObject = {};
 
 export class ToHavePropertyAssertionError<T> extends AssertionError<T> {
   constructor(actual: T, public readonly property: string, public readonly value: unknown | undefined) {
@@ -19,18 +21,19 @@ export class ToHavePropertyAssertionError<T> extends AssertionError<T> {
 
 expect.addAssertion({
   name: "toHaveProperty",
-  guard(actual) {
-    if (actual === undefined || actual === null) {
-      throw new GuardError(this.name, "non-null object", typeof actual, actual);
-    }
+  expectedType: "non-null object",
+  guard(actual): actual is NonNullObject {
+    return actual !== null && actual !== undefined;
   },
-  execute(actual: Record<PropertyKey, unknown>, property: string, value?: unknown) {
-    if (!(property in actual)) {
-      throw new ToHavePropertyAssertionError(actual, property, value);
+  assert(actual: Record<PropertyKey, unknown>, property: string, expectedValue?: unknown) {
+    const value = get(actual, property);
+
+    if (value === undefined) {
+      throw new ToHavePropertyAssertionError(actual, property, expectedValue);
     }
 
-    if (value !== undefined && !deepEqual(actual[property], value)) {
-      throw new ToHavePropertyAssertionError(actual, property, value);
+    if (expectedValue !== undefined && !deepEqual(value, expectedValue)) {
+      throw new ToHavePropertyAssertionError(actual, property, expectedValue);
     }
   },
   formatError(error: ToHavePropertyAssertionError<unknown>) {

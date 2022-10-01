@@ -1,3 +1,4 @@
+import assert from "assert";
 import { expect } from "../expect";
 import { testError } from "../test/test-error";
 import { ToThrowAssertionError } from "./to-throw";
@@ -13,6 +14,10 @@ describe("toThrow", () => {
 
   it("function throwing any error", () => {
     expect(throwError).toThrow();
+  });
+
+  it("returns the thrown error", () => {
+    assert.strictEqual(expect(throwError).toThrow(), error);
   });
 
   it("function throwing a specific error", () => {

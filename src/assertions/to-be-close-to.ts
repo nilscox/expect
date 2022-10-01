@@ -4,7 +4,7 @@ import { isNumber } from "../errors/guard-error";
 
 declare global {
   namespace Expect {
-    interface NumberAssertions {
+    interface Assertions<Actual> {
       toBeCloseTo(value: number, options?: { threshold?: number; strict?: boolean }): void;
     }
   }
@@ -18,8 +18,9 @@ export class ToBeCloseToAssertionError extends AssertionError<number> {
 
 expect.addAssertion({
   name: "toBeCloseTo",
-  guard: isNumber("toBeCloseTo"),
-  execute(actual: number, value: number, { threshold = 0.001, strict = true } = {}) {
+  expectedType: "number",
+  guard: isNumber,
+  assert(actual, value, { threshold = 0.001, strict = true } = {}) {
     const delta = Math.abs(actual - value);
 
     if (delta > threshold || (strict && delta == threshold)) {

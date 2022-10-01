@@ -4,8 +4,8 @@ import { deepEqual } from "../helpers/deep-equal";
 
 declare global {
   namespace Expect {
-    interface GenericAssertions<T = unknown> {
-      toEqual(expected: T): void;
+    interface Assertions<Actual> {
+      toEqual(expected: Actual): void;
     }
   }
 }
@@ -18,7 +18,7 @@ export class ToEqualAssertionError<T> extends AssertionError<T> {
 
 expect.addAssertion({
   name: "toEqual",
-  execute<T>(actual: T, expected: T) {
+  assert(actual, expected) {
     if (!deepEqual(actual, expected)) {
       throw new ToEqualAssertionError(actual, expected);
     }

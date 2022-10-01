@@ -1,5 +1,3 @@
-import assert from "assert";
-
 import { expect } from "../expect";
 import { testError } from "../test/test-error";
 import { ToBeAssertionError } from "./to-be";
@@ -10,7 +8,7 @@ describe("toBe", () => {
   });
 
   it("different primitive types", () => {
-    testError(() => expect<number>(1).toBe(2), new ToBeAssertionError(1, 2), "expected 1 to be 2");
+    testError(() => expect(1).toBe(2), new ToBeAssertionError(1, 2), "expected 1 to be 2");
   });
 
   it("same object reference", () => {

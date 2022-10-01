@@ -3,8 +3,8 @@ import { expect } from "../expect";
 
 declare global {
   namespace Expect {
-    interface GenericAssertions<T = unknown> {
-      toBe(expected: T): void;
+    interface Assertions<Actual> {
+      toBe(expected: Actual): void;
     }
   }
 }
@@ -17,7 +17,7 @@ export class ToBeAssertionError<T> extends AssertionError<T> {
 
 expect.addAssertion({
   name: "toBe",
-  execute<T>(actual: T, expected: T) {
+  assert(actual, expected) {
     if (!Object.is(actual, expected)) {
       throw new ToBeAssertionError(actual, expected);
     }

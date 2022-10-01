@@ -23,6 +23,10 @@ describe("toHaveProperty", () => {
     expect({ foo: {} }).toHaveProperty("foo", {});
   });
 
+  it("object having the nested property", () => {
+    expect({ foo: { bar: 1 } }).toHaveProperty("foo.bar", 1);
+  });
+
   it("object having the property as a getter", () => {
     const object = new (class {
       get foo() {
