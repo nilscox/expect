@@ -44,6 +44,12 @@ describe('type checking', () => {
 
     // @ts-expect-error
     test(() => expect.async(42).toEqual('42'));
+
+    class TestError extends Error {}
+    const error = new TestError('nope');
+
+    const result: Promise<TestError> = expect.rejects(Promise.reject(error)).with(TestError);
+    result;
   });
 
   it('expect.anything()', () => {

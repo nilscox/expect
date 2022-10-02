@@ -10,11 +10,11 @@ import './assertions/to-equal';
 import './assertions/to-have-length';
 import './assertions/to-have-property';
 import './assertions/to-match';
-import './assertions/to-reject';
 import './assertions/to-throw';
 
 export default expect;
 export type Expect = typeof expect;
 
-export { AssertionError, AssertionFailed } from './errors/assertion-error';
+export { AssertionError } from './errors/assertion-error';
+export { AssertionFailed } from './errors/assertion-failed';
 export type { ValueFormatter } from './helpers/format-value';

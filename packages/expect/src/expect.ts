@@ -1,5 +1,9 @@
 import { isPromise } from 'util/types';
-import { AssertionError, AssertionFailed } from './errors/assertion-error';
+import { AssertionError } from './errors/assertion-error';
+import { ExpectedRejection } from './errors/expected-rejecton';
+import { ExpectedPromise } from './errors/expected-promise';
+import { UnexpectedPromise } from './errors/unexpected-promise';
+import { AssertionFailed } from './errors/assertion-failed';
 import { GuardError } from './errors/guard-error';
 import { any, anything, deepEqual } from './helpers/deep-equal';
 import { formatValue } from './helpers/format-value';
@@ -56,18 +60,19 @@ interface ExpectFunction {
 }
 
 interface ExpectFunction {
-  async<Actual>(actual: Promise<Actual>): AsyncAssertions<Actual> & Not<Actual>;
+  async<Actual>(promise: Promise<Actual>): AsyncAssertions<Actual> & Not<Actual>;
+  rejects(promise: Promise<unknown>): { with<T>(Type: { new (...args: any[]): T }): Promise<T> };
 }
 
 interface ExpectFunction {
-  assertions: AssertionDefinitions;
+  _assertions: AssertionDefinitions;
   addAssertion<Name extends AssertionNames, Actual>(assertion: AssertionDefinition<Name, Actual>): void;
   formatValue: typeof formatValue;
   anything: typeof anything;
   any: typeof any;
 }
 
-type AnyAssertion = AssertionDefinition<AssertionNames, unknown>;
+export type AnyAssertion = AssertionDefinition<AssertionNames, unknown>;
 
 type AssertionParams = Parameters<Expect.Assertions<any>[AssertionNames]>;
 type AssertionResult = ReturnType<Expect.Assertions<any>[AssertionNames]>;
@@ -99,12 +104,10 @@ const createAssertion = (
   not: boolean,
   actual: unknown,
   assertion: AnyAssertion
-): ValueOf<Expect.Assertions<unknown>> => {
-  return (...args: AssertionParams): AssertionResult => {
+): ((...args: AssertionParams) => AssertionResult) => {
+  return (...args) => {
     if (isPromise(actual)) {
-      throw new Error(
-        `expect(actual).${assertion.name}(): actual must not be a promise, use expect.async(actual) instead`
-      );
+      throw new UnexpectedPromise(assertion);
     }
 
     checkAssertionGuard(actual, assertion);
@@ -132,36 +135,26 @@ const createAssertion = (
 };
 
 const createAsyncAssertion = (
-  actual: Promise<unknown>,
+  not: boolean,
+  promise: Promise<unknown>,
   assertion: AnyAssertion
-): ValueOf<Expect.Assertions<Promise<unknown>>> => {
-  return {} as any;
-  // return (...args: AssertionParams): Promise<AssertionResult> => {
-  //   checkAssertionGuard(actual, assertion);
+): ValueOf<AsyncAssertions<unknown>> => {
+  return async (...args: AssertionParams): Promise<AssertionResult> => {
+    if (!isPromise(promise)) {
+      throw new ExpectedPromise(assertion);
+    }
 
-  //   return actual
-  //     .then(
-  //       (resolved) => assertion.assert.call(helpers, resolved, ...args),
-  //       (error) => {
-  //         if (assertion.name === 'toReject') {
-  //           return assertion.assert.call(helpers, Promise.reject(error), ...args);
-  //         } else {
-  //           // add test case
-  //           throw error;
-  //         }
-  //       }
-  //     )
-  //     .catch(handleAssertionError);
-  // };
+    return createAssertion(not, await promise, assertion)(...args);
+  };
 };
 
 export const expect: ExpectFunction = (actual: unknown) => {
   const assertions = mapObject<AssertionNames, AnyAssertion, AssertionResult>(
-    expect.assertions,
+    expect._assertions,
     (assertion) => createAssertion(false, actual, assertion)
   );
 
-  const not = mapObject<AssertionNames, AnyAssertion, AssertionResult>(expect.assertions, (assertion) =>
+  const not = mapObject<AssertionNames, AnyAssertion, AssertionResult>(expect._assertions, (assertion) =>
     createAssertion(true, actual, assertion)
   );
 
@@ -173,20 +166,47 @@ export const expect: ExpectFunction = (actual: unknown) => {
 
 expect.async = (actual: Promise<unknown>) => {
   const assertions = mapObject<AssertionNames, AnyAssertion, AssertionResult>(
-    expect.assertions,
-    (assertion) => createAsyncAssertion(actual, assertion)
+    expect._assertions,
+    (assertion) => createAsyncAssertion(false, actual, assertion)
+  );
+
+  const not = mapObject<AssertionNames, AnyAssertion, AssertionResult>(expect._assertions, (assertion) =>
+    createAsyncAssertion(true, actual, assertion)
   );
 
   return {
     ...assertions,
-    not: {} as any,
+    not,
   };
 };
 
-expect.assertions = {} as AssertionDefinitions;
+expect.rejects = (promise: Promise<unknown>) => ({
+  async with(Type) {
+    if (!isPromise(promise)) {
+      throw new ExpectedPromise();
+    }
+
+    try {
+      const resolved = await promise;
+      throw new ExpectedRejection(expect.formatValue(resolved));
+    } catch (caught) {
+      if (caught instanceof ExpectedRejection) {
+        throw caught;
+      }
+
+      if (caught instanceof Type) {
+        return caught;
+      }
+
+      throw caught;
+    }
+  },
+});
+
+expect._assertions = {} as AssertionDefinitions;
 
 expect.addAssertion = <Name extends AssertionNames, Actual>(assertion: AssertionDefinition<Name, Actual>) => {
-  expect.assertions[assertion.name] = assertion as AssertionDefinitions[Name];
+  expect._assertions[assertion.name] = assertion as AssertionDefinitions[Name];
 };
 
 expect.formatValue = formatValue;

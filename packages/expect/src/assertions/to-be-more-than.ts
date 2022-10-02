@@ -1,4 +1,4 @@
-import { AssertionFailed } from '../errors/assertion-error';
+import { AssertionFailed } from '../errors/assertion-failed';
 import { isNumber } from '../errors/guard-error';
 import { expect } from '../expect';
 

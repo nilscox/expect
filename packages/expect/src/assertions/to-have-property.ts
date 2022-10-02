@@ -1,4 +1,4 @@
-import { AssertionFailed } from '../errors/assertion-error';
+import { AssertionFailed } from '../errors/assertion-failed';
 import { expect } from '../expect';
 import { deepEqual } from '../helpers/deep-equal';
 import { get } from '../helpers/get';

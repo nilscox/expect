@@ -10,9 +10,3 @@ export class AssertionError<Actual = unknown> extends ExpectError {
     super(message);
   }
 }
-
-export class AssertionFailed extends ExpectError {
-  constructor(public readonly meta?: unknown) {
-    super('assertion failed');
-  }
-}
