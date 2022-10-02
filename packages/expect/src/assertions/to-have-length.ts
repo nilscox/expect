@@ -1,6 +1,5 @@
-import { AssertionError } from '../errors/assertion-error';
+import { AssertionFailed } from '../errors/assertion-error';
 import { expect } from '../expect';
-import { ValueFormatter } from '../helpers/format-value';
 
 declare global {
   namespace Expect {
@@ -11,24 +10,6 @@ declare global {
 }
 
 type ObjectWithLength = { length: number };
-
-export class ToHaveLengthAssertionError extends AssertionError<ObjectWithLength> {
-  constructor(actual: ObjectWithLength, public readonly length: number) {
-    super('toHaveLength', actual);
-  }
-
-  format(formatValue: ValueFormatter): string {
-    let message = `expected ${formatValue(this.actual)}`;
-
-    if (typeof this.actual === 'function') {
-      message += ` to take ${formatValue(this.length)} argument(s)`;
-    } else {
-      message += ` to have length ${formatValue(this.length)}`;
-    }
-
-    return message;
-  }
-}
 
 expect.addAssertion({
   name: 'toHaveLength',
@@ -46,7 +27,22 @@ expect.addAssertion({
   },
   assert(actual, length) {
     if (actual.length !== length) {
-      throw new ToHaveLengthAssertionError(actual, length);
+      throw new AssertionFailed();
     }
+  },
+  getMessage(actual, length) {
+    let message = `expected ${this.formatValue(actual)}`;
+
+    if (this.not) {
+      message += ' not';
+    }
+
+    if (typeof actual === 'function') {
+      message += ` to take ${this.formatValue(length)} argument(s)`;
+    } else {
+      message += ` to have length ${this.formatValue(length)}`;
+    }
+
+    return message;
   },
 });

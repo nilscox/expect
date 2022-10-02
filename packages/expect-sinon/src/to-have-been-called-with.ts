@@ -1,4 +1,4 @@
-import expect, { AssertionError, ValueFormatter } from '@nilscox/expect';
+import expect, { AssertionFailed } from '@nilscox/expect';
 import sinon from 'sinon';
 
 declare global {
@@ -6,16 +6,6 @@ declare global {
     export interface Assertions {
       toHaveBeenCalledWith(...args: any[]): void;
     }
-  }
-}
-
-export class ToHaveBeenCalledWithAssertionError<T> extends AssertionError<T> {
-  constructor(actual: T, public readonly args: any[]) {
-    super('toHaveBeenCalledWith', actual);
-  }
-
-  format(formatValue: ValueFormatter): string {
-    return `expected ${formatValue(this.actual)} to have been called with ${formatValue(this.args)}`;
   }
 }
 
@@ -27,7 +17,24 @@ expect.addAssertion({
   },
   assert(actual, ...args) {
     if (!actual.calledWith(...args)) {
-      throw new ToHaveBeenCalledWithAssertionError(actual, args);
+      throw new AssertionFailed();
     }
+  },
+  getMessage(actual, ...args) {
+    let message = `expected ${this.formatValue(actual)}`;
+
+    if (this.not) {
+      message += ' not';
+    }
+
+    message += ` to have been called `;
+
+    if (args.length > 0) {
+      message += `with ${args.map(this.formatValue).join(', ')}`;
+    } else {
+      message += `without argument`;
+    }
+
+    return message;
   },
 });

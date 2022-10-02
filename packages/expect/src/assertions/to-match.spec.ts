@@ -1,6 +1,5 @@
 import { expect } from '../expect';
 import { testError } from '../test/test-error';
-import { ToMatchAssertionError } from './to-match';
 
 describe('toMatch', () => {
   it('string matching a regexp', () => {
@@ -8,10 +7,11 @@ describe('toMatch', () => {
   });
 
   it('string not matching a regexp', () => {
-    testError(
-      () => expect('chaton').toMatch(/t.st/),
-      new ToMatchAssertionError('chaton', /t.st/),
-      'expected "chaton" to match /t.st/'
-    );
+    testError(() => expect('chaton').toMatch(/t.st/), 'expected "chaton" to match /t.st/');
+  });
+
+  it('not.toMatch()', () => {
+    expect('chaton').not.toMatch(/t.st/);
+    testError(() => expect('test').not.toMatch(/t.st/), 'expected "test" not to match /t.st/');
   });
 });

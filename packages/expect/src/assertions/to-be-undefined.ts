@@ -1,6 +1,5 @@
-import { AssertionError } from '../errors/assertion-error';
+import { AssertionFailed } from '../errors/assertion-error';
 import { expect } from '../expect';
-import { ValueFormatter } from '../helpers/format-value';
 
 declare global {
   namespace Expect {
@@ -10,21 +9,22 @@ declare global {
   }
 }
 
-class ToBeUndefinedAssertionError extends AssertionError {
-  constructor(actual: unknown) {
-    super('toBeUndefined', actual);
-  }
-
-  format(formatValue: ValueFormatter): string {
-    return `expected ${formatValue(this.actual)} to be undefined`;
-  }
-}
-
 expect.addAssertion({
   name: 'toBeUndefined',
   assert(actual) {
     if (actual !== undefined) {
-      throw new ToBeUndefinedAssertionError(actual);
+      throw new AssertionFailed();
     }
+  },
+  getMessage(actual) {
+    let message = `expected ${this.formatValue(actual)}`;
+
+    if (this.not) {
+      message += ' not';
+    }
+
+    message += ` to be undefined`;
+
+    return message;
   },
 });

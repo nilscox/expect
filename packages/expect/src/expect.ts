@@ -1,5 +1,5 @@
 import { isPromise } from 'util/types';
-import { AssertionError } from './errors/assertion-error';
+import { AssertionError, AssertionFailed } from './errors/assertion-error';
 import { GuardError } from './errors/guard-error';
 import { any, anything, deepEqual } from './helpers/deep-equal';
 import { formatValue } from './helpers/format-value';
@@ -12,12 +12,13 @@ declare global {
   }
 }
 
-const helpers = {
+const helpers = (not: boolean) => ({
+  not,
   deepEqual,
   formatValue,
-};
+});
 
-type Helpers = typeof helpers;
+type Helpers = ReturnType<typeof helpers>;
 
 export interface AssertionDefinition<Name extends AssertionNames, Actual> {
   name: Name;
@@ -28,6 +29,11 @@ export interface AssertionDefinition<Name extends AssertionNames, Actual> {
     actual: Actual,
     ...args: Parameters<Expect.Assertions[Name]>
   ): ReturnType<Expect.Assertions[Name]>;
+  getMessage(
+    this: Helpers & { error?: AssertionFailed },
+    actual: Actual,
+    ...args: Parameters<Expect.Assertions[Name]>
+  ): string;
 }
 
 type AssertionNames = keyof Expect.Assertions;
@@ -41,12 +47,16 @@ type AsyncAssertions<Actual> = {
   ) => Promise<ReturnType<Expect.Assertions<Actual>[Name]>>;
 };
 
+type Not<Actual> = {
+  not: Expect.Assertions<Actual>;
+};
+
 interface ExpectFunction {
-  <Actual>(actual: Actual): Expect.Assertions<Actual>;
+  <Actual>(actual: Actual): Expect.Assertions<Actual> & Not<Actual>;
 }
 
 interface ExpectFunction {
-  async<Actual>(actual: Promise<Actual>): AsyncAssertions<Actual>;
+  async<Actual>(actual: Promise<Actual>): AsyncAssertions<Actual> & Not<Actual>;
 }
 
 interface ExpectFunction {
@@ -68,15 +78,28 @@ const checkAssertionGuard = (actual: unknown, assertion: AnyAssertion) => {
   }
 };
 
-const handleAssertionError = (error: unknown) => {
-  if (error instanceof AssertionError) {
-    error.message = error.format(helpers.formatValue);
-  }
+const throwAssertionError = (
+  assertion: AnyAssertion,
+  not: boolean,
+  actual: unknown,
+  args: AssertionParams,
+  error?: AssertionFailed
+) => {
+  const context = {
+    ...helpers(not),
+    error,
+  };
 
-  throw error;
+  const message = assertion.getMessage.call(context, actual, ...args);
+
+  throw new AssertionError(message, assertion.name, actual, args);
 };
 
-const createAssertion = (actual: unknown, assertion: AnyAssertion): ValueOf<Expect.Assertions<unknown>> => {
+const createAssertion = (
+  not: boolean,
+  actual: unknown,
+  assertion: AnyAssertion
+): ValueOf<Expect.Assertions<unknown>> => {
   return (...args: AssertionParams): AssertionResult => {
     if (isPromise(actual)) {
       throw new Error(
@@ -87,9 +110,23 @@ const createAssertion = (actual: unknown, assertion: AnyAssertion): ValueOf<Expe
     checkAssertionGuard(actual, assertion);
 
     try {
-      return assertion.assert.call(helpers, actual, ...args);
+      const result = assertion.assert.call(helpers(not), actual, ...args);
+
+      if (not) {
+        throwAssertionError(assertion, not, actual, args);
+      }
+
+      return result;
     } catch (error) {
-      handleAssertionError(error);
+      if (error instanceof AssertionFailed) {
+        if (not) {
+          return;
+        }
+
+        throwAssertionError(assertion, not, actual, args, error);
+      }
+
+      throw error;
     }
   };
 };
@@ -98,35 +135,52 @@ const createAsyncAssertion = (
   actual: Promise<unknown>,
   assertion: AnyAssertion
 ): ValueOf<Expect.Assertions<Promise<unknown>>> => {
-  return (...args: AssertionParams): Promise<AssertionResult> => {
-    checkAssertionGuard(actual, assertion);
+  return {} as any;
+  // return (...args: AssertionParams): Promise<AssertionResult> => {
+  //   checkAssertionGuard(actual, assertion);
 
-    return actual
-      .then(
-        (resolved) => assertion.assert.call(helpers, resolved, ...args),
-        (error) => {
-          if (assertion.name === 'toReject') {
-            return assertion.assert.call(helpers, Promise.reject(error), ...args);
-          } else {
-            // add test case
-            throw error;
-          }
-        }
-      )
-      .catch(handleAssertionError);
-  };
+  //   return actual
+  //     .then(
+  //       (resolved) => assertion.assert.call(helpers, resolved, ...args),
+  //       (error) => {
+  //         if (assertion.name === 'toReject') {
+  //           return assertion.assert.call(helpers, Promise.reject(error), ...args);
+  //         } else {
+  //           // add test case
+  //           throw error;
+  //         }
+  //       }
+  //     )
+  //     .catch(handleAssertionError);
+  // };
 };
 
 export const expect: ExpectFunction = (actual: unknown) => {
-  return mapObject<AssertionNames, AnyAssertion, AssertionResult>(expect.assertions, (assertion) =>
-    createAssertion(actual, assertion)
+  const assertions = mapObject<AssertionNames, AnyAssertion, AssertionResult>(
+    expect.assertions,
+    (assertion) => createAssertion(false, actual, assertion)
   );
+
+  const not = mapObject<AssertionNames, AnyAssertion, AssertionResult>(expect.assertions, (assertion) =>
+    createAssertion(true, actual, assertion)
+  );
+
+  return {
+    ...assertions,
+    not,
+  };
 };
 
 expect.async = (actual: Promise<unknown>) => {
-  return mapObject<AssertionNames, AnyAssertion, AssertionResult>(expect.assertions, (assertion) =>
-    createAsyncAssertion(actual, assertion)
+  const assertions = mapObject<AssertionNames, AnyAssertion, AssertionResult>(
+    expect.assertions,
+    (assertion) => createAsyncAssertion(actual, assertion)
   );
+
+  return {
+    ...assertions,
+    not: {} as any,
+  };
 };
 
 expect.assertions = {} as AssertionDefinitions;

@@ -1,6 +1,5 @@
 import { expect } from '../expect';
 import { testError } from '../test/test-error';
-import { ToHaveLengthAssertionError } from './to-have-length';
 
 describe('toHaveLength', () => {
   describe('array', () => {
@@ -10,11 +9,7 @@ describe('toHaveLength', () => {
     });
 
     it('unexpected length', () => {
-      testError(
-        () => expect([]).toHaveLength(1),
-        new ToHaveLengthAssertionError([], 1),
-        'expected  to have length 1'
-      );
+      testError(() => expect([]).toHaveLength(1), 'expected  to have length 1');
     });
   });
 
@@ -24,11 +19,7 @@ describe('toHaveLength', () => {
     });
 
     it('unexpected length', () => {
-      testError(
-        () => expect('').toHaveLength(1),
-        new ToHaveLengthAssertionError('', 1),
-        'expected "" to have length 1'
-      );
+      testError(() => expect('').toHaveLength(1), 'expected "" to have length 1');
     });
   });
 
@@ -38,11 +29,7 @@ describe('toHaveLength', () => {
     });
 
     it('different "length" values', () => {
-      testError(
-        () => expect({ length: 1 }).toHaveLength(0),
-        new ToHaveLengthAssertionError({ length: 1 }, 0),
-        'expected [object Object] to have length 0'
-      );
+      testError(() => expect({ length: 1 }).toHaveLength(0), 'expected [object Object] to have length 0');
     });
   });
 
@@ -55,11 +42,12 @@ describe('toHaveLength', () => {
     });
 
     it('unexpected number of arguments', () => {
-      testError(
-        () => expect(func).toHaveLength(1),
-        new ToHaveLengthAssertionError(func, 1),
-        'expected func to take 1 argument(s)'
-      );
+      testError(() => expect(func).toHaveLength(1), 'expected func to take 1 argument(s)');
     });
+  });
+
+  it('not.toHaveLength', () => {
+    expect([]).not.toHaveLength(1);
+    testError(() => expect([]).not.toHaveLength(0), 'expected  not to have length 0');
   });
 });

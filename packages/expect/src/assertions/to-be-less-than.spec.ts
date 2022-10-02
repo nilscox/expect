@@ -1,6 +1,5 @@
 import { expect } from '../expect';
 import { testError } from '../test/test-error';
-import { ToBeLessThanAssertionError } from './to-be-less-than';
 
 describe('toBeLessThan', () => {
   it('number being below another number', () => {
@@ -8,19 +7,11 @@ describe('toBeLessThan', () => {
   });
 
   it('number being equal to another number', () => {
-    testError(
-      () => expect(1).toBeLessThan(1),
-      new ToBeLessThanAssertionError(1, 1, true),
-      'expected 1 to be less than 1'
-    );
+    testError(() => expect(1).toBeLessThan(1), 'expected 1 to be less than 1');
   });
 
   it('number being above another number', () => {
-    testError(
-      () => expect(2).toBeLessThan(1),
-      new ToBeLessThanAssertionError(2, 1, true),
-      'expected 2 to be less than 1'
-    );
+    testError(() => expect(2).toBeLessThan(1), 'expected 2 to be less than 1');
   });
 
   describe('strict = true', () => {
@@ -31,19 +22,11 @@ describe('toBeLessThan', () => {
     });
 
     it('number being equal to another number', () => {
-      testError(
-        () => expect(1).toBeLessThan(1, options),
-        new ToBeLessThanAssertionError(1, 1, true),
-        'expected 1 to be less than 1'
-      );
+      testError(() => expect(1).toBeLessThan(1, options), 'expected 1 to be less than 1');
     });
 
     it('number being above another number', () => {
-      testError(
-        () => expect(2).toBeLessThan(1, options),
-        new ToBeLessThanAssertionError(2, 1, true),
-        'expected 2 to be less than 1'
-      );
+      testError(() => expect(2).toBeLessThan(1, options), 'expected 2 to be less than 1');
     });
   });
 
@@ -59,11 +42,13 @@ describe('toBeLessThan', () => {
     });
 
     it('number being above another number', () => {
-      testError(
-        () => expect(2).toBeLessThan(1, options),
-        new ToBeLessThanAssertionError(2, 1, false),
-        'expected 2 to be less or equal to 1'
-      );
+      testError(() => expect(2).toBeLessThan(1, options), 'expected 2 to be less or equal to 1');
     });
+  });
+
+  it('not.toBeLessThan()', () => {
+    expect(2).not.toBeLessThan(1);
+    expect(1).not.toBeLessThan(1);
+    testError(() => expect(1).not.toBeLessThan(2), 'expected 1 not to be less than 2');
   });
 });

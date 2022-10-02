@@ -1,6 +1,5 @@
 import { expect } from '../expect';
 import { testError } from '../test/test-error';
-import { ToEqualAssertionError } from './to-equal';
 
 describe('toEqual', () => {
   it('same primitive type', () => {
@@ -8,7 +7,7 @@ describe('toEqual', () => {
   });
 
   it('different primitive types', () => {
-    testError(() => expect<number>(1).toEqual(2), new ToEqualAssertionError(1, 2), 'expected 1 to equal 2');
+    testError(() => expect<number>(1).toEqual(2), 'expected 1 to equal 2');
   });
 
   it('same object reference', () => {
@@ -22,16 +21,12 @@ describe('toEqual', () => {
   });
 
   it('different object references and non-matching objects', () => {
-    testError(
-      () => expect({}).toEqual({ a: 1 }),
-      new ToEqualAssertionError({}, { a: 1 }),
-      'expected [object Object] to equal [object Object]'
-    );
+    testError(() => expect({}).toEqual({ a: 1 }), 'expected [object Object] to equal [object Object]');
+    testError(() => expect<{}>({ a: 1 }).toEqual({}), 'expected [object Object] to equal [object Object]');
+  });
 
-    testError(
-      () => expect<{}>({ a: 1 }).toEqual({}),
-      new ToEqualAssertionError({ a: 1 }, {}),
-      'expected [object Object] to equal [object Object]'
-    );
+  it('not.toEqual()', () => {
+    expect(42).not.toEqual(51);
+    testError(() => expect(42).not.toEqual(42), 'expected 42 not to equal 42');
   });
 });

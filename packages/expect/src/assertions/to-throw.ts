@@ -1,34 +1,13 @@
-import { AssertionError } from '../errors/assertion-error';
-import { expect } from '../expect';
+import { AssertionFailed } from '../errors/assertion-error';
 import { isFunction } from '../errors/guard-error';
+import { expect } from '../expect';
 import { deepEqual } from '../helpers/deep-equal';
-import { ValueFormatter } from '../helpers/format-value';
 
 declare global {
   namespace Expect {
     export interface Assertions<Actual> {
       toThrow(expected?: unknown): Actual | Promise<Actual>;
     }
-  }
-}
-
-export class ToThrowAssertionError extends AssertionError {
-  constructor(actual: unknown, public readonly func: Function, public readonly expected: unknown) {
-    super('toThrow', actual);
-  }
-
-  format(formatValue: ValueFormatter): string {
-    let message = `expected ${this.func.name || 'function'}`;
-
-    message += ` to throw ${formatValue(this.expected) ?? 'anything'}`;
-
-    if (this.actual === undefined) {
-      message += ` but it did not throw`;
-    } else {
-      message += ` but it threw ${this.actual}`;
-    }
-
-    return message;
   }
 }
 
@@ -42,12 +21,12 @@ expect.addAssertion({
 
     try {
       func();
-      error = new ToThrowAssertionError(undefined, func, expected);
+      error = new AssertionFailed(undefined);
     } catch (caught) {
       actual = caught;
 
       if (expected !== undefined && !deepEqual(expected, caught)) {
-        error = new ToThrowAssertionError(caught, func, expected);
+        error = new AssertionFailed(caught);
       }
     }
 
@@ -56,5 +35,31 @@ expect.addAssertion({
     }
 
     return actual;
+  },
+  getMessage(func, expected) {
+    const actual = this.error?.meta;
+    let message = `expected ${this.formatValue(func)}`;
+
+    if (this.not) {
+      message += ' not';
+    }
+
+    if (expected) {
+      message += ` to throw ${this.formatValue(expected)}`;
+    } else {
+      message += ` to throw anything`;
+    }
+
+    if (actual === undefined) {
+      if (this.not) {
+        message += ` but it did`;
+      } else {
+        message += ` but it did not throw`;
+      }
+    } else {
+      message += ` but it threw ${actual}`;
+    }
+
+    return message;
   },
 });

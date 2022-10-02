@@ -1,4 +1,4 @@
-import expect, { AssertionError, ValueFormatter } from '@nilscox/expect';
+import expect, { AssertionFailed } from '@nilscox/expect';
 import sinon from 'sinon';
 
 declare global {
@@ -6,16 +6,6 @@ declare global {
     export interface Assertions {
       toHaveBeenCalled(): void;
     }
-  }
-}
-
-export class ToHaveBeenCalledAssertionError<T> extends AssertionError<T> {
-  constructor(actual: T) {
-    super('toHaveBeenCalled', actual);
-  }
-
-  format(formatValue: ValueFormatter): string {
-    return `expected ${formatValue(this.actual)} to have been called`;
   }
 }
 
@@ -27,7 +17,18 @@ expect.addAssertion({
   },
   assert(actual) {
     if (!actual.called) {
-      throw new ToHaveBeenCalledAssertionError(actual);
+      throw new AssertionFailed();
     }
+  },
+  getMessage(actual) {
+    let message = `expected ${this.formatValue(actual)}`;
+
+    if (this.not) {
+      message += ' not';
+    }
+
+    message += ` to have been called`;
+
+    return message;
   },
 });

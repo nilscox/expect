@@ -1,6 +1,5 @@
 import { expect } from '../expect';
 import { testError } from '../test/test-error';
-import { ToBeAssertionError } from './to-be';
 
 describe('toBe', () => {
   it('same primitive type', () => {
@@ -8,7 +7,7 @@ describe('toBe', () => {
   });
 
   it('different primitive types', () => {
-    testError(() => expect(1).toBe(2), new ToBeAssertionError(1, 2), 'expected 1 to be 2');
+    testError(() => expect(1).toBe(2), 'expected 1 to be 2');
   });
 
   it('same object reference', () => {
@@ -17,10 +16,11 @@ describe('toBe', () => {
   });
 
   it('different object references', () => {
-    testError(
-      () => expect({}).toBe({}),
-      new ToBeAssertionError({}, {}),
-      'expected [object Object] to be [object Object]'
-    );
+    testError(() => expect({}).toBe({}), 'expected [object Object] to be [object Object]');
+  });
+
+  it('not.toBe()', () => {
+    expect({}).not.toBe({});
+    testError(() => expect(1).not.toBe(1), 'expected 1 not to be 1');
   });
 });

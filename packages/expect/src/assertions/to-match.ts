@@ -1,7 +1,6 @@
-import { AssertionError } from '../errors/assertion-error';
-import { expect } from '../expect';
+import { AssertionFailed } from '../errors/assertion-error';
 import { isString } from '../errors/guard-error';
-import { ValueFormatter } from '../helpers/format-value';
+import { expect } from '../expect';
 
 declare global {
   namespace Expect {
@@ -11,22 +10,23 @@ declare global {
   }
 }
 
-export class ToMatchAssertionError extends AssertionError<string> {
-  constructor(actual: string, public readonly regexp: RegExp) {
-    super('toMatch', actual);
-  }
-
-  format(formatValue: ValueFormatter): string {
-    return `expected ${formatValue(this.actual)} to match ${this.regexp}`;
-  }
-}
-
 expect.addAssertion({
   name: 'toMatch',
   guard: isString,
   assert(actual, regexp) {
     if (!regexp.exec(actual)) {
-      throw new ToMatchAssertionError(actual, regexp);
+      throw new AssertionFailed();
     }
+  },
+  getMessage(actual, regexp) {
+    let message = `expected ${this.formatValue(actual)}`;
+
+    if (this.not) {
+      message += ' not';
+    }
+
+    message += ` to match ${regexp}`;
+
+    return message;
   },
 });

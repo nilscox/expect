@@ -1,7 +1,6 @@
 import assert from 'assert';
 import { expect } from '../expect';
 import { testError } from '../test/test-error';
-import { ToThrowAssertionError } from './to-throw';
 
 describe('toThrow', () => {
   const error = new Error('error');
@@ -24,10 +23,13 @@ describe('toThrow', () => {
     expect(throwError).toThrow(error);
   });
 
-  it('function not throwing', () => {
+  it('function not throwing any error', () => {
+    testError(() => expect(doNothing).toThrow(), 'expected doNothing to throw anything but it did not throw');
+  });
+
+  it('function not throwing a specific error', () => {
     testError(
       () => expect(doNothing).toThrow(error),
-      new ToThrowAssertionError(undefined, doNothing, error),
       'expected doNothing to throw Error: error but it did not throw'
     );
   });
@@ -37,8 +39,17 @@ describe('toThrow', () => {
 
     testError(
       () => expect(throwError).toThrow(other),
-      new ToThrowAssertionError(error, throwError, other),
       'expected throwError to throw Error: other but it threw Error: error'
+    );
+  });
+
+  it('not.toThrow()', () => {
+    expect(doNothing).not.toThrow();
+    testError(() => expect(throwError).not.toThrow(), 'expected throwError not to throw anything but it did');
+
+    testError(
+      () => expect(throwError).not.toThrow(error),
+      'expected throwError not to throw Error: error but it did'
     );
   });
 });
