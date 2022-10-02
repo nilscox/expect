@@ -3,7 +3,7 @@ import sinon from 'sinon';
 
 declare global {
   namespace Expect {
-    interface Assertions {
+    export interface Assertions {
       toHaveBeenCalledWith(...args: any[]): void;
     }
   }

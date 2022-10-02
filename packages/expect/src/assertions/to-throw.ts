@@ -6,7 +6,7 @@ import { ValueFormatter } from '../helpers/format-value';
 
 declare global {
   namespace Expect {
-    interface Assertions<Actual> {
+    export interface Assertions<Actual> {
       toThrow(expected?: unknown): Actual | Promise<Actual>;
     }
   }

@@ -5,7 +5,7 @@ import { ValueFormatter } from '../helpers/format-value';
 
 declare global {
   namespace Expect {
-    interface Assertions<Actual> {
+    export interface Assertions<Actual> {
       toBe(expected: Actual): void;
     }
   }

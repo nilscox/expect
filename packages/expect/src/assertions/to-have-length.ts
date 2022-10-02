@@ -4,7 +4,7 @@ import { ValueFormatter } from '../helpers/format-value';
 
 declare global {
   namespace Expect {
-    interface Assertions {
+    export interface Assertions {
       toHaveLength(length: number): void;
     }
   }
@@ -12,13 +12,21 @@ declare global {
 
 type ObjectWithLength = { length: number };
 
-class ToHaveLengthAssertionError extends AssertionError<ObjectWithLength> {
+export class ToHaveLengthAssertionError extends AssertionError<ObjectWithLength> {
   constructor(actual: ObjectWithLength, public readonly length: number) {
     super('toHaveLength', actual);
   }
 
   format(formatValue: ValueFormatter): string {
-    return `expected ${formatValue(this.actual)} to have length ${formatValue(this.length)}`;
+    let message = `expected ${formatValue(this.actual)}`;
+
+    if (typeof this.actual === 'function') {
+      message += ` to take ${formatValue(this.length)} argument(s)`;
+    } else {
+      message += ` to have length ${formatValue(this.length)}`;
+    }
+
+    return message;
   }
 }
 
@@ -30,9 +38,11 @@ expect.addAssertion({
       return false;
     }
 
-    // not working?
-    // return "length" in actual && typeof actual["length"] === "number";
-    return 'length' in actual && typeof (actual as Record<string, unknown>)['length'] === 'number';
+    if (!Object.getOwnPropertyNames(actual).includes('length')) {
+      return false;
+    }
+
+    return typeof (actual as Record<string, unknown>)['length'] === 'number';
   },
   assert(actual, length) {
     if (actual.length !== length) {

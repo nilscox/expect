@@ -5,7 +5,7 @@ import { ValueFormatter } from '../helpers/format-value';
 
 declare global {
   namespace Expect {
-    interface Assertions {
+    export interface Assertions {
       toBeCloseTo(value: number, options?: { threshold?: number; strict?: boolean }): void;
     }
   }

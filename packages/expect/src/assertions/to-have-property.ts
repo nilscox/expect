@@ -6,7 +6,7 @@ import { get } from '../helpers/get';
 
 declare global {
   namespace Expect {
-    interface Assertions<Actual> {
+    export interface Assertions<Actual> {
       toHaveProperty(property: string, value?: unknown): void;
     }
   }

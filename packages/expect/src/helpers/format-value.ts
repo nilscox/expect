@@ -5,5 +5,9 @@ export const formatValue: ValueFormatter = (value) => {
     return `"${value}"`;
   }
 
+  if (typeof value === 'function') {
+    return value.name || 'function';
+  }
+
   return String(value);
 };

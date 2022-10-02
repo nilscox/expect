@@ -1,11 +1,7 @@
 {
   "extends": "../../tsconfig.json",
   "include": ["src"],
-  "references": [
-    {
-      "path": "../expect/tsconfig.json"
-    }
-  ],
+  "references": [{ "path": "../expect/tsconfig.json" }],
   "compilerOptions": {
     "outDir": "dist"
   }

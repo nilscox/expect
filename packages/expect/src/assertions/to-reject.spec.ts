@@ -49,10 +49,7 @@ describe('toReject', () => {
   });
 
   it('returns a value of the same type passed to toReject', async () => {
-    try {
-      // @ts-expect-error todo
-      const error: Error = await expect.async(Promise.reject()).toReject(Error);
-      error;
-    } catch {}
+    const error: TestError = await expect.async(Promise.reject(new TestError())).toReject(TestError);
+    error;
   });
 });

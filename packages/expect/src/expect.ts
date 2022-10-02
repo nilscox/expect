@@ -1,3 +1,4 @@
+import { isPromise } from 'util/types';
 import { AssertionError } from './errors/assertion-error';
 import { GuardError } from './errors/guard-error';
 import { any, anything, deepEqual } from './helpers/deep-equal';
@@ -7,7 +8,7 @@ import { ValueOf } from './helpers/value-of';
 
 declare global {
   namespace Expect {
-    interface Assertions<Actual = unknown> {}
+    export interface Assertions<Actual = unknown> {}
   }
 }
 
@@ -77,6 +78,12 @@ const handleAssertionError = (error: unknown) => {
 
 const createAssertion = (actual: unknown, assertion: AnyAssertion): ValueOf<Expect.Assertions<unknown>> => {
   return (...args: AssertionParams): AssertionResult => {
+    if (isPromise(actual)) {
+      throw new Error(
+        `expect(actual).${assertion.name}(): actual must not be a promise, use expect.async(actual) instead`
+      );
+    }
+
     checkAssertionGuard(actual, assertion);
 
     try {

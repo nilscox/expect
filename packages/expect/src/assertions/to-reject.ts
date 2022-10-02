@@ -5,8 +5,8 @@ import { ValueFormatter } from '../helpers/format-value';
 
 declare global {
   namespace Expect {
-    interface Assertions<Actual> {
-      toReject<T>(expectedInstance?: { new (...args: any[]): T }): T;
+    export interface Assertions<Actual> {
+      toReject(expectedInstance?: any): any;
     }
   }
 }
