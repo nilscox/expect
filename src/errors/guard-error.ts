@@ -1,4 +1,4 @@
-import { ExpectError } from "./expect-error";
+import { ExpectError } from './expect-error';
 
 export class GuardError<Actual> extends ExpectError {
   constructor(
@@ -14,7 +14,7 @@ export class GuardError<Actual> extends ExpectError {
   }
 }
 
-export const isBoolean = (value: unknown): value is boolean => typeof value === "boolean";
-export const isNumber = (value: unknown): value is number => typeof value === "number";
-export const isString = (value: unknown): value is string => typeof value === "string";
-export const isFunction = (value: unknown): value is Function => typeof value === "function";
+export const isBoolean = (value: unknown): value is boolean => typeof value === 'boolean';
+export const isNumber = (value: unknown): value is number => typeof value === 'number';
+export const isString = (value: unknown): value is string => typeof value === 'string';
+export const isFunction = (value: unknown): value is Function => typeof value === 'function';

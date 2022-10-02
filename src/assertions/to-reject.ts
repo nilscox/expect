@@ -1,7 +1,7 @@
-import { isPromise } from "util/types";
-import { AssertionError } from "../errors/assertion-error";
-import { expect } from "../expect";
-import { ValueFormatter } from "../helpers/format-value";
+import { isPromise } from 'util/types';
+import { AssertionError } from '../errors/assertion-error';
+import { expect } from '../expect';
+import { ValueFormatter } from '../helpers/format-value';
 
 declare global {
   namespace Expect {
@@ -17,7 +17,7 @@ export class ToRejectAssertionError extends AssertionError {
     public readonly expectedInstance?: { new (...args: any[]): unknown },
     public readonly resolved?: unknown
   ) {
-    super("toReject", actual);
+    super('toReject', actual);
   }
 
   format(formatValue: ValueFormatter): string {
@@ -38,7 +38,7 @@ export class ToRejectAssertionError extends AssertionError {
 }
 
 expect.addAssertion({
-  name: "toReject",
+  name: 'toReject',
   guard: isPromise,
   async assert(promise, expectedInstance) {
     let error: ToRejectAssertionError | undefined = undefined;

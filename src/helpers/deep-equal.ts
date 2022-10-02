@@ -1,6 +1,6 @@
-import { get } from "./get";
+import { get } from './get';
 
-const anythingSymbol = Symbol("anything");
+const anythingSymbol = Symbol('anything');
 
 export const anything = () => {
   return anythingSymbol;
@@ -10,7 +10,7 @@ const isAnything = (value: unknown): boolean => {
   return value === anythingSymbol;
 };
 
-const anyCtorSymbol = Symbol("any");
+const anyCtorSymbol = Symbol('any');
 type AnyCtor = {
   anyCtorSymbol: typeof anyCtorSymbol;
   ctor: Function;
@@ -22,7 +22,7 @@ export const any = (ctor: Function): AnyCtor => ({
 });
 
 const isAnyCtorValue = (value: unknown): value is AnyCtor => {
-  return value != null && get(value, "anyCtorSymbol") === anyCtorSymbol;
+  return value != null && get(value, 'anyCtorSymbol') === anyCtorSymbol;
 };
 
 const isAnyCtor = (obj: unknown, value: unknown): boolean => {
@@ -30,7 +30,7 @@ const isAnyCtor = (obj: unknown, value: unknown): boolean => {
     return false;
   }
 
-  if (typeof obj === "string") {
+  if (typeof obj === 'string') {
     return value.ctor === String;
   }
 
@@ -38,7 +38,7 @@ const isAnyCtor = (obj: unknown, value: unknown): boolean => {
 };
 
 export const deepEqual = (a: unknown, b: unknown): boolean => {
-  if (typeof a !== "object" || typeof b !== "object" || a === null || b === null) {
+  if (typeof a !== 'object' || typeof b !== 'object' || a === null || b === null) {
     return a === b;
   }
 

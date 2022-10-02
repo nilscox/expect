@@ -1,10 +1,10 @@
-import assert from "assert";
-import { AssertionError } from "../errors/assertion-error";
+import assert from 'assert';
+import { AssertionError } from '../errors/assertion-error';
 
 export const testError = (callback: () => void, expectedError: AssertionError, message: string) => {
   try {
     callback();
-    throw new Error("testError: callback did not throw");
+    throw new Error('testError: callback did not throw');
   } catch (error) {
     if (error instanceof AssertionError) {
       assert.equal(error.message, message);
@@ -22,7 +22,7 @@ export const testErrorAsync = async (
 ) => {
   try {
     await promise;
-    throw new Error("testError: promise did not reject");
+    throw new Error('testError: promise did not reject');
   } catch (error) {
     if (error instanceof AssertionError) {
       assert.equal(error.message, message);

@@ -1,7 +1,7 @@
-import { AssertionError } from "../errors/assertion-error";
-import { expect } from "../expect";
-import { deepEqual } from "../helpers/deep-equal";
-import { ValueFormatter } from "../helpers/format-value";
+import { AssertionError } from '../errors/assertion-error';
+import { expect } from '../expect';
+import { deepEqual } from '../helpers/deep-equal';
+import { ValueFormatter } from '../helpers/format-value';
 
 declare global {
   namespace Expect {
@@ -13,7 +13,7 @@ declare global {
 
 export class ToEqualAssertionError<T> extends AssertionError<T> {
   constructor(actual: T, public readonly expected: T) {
-    super("toEqual", actual);
+    super('toEqual', actual);
   }
 
   format(formatValue: ValueFormatter): string {
@@ -22,7 +22,7 @@ export class ToEqualAssertionError<T> extends AssertionError<T> {
 }
 
 expect.addAssertion({
-  name: "toEqual",
+  name: 'toEqual',
   assert(actual, expected) {
     if (!deepEqual(actual, expected)) {
       throw new ToEqualAssertionError(actual, expected);

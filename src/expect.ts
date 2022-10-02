@@ -1,9 +1,9 @@
-import { AssertionError } from "./errors/assertion-error";
-import { GuardError } from "./errors/guard-error";
-import { any, anything, deepEqual } from "./helpers/deep-equal";
-import { formatValue } from "./helpers/format-value";
-import { mapObject } from "./helpers/map-object";
-import { ValueOf } from "./helpers/value-of";
+import { AssertionError } from './errors/assertion-error';
+import { GuardError } from './errors/guard-error';
+import { any, anything, deepEqual } from './helpers/deep-equal';
+import { formatValue } from './helpers/format-value';
+import { mapObject } from './helpers/map-object';
+import { ValueOf } from './helpers/value-of';
 
 declare global {
   namespace Expect {
@@ -98,7 +98,7 @@ const createAsyncAssertion = (
       .then(
         (resolved) => assertion.assert.call(helpers, resolved, ...args),
         (error) => {
-          if (assertion.name === "toReject") {
+          if (assertion.name === 'toReject') {
             return assertion.assert.call(helpers, Promise.reject(error), ...args);
           } else {
             // add test case

@@ -1,7 +1,7 @@
-import { error } from "console";
-import { AssertionError } from "../errors/assertion-error";
-import { expect } from "../expect";
-import { ValueFormatter } from "../helpers/format-value";
+import { error } from 'console';
+import { AssertionError } from '../errors/assertion-error';
+import { expect } from '../expect';
+import { ValueFormatter } from '../helpers/format-value';
 
 declare global {
   namespace Expect {
@@ -13,7 +13,7 @@ declare global {
 
 export class ToBeAssertionError<T> extends AssertionError<T> {
   constructor(actual: T, public readonly expected: T) {
-    super("toBe", actual);
+    super('toBe', actual);
   }
 
   format(formatValue: ValueFormatter): string {
@@ -22,7 +22,7 @@ export class ToBeAssertionError<T> extends AssertionError<T> {
 }
 
 expect.addAssertion({
-  name: "toBe",
+  name: 'toBe',
   assert(actual, expected) {
     if (!Object.is(actual, expected)) {
       throw new ToBeAssertionError(actual, expected);

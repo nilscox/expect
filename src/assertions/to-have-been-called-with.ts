@@ -1,7 +1,7 @@
-import { AssertionError } from "../errors/assertion-error";
-import { expect } from "../expect";
-import { ValueFormatter } from "../helpers/format-value";
-import sinon from "sinon";
+import { AssertionError } from '../errors/assertion-error';
+import { expect } from '../expect';
+import { ValueFormatter } from '../helpers/format-value';
+import sinon from 'sinon';
 
 declare global {
   namespace Expect {
@@ -13,7 +13,7 @@ declare global {
 
 export class ToHaveBeenCalledWithAssertionError<T> extends AssertionError<T> {
   constructor(actual: T, public readonly args: any[]) {
-    super("toHaveBeenCalledWith", actual);
+    super('toHaveBeenCalledWith', actual);
   }
 
   format(formatValue: ValueFormatter): string {
@@ -22,10 +22,10 @@ export class ToHaveBeenCalledWithAssertionError<T> extends AssertionError<T> {
 }
 
 expect.addAssertion({
-  name: "toHaveBeenCalledWith",
-  expectedType: "a sinon.spy()",
+  name: 'toHaveBeenCalledWith',
+  expectedType: 'a sinon.spy()',
   guard(actual): actual is sinon.SinonSpy {
-    return actual != null && "called" in actual;
+    return actual != null && 'called' in actual;
   },
   assert(actual, ...args) {
     if (!actual.calledWith(...args)) {

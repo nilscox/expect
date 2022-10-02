@@ -1,7 +1,7 @@
-import { AssertionError } from "../errors/assertion-error";
-import { expect } from "../expect";
-import { isNumber } from "../errors/guard-error";
-import { ValueFormatter } from "../helpers/format-value";
+import { AssertionError } from '../errors/assertion-error';
+import { expect } from '../expect';
+import { isNumber } from '../errors/guard-error';
+import { ValueFormatter } from '../helpers/format-value';
 
 declare global {
   namespace Expect {
@@ -13,7 +13,7 @@ declare global {
 
 export class ToBeLessThanAssertionError extends AssertionError<number> {
   constructor(actual: number, public readonly value: number, public readonly strict: boolean) {
-    super("toBeLessThan", actual);
+    super('toBeLessThan', actual);
   }
 
   format(formatValue: ValueFormatter): string {
@@ -26,8 +26,8 @@ export class ToBeLessThanAssertionError extends AssertionError<number> {
 }
 
 expect.addAssertion({
-  name: "toBeLessThan",
-  expectedType: "number",
+  name: 'toBeLessThan',
+  expectedType: 'number',
   guard: isNumber,
   assert(actual: number, value: number, { strict = true } = {}) {
     if (actual > value || (strict && actual == value)) {

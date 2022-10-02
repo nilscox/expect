@@ -1,6 +1,6 @@
-import { AssertionError } from "../errors/assertion-error";
-import { expect } from "../expect";
-import { ValueFormatter } from "../helpers/format-value";
+import { AssertionError } from '../errors/assertion-error';
+import { expect } from '../expect';
+import { ValueFormatter } from '../helpers/format-value';
 
 declare global {
   namespace Expect {
@@ -12,7 +12,7 @@ declare global {
 
 class ToBeUndefinedAssertionError extends AssertionError {
   constructor(actual: unknown) {
-    super("toBeUndefined", actual);
+    super('toBeUndefined', actual);
   }
 
   format(formatValue: ValueFormatter): string {
@@ -21,7 +21,7 @@ class ToBeUndefinedAssertionError extends AssertionError {
 }
 
 expect.addAssertion({
-  name: "toBeUndefined",
+  name: 'toBeUndefined',
   assert(actual) {
     if (actual !== undefined) {
       throw new ToBeUndefinedAssertionError(actual);

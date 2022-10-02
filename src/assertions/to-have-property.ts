@@ -1,8 +1,8 @@
-import { AssertionError } from "../errors/assertion-error";
-import { expect } from "../expect";
-import { deepEqual } from "../helpers/deep-equal";
-import { ValueFormatter } from "../helpers/format-value";
-import { get } from "../helpers/get";
+import { AssertionError } from '../errors/assertion-error';
+import { expect } from '../expect';
+import { deepEqual } from '../helpers/deep-equal';
+import { ValueFormatter } from '../helpers/format-value';
+import { get } from '../helpers/get';
 
 declare global {
   namespace Expect {
@@ -16,7 +16,7 @@ type NonNullObject = {};
 
 export class ToHavePropertyAssertionError<T> extends AssertionError<T> {
   constructor(actual: T, public readonly property: string, public readonly value: unknown | undefined) {
-    super("toHaveProperty", actual);
+    super('toHaveProperty', actual);
   }
 
   format(formatValue: ValueFormatter): string {
@@ -33,8 +33,8 @@ export class ToHavePropertyAssertionError<T> extends AssertionError<T> {
 }
 
 expect.addAssertion({
-  name: "toHaveProperty",
-  expectedType: "non-null object",
+  name: 'toHaveProperty',
+  expectedType: 'non-null object',
   guard(actual): actual is NonNullObject {
     return actual !== null && actual !== undefined;
   },
