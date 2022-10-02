@@ -1,6 +1,4 @@
-import { AssertionError } from '../errors/assertion-error';
-import { expect } from '../expect';
-import { ValueFormatter } from '../helpers/format-value';
+import expect, { AssertionError, ValueFormatter } from '@nilscox/expect';
 import sinon from 'sinon';
 
 declare global {

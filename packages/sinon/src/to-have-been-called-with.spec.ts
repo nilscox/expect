@@ -1,6 +1,5 @@
+import expect from '@nilscox/expect';
 import sinon from 'sinon';
-
-import { expect } from '../expect';
 
 describe('toHaveBeenCalledWith', () => {
   it('spy called with given arguments', () => {

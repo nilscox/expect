@@ -1,0 +1,14 @@
+{
+  "name": "@nilscox/expect",
+  "version": "0.1.0",
+  "license": "Beerware",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rm -rf dist && rm *.tsbuildinfo",
+    "build": "tsc"
+  }
+}

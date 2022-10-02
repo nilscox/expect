@@ -1,12 +1,15 @@
 {
-  "include": ["src"],
   "compilerOptions": {
-    "outDir": "dist",
     "target": "es6",
     "module": "commonjs",
     "declaration": true,
     "strict": true,
+    "esModuleInterop": true,
     "skipLibCheck": true,
-    "esModuleInterop": true
+    "sourceMap": true,
+    "baseUrl": "./packages",
+    "paths": {
+      "@nilscox/expect": ["expect/src"]
+    }
   }
 }

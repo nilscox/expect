@@ -1,5 +1,9 @@
+.vscode
+
 node_modules
 dist
-.vscode
+
 *.log
-src/test.spec.ts
+*.tsbuildinfo
+
+test.spec.ts

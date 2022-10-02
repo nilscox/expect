@@ -15,3 +15,6 @@ import './assertions/to-throw';
 
 export default expect;
 export type Expect = typeof expect;
+
+export { AssertionError } from './errors/assertion-error';
+export type { ValueFormatter } from './helpers/format-value';

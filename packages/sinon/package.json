@@ -1,0 +1,22 @@
+{
+  "name": "@nilscox/expect-sinon",
+  "version": "0.1.0",
+  "license": "Beerware",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "tsc -b"
+  },
+  "devDependencies": {
+    "@types/sinon": "^10.0.13",
+    "sinon": "^14.0.0"
+  },
+  "peerDependencies": {
+    "@nilscox/expect": "0.1.0",
+    "sinon": "^14.0.0"
+  }
+}
