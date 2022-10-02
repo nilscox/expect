@@ -35,4 +35,14 @@ describe("type checking", () => {
     // @ts-expect-error
     test(() => expect(42).testAssertion("42"));
   });
+
+  it("async assertions", () => {
+    test(() => expect.async(Promise.resolve(42)).toEqual(42));
+
+    // @ts-expect-error
+    test(() => expect.async(Promise.resolve(42)).toEqual("42"));
+
+    // @ts-expect-error
+    test(() => expect.async(42).toEqual("42"));
+  });
 });

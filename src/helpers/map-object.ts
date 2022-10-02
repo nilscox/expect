@@ -1,12 +1,12 @@
-export const mapObject = <T extends {}, Y>(
-  input: T,
-  transformProperty: <K extends keyof T & keyof Y>(keyValue: [K, T[K]]) => Y[K]
-): Y => {
+export const mapObject = <K extends string, IV, OV>(
+  input: Record<K, IV>,
+  transformProperty: (value: IV, key: K, index: number) => OV
+): Record<K, OV> => {
   return Object.entries(input).reduce(
-    (obj, [key, value]) => ({
+    (obj, [key, value], index) => ({
       ...obj,
-      [key]: transformProperty([key as keyof T & keyof Y, value as T[keyof T & keyof Y]]),
+      [key]: transformProperty(value as IV, key as K, index),
     }),
-    {} as Y
+    {} as Record<K, OV>
   );
 };

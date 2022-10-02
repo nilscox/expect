@@ -1,9 +1,9 @@
-import { isPromise } from "util/types";
 import { AssertionError } from "./errors/assertion-error";
 import { GuardError } from "./errors/guard-error";
 import { any, anything, deepEqual } from "./helpers/deep-equal";
 import { formatValue } from "./helpers/format-value";
 import { mapObject } from "./helpers/map-object";
+import { ValueOf } from "./helpers/value-of";
 
 declare global {
   namespace Expect {
@@ -41,8 +41,11 @@ type AsyncAssertions<Actual> = {
 };
 
 interface ExpectFunction {
-  <Actual>(actual: Promise<Actual>): AsyncAssertions<Actual>;
   <Actual>(actual: Actual): Expect.Assertions<Actual>;
+}
+
+interface ExpectFunction {
+  async<Actual>(actual: Promise<Actual>): AsyncAssertions<Actual>;
 }
 
 interface ExpectFunction {
@@ -53,51 +56,70 @@ interface ExpectFunction {
   any: typeof any;
 }
 
-const createAssertion = <Name extends AssertionNames, Actual>(
-  actual: Actual,
-  assertion: AssertionDefinitions[Name]
-): Expect.Assertions<Actual>[Name] => {
-  return (...a: any[]): any => {
-    const args = a as Parameters<Expect.Assertions<Actual>[Name]>;
+type AnyAssertion = AssertionDefinition<AssertionNames, unknown>;
 
-    if (assertion.guard && !assertion.guard(actual)) {
-      throw new GuardError(assertion.name, actual, assertion.expectedType);
-    }
+type AssertionParams = Parameters<Expect.Assertions<any>[AssertionNames]>;
+type AssertionResult = ReturnType<Expect.Assertions<any>[AssertionNames]>;
 
-    const handleError = (error: unknown) => {
-      if (error instanceof AssertionError) {
-        error.message = error.format(helpers.formatValue);
-      }
+const checkAssertionGuard = (actual: unknown, assertion: AnyAssertion) => {
+  if (assertion.guard && !assertion.guard(actual)) {
+    throw new GuardError(assertion.name, actual, assertion.expectedType);
+  }
+};
 
-      throw error;
-    };
+const handleAssertionError = (error: unknown) => {
+  if (error instanceof AssertionError) {
+    error.message = error.format(helpers.formatValue);
+  }
 
-    if (isPromise(actual)) {
-      return actual
-        .then(
-          (resolved) => assertion.assert.call(helpers, resolved, ...args),
-          (error) => {
-            if (assertion.name === "toReject") {
-              return assertion.assert.call(helpers, Promise.reject(error), ...args);
-            } else {
-              // add test case
-              throw error;
-            }
-          }
-        )
-        .catch(handleError);
-    }
+  throw error;
+};
+
+const createAssertion = (actual: unknown, assertion: AnyAssertion): ValueOf<Expect.Assertions<unknown>> => {
+  return (...args: AssertionParams): AssertionResult => {
+    checkAssertionGuard(actual, assertion);
 
     try {
       return assertion.assert.call(helpers, actual, ...args);
     } catch (error) {
-      handleError(error);
+      handleAssertionError(error);
     }
   };
 };
 
+const createAsyncAssertion = (
+  actual: Promise<unknown>,
+  assertion: AnyAssertion
+): ValueOf<Expect.Assertions<Promise<unknown>>> => {
+  return (...args: AssertionParams): Promise<AssertionResult> => {
+    checkAssertionGuard(actual, assertion);
+
+    return actual
+      .then(
+        (resolved) => assertion.assert.call(helpers, resolved, ...args),
+        (error) => {
+          if (assertion.name === "toReject") {
+            return assertion.assert.call(helpers, Promise.reject(error), ...args);
+          } else {
+            // add test case
+            throw error;
+          }
+        }
+      )
+      .catch(handleAssertionError);
+  };
+};
+
 export const expect: ExpectFunction = (actual: unknown) => {
-  return mapObject(expect.assertions, ([, assertion]) => createAssertion(actual, assertion) as any);
+  return mapObject<AssertionNames, AnyAssertion, AssertionResult>(expect.assertions, (assertion) =>
+    createAssertion(actual, assertion)
+  );
+};
+
+expect.async = (actual: Promise<unknown>) => {
+  return mapObject<AssertionNames, AnyAssertion, AssertionResult>(expect.assertions, (assertion) =>
+    createAsyncAssertion(actual, assertion)
+  );
 };
 
 expect.assertions = {} as AssertionDefinitions;
