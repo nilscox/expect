@@ -1,5 +1,7 @@
 import assert from 'assert';
-import { any, anything, deepEqual } from './deep-equal';
+import { any } from '../matchers/any';
+import { anything } from '../matchers/anything';
+import { deepEqual } from './deep-equal';
 
 describe('deepEqual', () => {
   it('primitive values', () => {

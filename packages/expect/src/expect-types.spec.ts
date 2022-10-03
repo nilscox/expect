@@ -53,20 +53,12 @@ describe('type checking', () => {
   });
 
   it('expect.anything()', () => {
-    test(() => expect(1).toEqual(expect.anything()));
-    test(() => expect('').toEqual(expect.anything()));
-    test(() => expect({}).toEqual(expect.anything()));
-    test(() => expect(() => {}).toEqual(expect.anything()));
+    test(() => expect(42).toEqual(expect.anything()));
     test(() => expect({ foo: 1 }).toEqual({ foo: expect.anything() }));
   });
 
   it('expect.any()', () => {
-    test(() => expect('').toEqual(expect.any(String)));
-    test(() => expect(1).toEqual(expect.any(Number)));
-    test(() => expect(BigInt(1)).toEqual(expect.any(BigInt)));
     test(() => expect(true).toEqual(expect.any(Boolean)));
-    test(() => expect(Symbol()).toEqual(expect.any(Symbol)));
-    test(() => expect(() => {}).toEqual(expect.any(Function)));
     test(() => expect({ foo: 1 }).toEqual(expect.any(Object)));
     test(() => expect({ foo: 1 }).toEqual({ foo: expect.any(Number) }));
 

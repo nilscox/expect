@@ -1,14 +1,18 @@
 import { isPromise } from 'util/types';
 import { AssertionError } from './errors/assertion-error';
-import { ExpectedRejection } from './errors/expected-rejecton';
+import { ExpectedRejection } from './errors/expected-rejection';
 import { ExpectedPromise } from './errors/expected-promise';
 import { UnexpectedPromise } from './errors/unexpected-promise';
 import { AssertionFailed } from './errors/assertion-failed';
 import { GuardError } from './errors/guard-error';
-import { any, anything, deepEqual } from './helpers/deep-equal';
+import { deepEqual } from './helpers/deep-equal';
 import { formatValue } from './helpers/format-value';
 import { mapObject } from './helpers/map-object';
 import { ValueOf } from './helpers/value-of';
+import { any } from './matchers/any';
+import { anything } from './matchers/anything';
+import { stringMatching } from './matchers/string-matching';
+import { objectWith } from './matchers/object-with';
 
 declare global {
   namespace Expect {
@@ -68,8 +72,13 @@ interface ExpectFunction {
   _assertions: AssertionDefinitions;
   addAssertion<Name extends AssertionNames, Actual>(assertion: AssertionDefinition<Name, Actual>): void;
   formatValue: typeof formatValue;
+}
+
+interface ExpectFunction {
   anything: typeof anything;
   any: typeof any;
+  stringMatching: typeof stringMatching;
+  objectWith: typeof objectWith;
 }
 
 export type AnyAssertion = AssertionDefinition<AssertionNames, unknown>;
@@ -210,5 +219,8 @@ expect.addAssertion = <Name extends AssertionNames, Actual>(assertion: Assertion
 };
 
 expect.formatValue = formatValue;
+
 expect.anything = anything;
 expect.any = any;
+expect.stringMatching = stringMatching;
+expect.objectWith = objectWith;
