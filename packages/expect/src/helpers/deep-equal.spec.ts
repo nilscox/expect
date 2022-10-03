@@ -24,6 +24,10 @@ describe('deepEqual', () => {
     assert(!deepEqual({ foo: 'bar' }, {}));
   });
 
+  it('same errors', () => {
+    assert(deepEqual(new Error('yes'), new Error('yes')));
+  });
+
   it('different errors', () => {
     assert(!deepEqual(new Error('yes'), new Error('no')));
   });

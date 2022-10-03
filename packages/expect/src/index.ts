@@ -17,4 +17,5 @@ export type Expect = typeof expect;
 
 export { AssertionError } from './errors/assertion-error';
 export { AssertionFailed } from './errors/assertion-failed';
-export type { ValueFormatter } from './helpers/format-value';
+
+export { createMatcher } from './helpers/create-matcher';

@@ -11,6 +11,7 @@ describe('objectWith', () => {
     assert.ok(isMatching({ id: 1 }));
 
     assert.ok(!isMatching({ id: 2 }));
+    // @ts-expect-error
     assert.ok(!isMatching([1]));
   });
 
@@ -25,6 +26,7 @@ describe('objectWith', () => {
     assert.ok(isMatching({ id: 4, name: 'hey yo' }));
     assert.ok(isMatching({ id: 2, name: 'hey ga' }));
 
+    // @ts-expect-error
     assert.ok(!isMatching({ id: 1 }));
     assert.ok(!isMatching({ id: 1, name: 'yo hey' }));
   });

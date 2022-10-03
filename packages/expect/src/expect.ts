@@ -1,23 +1,24 @@
 import { isPromise } from 'util/types';
 import { AssertionError } from './errors/assertion-error';
-import { ExpectedRejection } from './errors/expected-rejection';
-import { ExpectedPromise } from './errors/expected-promise';
-import { UnexpectedPromise } from './errors/unexpected-promise';
 import { AssertionFailed } from './errors/assertion-failed';
+import { ExpectedPromise } from './errors/expected-promise';
+import { ExpectedRejection } from './errors/expected-rejection';
 import { GuardError } from './errors/guard-error';
+import { UnexpectedPromise } from './errors/unexpected-promise';
+import { createMatcher, isMatcher } from './helpers/create-matcher';
 import { deepEqual } from './helpers/deep-equal';
 import { formatValue } from './helpers/format-value';
 import { mapObject } from './helpers/map-object';
 import { ValueOf } from './helpers/value-of';
 import { any } from './matchers/any';
 import { anything } from './matchers/anything';
-import { stringMatching } from './matchers/string-matching';
 import { objectWith } from './matchers/object-with';
-import { isMatcher } from './helpers/create-matcher';
+import { stringMatching } from './matchers/string-matching';
 
 declare global {
   namespace Expect {
     export interface Assertions<Actual = unknown> {}
+    export interface Matchers {}
   }
 }
 
@@ -28,6 +29,13 @@ const helpers = (not: boolean) => ({
 });
 
 type Helpers = ReturnType<typeof helpers>;
+
+interface BuiltinMatchers {
+  anything: typeof anything;
+  any: typeof any;
+  stringMatching: typeof stringMatching;
+  objectWith: typeof objectWith;
+}
 
 export interface AssertionDefinition<Name extends AssertionNames, Actual> {
   name: Name;
@@ -79,14 +87,14 @@ interface ExpectFunction {
 interface ExpectFunction {
   _assertions: AssertionDefinitions;
   addAssertion<Name extends AssertionNames, Actual>(assertion: AssertionDefinition<Name, Actual>): void;
-  formatValue: typeof formatValue;
+}
+
+interface ExpectFunction extends BuiltinMatchers, Expect.Matchers {
+  addMatcher(name: keyof Expect.Matchers, matcher: unknown): void;
 }
 
 interface ExpectFunction {
-  anything: typeof anything;
-  any: typeof any;
-  stringMatching: typeof stringMatching;
-  objectWith: typeof objectWith;
+  formatValue: typeof formatValue;
 }
 
 export type AnyAssertionDefinition = AssertionDefinition<AssertionNames, unknown>;
@@ -200,6 +208,7 @@ expect.rejects = (promise: Promise<unknown>) => ({
         throw caught;
       }
 
+      // use expect.any(instanceOrClass)?
       if (typeof instanceOrClass === 'function' && !isMatcher(instanceOrClass)) {
         if (caught instanceof instanceOrClass) {
           return caught;
@@ -208,11 +217,9 @@ expect.rejects = (promise: Promise<unknown>) => ({
         }
       }
 
-      if (deepEqual(caught, instanceOrClass)) {
-        return caught as any;
-      }
+      expect(caught).toEqual(instanceOrClass);
 
-      throw caught;
+      return caught as any;
     }
   },
 });
@@ -223,9 +230,21 @@ expect.addAssertion = <Name extends AssertionNames, Actual>(assertion: Assertion
   expect._assertions[assertion.name] = assertion as AssertionDefinitions[Name];
 };
 
-expect.formatValue = formatValue;
-
 expect.anything = anything;
 expect.any = any;
 expect.stringMatching = stringMatching;
 expect.objectWith = objectWith;
+
+expect.addMatcher = (name, matcher) => {
+  if (typeof matcher !== 'function' || !isMatcher(matcher())) {
+    throw new Error(`cannot add matcher "${name}" because it is not a matcher`);
+  }
+
+  if (name in expect) {
+    throw new Error(`cannot add matcher "${name}" because expect.${name} already exits`);
+  }
+
+  Object.assign(expect, { [name]: matcher });
+};
+
+expect.formatValue = formatValue;

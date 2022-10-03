@@ -29,6 +29,10 @@ export const deepEqual = (a: unknown, b: unknown): boolean => {
 
     const bValue = b[key as keyof typeof b];
 
+    if (a instanceof Error && key === 'stack') {
+      continue;
+    }
+
     if (!deepEqual(aValue, bValue)) {
       return false;
     }
