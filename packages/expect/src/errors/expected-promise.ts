@@ -1,8 +1,8 @@
-import { AnyAssertion } from '../expect';
+import { AnyAssertionDefinition } from '../expect';
 import { ExpectError } from './expect-error';
 
 export class ExpectedPromise extends ExpectError {
-  constructor(assertion?: AnyAssertion) {
+  constructor(assertion?: AnyAssertionDefinition) {
     let message = 'expect';
 
     if (assertion) {
