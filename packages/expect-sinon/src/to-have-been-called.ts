@@ -29,6 +29,16 @@ expect.addAssertion({
 
     message += ` to have been called`;
 
+    if (this.not) {
+      message += ' but it was\n';
+      message += 'calls:\n';
+
+      message += actual
+        .getCalls()
+        .map(({ args }) => args.map(this.formatValue).join(', '))
+        .join('\n');
+    }
+
     return message;
   },
 });

@@ -16,8 +16,14 @@ describe('toHaveBeenCalled', () => {
   it('not.toHaveBeenCalled()', () => {
     const spy = sinon.spy();
 
-    spy();
+    spy('hello');
+    spy('hello', 'world');
 
-    testError(() => expect(spy).not.toHaveBeenCalled(), 'expected function not to have been called');
+    testError(
+      () => expect(spy).not.toHaveBeenCalled(),
+      ['expected function not to have been called but it was', 'calls:', '"hello"', '"hello", "world"'].join(
+        '\n'
+      )
+    );
   });
 });

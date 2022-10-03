@@ -1,0 +1,21 @@
+{
+  "name": "@nilscox/expect-dom",
+  "version": "0.1.0",
+  "license": "Beerware",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "tsc -b"
+  },
+  "devDependencies": {
+    "jsdom": "^10.0.13",
+    "jsdom-global": "^3.0.2"
+  },
+  "peerDependencies": {
+    "@nilscox/expect": "0.1.0"
+  }
+}
