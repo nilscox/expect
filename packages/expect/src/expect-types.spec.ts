@@ -11,9 +11,9 @@ declare global {
 }
 
 describe('type checking', () => {
-  const test = (cb: () => void) => {
+  const test = async (cb: () => void | Promise<void>) => {
     try {
-      cb();
+      await cb();
     } catch {}
   };
 
@@ -36,7 +36,7 @@ describe('type checking', () => {
     test(() => expect(42).testAssertion('42'));
   });
 
-  it('async assertions', () => {
+  it('async assertions', async () => {
     test(() => expect.async(Promise.resolve(42)).toEqual(42));
 
     // @ts-expect-error
@@ -45,11 +45,23 @@ describe('type checking', () => {
     // @ts-expect-error
     test(() => expect.async(42).toEqual('42'));
 
-    class TestError extends Error {}
-    const error = new TestError('nope');
+    await test(async () => {
+      const err1: string = await expect.rejects(Promise.reject()).with('');
+      err1;
 
-    const result: Promise<TestError> = expect.rejects(Promise.reject(error)).with(TestError);
-    result;
+      const err2: string = await expect.rejects(Promise.reject()).with(expect.stringMatching(/$/));
+      err2;
+
+      // @ts-expect-error
+      const err3: number = await expect.rejects(Promise.reject()).with('');
+      err3;
+
+      class TestError extends Error {}
+      const error = new TestError('nope');
+
+      const err4: TestError = await expect.rejects(Promise.reject(error)).with(TestError);
+      err4;
+    });
   });
 
   it('expect.anything()', () => {

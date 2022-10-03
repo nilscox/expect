@@ -13,6 +13,7 @@ export const createMatcher = <Type, Args extends unknown[]>(
     };
 
     matchValue.symbol = matcherSymbol;
+    matchValue.args = args;
 
     return matchValue;
   };

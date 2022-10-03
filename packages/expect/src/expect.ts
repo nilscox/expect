@@ -13,6 +13,7 @@ import { any } from './matchers/any';
 import { anything } from './matchers/anything';
 import { stringMatching } from './matchers/string-matching';
 import { objectWith } from './matchers/object-with';
+import { isMatcher } from './helpers/create-matcher';
 
 declare global {
   namespace Expect {
@@ -72,7 +73,7 @@ interface ExpectFunction {
 
 interface ExpectFunction {
   async<Actual>(promise: Promise<Actual>): AsyncAssertions<Actual> & AsyncNot<Actual>;
-  rejects(promise: Promise<unknown>): { with<T>(Type: { new (...args: any[]): T }): Promise<T> };
+  rejects(promise: Promise<unknown>): { with<T>(Type: T | { new (...args: any[]): T }): Promise<T> };
 }
 
 interface ExpectFunction {
@@ -186,7 +187,7 @@ expect.async = (actual: Promise<unknown>) => ({
 });
 
 expect.rejects = (promise: Promise<unknown>) => ({
-  async with(Type) {
+  async with(instanceOrClass) {
     if (!isPromise(promise)) {
       throw new ExpectedPromise();
     }
@@ -199,8 +200,16 @@ expect.rejects = (promise: Promise<unknown>) => ({
         throw caught;
       }
 
-      if (caught instanceof Type) {
-        return caught;
+      if (typeof instanceOrClass === 'function' && !isMatcher(instanceOrClass)) {
+        if (caught instanceof instanceOrClass) {
+          return caught;
+        } else {
+          throw caught;
+        }
+      }
+
+      if (deepEqual(caught, instanceOrClass)) {
+        return caught as any;
       }
 
       throw caught;

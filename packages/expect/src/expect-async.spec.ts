@@ -55,7 +55,22 @@ describe('async', () => {
       assert.strictEqual(error, result);
     });
 
-    it("fails when the rejected value's constructor does not match", async () => {
+    it('checks the rejected value', async () => {
+      const error = new Error();
+
+      await expect.rejects(promise(error)).with(error);
+    });
+
+    it('checks the rejected value with a matcher', async () => {
+      await expect.rejects(promise('error')).with(expect.stringMatching(/^err/));
+
+      await testErrorAsync(
+        expect.rejects(promise('error')).with(new Error('nope')),
+        'expected "error" to equal Error: nope'
+      );
+    });
+
+    it("checks the rejected value's constructor", async () => {
       const error = new Error();
 
       try {
