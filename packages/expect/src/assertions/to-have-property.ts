@@ -1,7 +1,5 @@
 import { AssertionFailed } from '../errors/assertion-failed';
 import { expect } from '../expect';
-import { deepEqual } from '../helpers/deep-equal';
-import { get } from '../helpers/get';
 
 declare global {
   namespace Expect {
@@ -20,17 +18,31 @@ expect.addAssertion({
     return actual !== null && actual !== undefined;
   },
   assert(actual: Record<PropertyKey, unknown>, property: string, expectedValue?: unknown) {
-    const value = get(actual, property);
+    const hasExpectedValue = arguments.length === 3;
 
-    if (value === undefined) {
+    const path = property.split('.');
+    const [lastProperty] = path.slice(-1);
+
+    let parent: any = actual;
+
+    for (const property of path.slice(0, -1)) {
+      parent = parent[property];
+
+      if (!parent) {
+        throw new AssertionFailed();
+      }
+    }
+
+    if (!(lastProperty in parent)) {
       throw new AssertionFailed();
     }
 
-    if (expectedValue !== undefined && !deepEqual(value, expectedValue)) {
+    if (hasExpectedValue && !this.deepEqual(parent[lastProperty], expectedValue)) {
       throw new AssertionFailed();
     }
   },
   getMessage(actual, property, expectedValue) {
+    const hasExpectedValue = arguments.length === 3;
     let message = `expected ${this.formatValue(actual)}`;
 
     if (this.not) {
@@ -39,7 +51,7 @@ expect.addAssertion({
 
     message += ` to have property ${this.formatValue(property)}`;
 
-    if (expectedValue !== undefined) {
+    if (hasExpectedValue) {
       message += ` = ${this.formatValue(expectedValue)}`;
     }
 

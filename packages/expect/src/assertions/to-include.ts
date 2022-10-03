@@ -1,22 +1,26 @@
 import { AssertionFailed } from '../errors/assertion-failed';
-import { isString } from '../errors/guard-error';
+import { isArray } from '../errors/guard-error';
 import { expect } from '../expect';
 
 declare global {
   namespace Expect {
     export interface Assertions {
-      toMatch(expected: RegExp): void;
+      toInclude(value: unknown): void;
     }
   }
 }
 
 expect.addAssertion({
-  name: 'toMatch',
-  guard: isString,
-  assert(actual, regexp) {
-    if (!regexp.exec(actual)) {
-      throw new AssertionFailed();
+  name: 'toInclude',
+  guard: isArray,
+  assert(actual, expectedValue) {
+    for (const value of actual) {
+      if (this.deepEqual(value, expectedValue)) {
+        return;
+      }
     }
+
+    throw new AssertionFailed();
   },
   getMessage(actual, regexp) {
     let message = `expected ${this.formatValue(actual)}`;
@@ -25,7 +29,7 @@ expect.addAssertion({
       message += ' not';
     }
 
-    message += ` to match ${regexp}`;
+    message += ` to include ${regexp}`;
 
     return message;
   },

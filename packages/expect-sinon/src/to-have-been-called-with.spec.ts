@@ -43,6 +43,19 @@ describe('toHaveBeenCalledWith', () => {
     );
   });
 
+  it('checking if spy was called with matchers', () => {
+    const spy = sinon.spy();
+
+    spy('test');
+
+    expect(spy).toHaveBeenCalledWith(expect.stringMatching(/t.st/));
+
+    testError(
+      () => expect(spy).toHaveBeenCalledWith(expect.stringMatching(/taste/)),
+      'expected function to have been called with matchValue'
+    );
+  });
+
   it('not.toHaveBeenCalledWith()', () => {
     const spy = sinon.spy();
 

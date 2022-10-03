@@ -16,9 +16,23 @@ expect.addAssertion({
     return actual != null && 'called' in actual;
   },
   assert(actual, ...args) {
-    if (!actual.calledWith(...args)) {
-      throw new AssertionFailed();
+    callsLoop: for (const call of actual.getCalls()) {
+      if (args.length !== call.args.length) {
+        continue;
+      }
+
+      let idx = 0;
+
+      for (const argOrMatcher of args) {
+        if (!this.deepEqual(call.args[idx++], argOrMatcher)) {
+          continue callsLoop;
+        }
+      }
+
+      return;
     }
+
+    throw new AssertionFailed();
   },
   getMessage(actual, ...args) {
     let message = `expected ${this.formatValue(actual)}`;

@@ -9,6 +9,7 @@ import './assertions/to-be';
 import './assertions/to-equal';
 import './assertions/to-have-length';
 import './assertions/to-have-property';
+import './assertions/to-include';
 import './assertions/to-match';
 import './assertions/to-throw';
 

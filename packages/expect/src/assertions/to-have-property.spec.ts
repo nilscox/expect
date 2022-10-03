@@ -17,6 +17,10 @@ describe('toHaveProperty', () => {
     expect({ foo: 1 }).toHaveProperty('foo', 1);
   });
 
+  it('object having the property with a given undefined value', () => {
+    expect({ foo: undefined }).toHaveProperty('foo', undefined);
+  });
+
   it('object having the property with a matching object', () => {
     expect({ foo: {} }).toHaveProperty('foo', {});
   });

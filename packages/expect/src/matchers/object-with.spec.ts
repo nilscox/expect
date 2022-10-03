@@ -8,6 +8,7 @@ describe('objectWith', () => {
   it('matches an object containing a set of properties', () => {
     const isMatching = castAsMatcher(objectWith({ id: 1 }));
 
+    assert.ok(isMatching({ id: 1, foo: 'bar' }));
     assert.ok(isMatching({ id: 1 }));
 
     assert.ok(!isMatching({ id: 2 }));
