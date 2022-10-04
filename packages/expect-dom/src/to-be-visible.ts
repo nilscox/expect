@@ -10,7 +10,7 @@ declare global {
 
 expect.addAssertion({
   name: 'toBeVisible',
-  expectedType: 'a sinon.spy()',
+  expectedType: 'an instance of HTMLElement',
   guard(actual): actual is HTMLElement {
     return actual instanceof HTMLElement;
   },

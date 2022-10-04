@@ -2,12 +2,12 @@ import { createMatcher } from '../helpers/create-matcher';
 
 // prettier-ignore
 type ConstructorToType<T> =
-  T extends StringConstructor ? string :
-  T extends NumberConstructor ? number :
-  T extends BigIntConstructor ? bigint :
-  T extends BooleanConstructor ? boolean :
-  T extends SymbolConstructor ? symbol :
-  T extends ObjectConstructor ? any :
+  T extends StringConstructor   ? string :
+  T extends NumberConstructor   ? number :
+  T extends BigIntConstructor   ? bigint :
+  T extends BooleanConstructor  ? boolean :
+  T extends SymbolConstructor   ? symbol :
+  T extends ObjectConstructor   ? any :
   T extends FunctionConstructor ? (...args: any[]) => any :
   T;
 

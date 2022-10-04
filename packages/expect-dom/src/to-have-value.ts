@@ -12,7 +12,7 @@ type InputType = HTMLInputElement | HTMLTextAreaElement;
 
 expect.addAssertion({
   name: 'toHaveValue',
-  expectedType: 'a sinon.spy()',
+  expectedType: 'an instance of HTMLElement',
   guard(actual): actual is InputType {
     return actual instanceof HTMLInputElement || actual instanceof HTMLTextAreaElement;
   },
