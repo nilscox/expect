@@ -29,4 +29,11 @@ describe('toEqual', () => {
     expect(42).not.toEqual(51);
     testError(() => expect(42).not.toEqual(42), 'expected 42 not to equal 42');
   });
+
+  it('documentation examples', () => {
+    expect(1).toEqual(1);
+    expect({ foo: 'bar' }).toEqual({ foo: 'bar' });
+    expect({ foo: 'bar' }).toEqual({ foo: expect.stringMatching(/^b/) });
+    testError(() => expect({ foo: 'bar' }).toEqual({ foo: 'not bar' }));
+  });
 });

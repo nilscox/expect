@@ -11,8 +11,18 @@ describe('toInclude', () => {
     testError(() => expect([1, 2]).toInclude(3), 'expected 1,2 to include 3');
   });
 
+  it('string including a substring', () => {
+    expect('hello').toInclude('hell');
+  });
+
   it('not.toInclude()', () => {
     expect([1]).not.toInclude(2);
     testError(() => expect([1]).not.toInclude(1), 'expected 1 not to include 1');
+  });
+
+  it('documentation examples', () => {
+    expect([1, 2]).toInclude(2);
+    testError(() => expect([1, 2]).toInclude(3));
+    expect('hello').toInclude('llo');
   });
 });

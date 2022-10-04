@@ -23,4 +23,12 @@ describe('toBe', () => {
     expect({}).not.toBe({});
     testError(() => expect(1).not.toBe(1), 'expected 1 not to be 1');
   });
+
+  it('documentation examples', () => {
+    expect(1).toBe(1);
+    testError(() => expect({}).toBe({}));
+
+    const obj = {};
+    expect(obj).toBe(obj);
+  });
 });

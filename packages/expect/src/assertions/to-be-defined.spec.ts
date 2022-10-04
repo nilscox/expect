@@ -14,4 +14,9 @@ describe('toBeDefined', () => {
     expect(undefined).not.toBeDefined();
     testError(() => expect(1).not.toBeDefined(), 'expected 1 not to be defined');
   });
+
+  it('documentation examples', () => {
+    expect(1).toBeDefined();
+    testError(() => expect(undefined).toBeDefined());
+  });
 });

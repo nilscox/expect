@@ -43,6 +43,10 @@ describe('toThrow', () => {
     );
   });
 
+  it('matching the error using a matcher', () => {
+    expect(throwError).toThrow(expect.objectWith({ message: expect.stringMatching(/^err/) }));
+  });
+
   it('not.toThrow()', () => {
     expect(doNothing).not.toThrow();
     testError(() => expect(throwError).not.toThrow(), 'expected throwError not to throw anything but it did');
@@ -51,5 +55,19 @@ describe('toThrow', () => {
       () => expect(throwError).not.toThrow(error),
       'expected throwError not to throw Error: error but it did'
     );
+  });
+
+  it('documentation examples', () => {
+    const throwError = () => {
+      throw new Error('oops');
+    };
+
+    const doNothing = () => {};
+
+    expect(throwError).toThrow();
+    testError(() => expect(doNothing).toThrow());
+    expect(throwError).toThrow(new Error('oops'));
+    testError(() => expect(throwError).toThrow(new Error('argh')));
+    expect(throwError).toThrow(expect.objectWith({ message: expect.stringMatching(/oo/) }));
   });
 });

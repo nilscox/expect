@@ -68,4 +68,12 @@ describe('toHaveProperty', () => {
       'expected [object Object] not to have property "foo" = 1'
     );
   });
+
+  it('documentation examples', () => {
+    expect({ foo: 'bar' }).toHaveProperty('foo');
+    testError(() => expect({}).toHaveProperty('foo'));
+    testError(() => expect({ foo: 'not bar' }).toHaveProperty('foo', 'bar'));
+    expect({ some: { nested: [{ value: 1 }, { value: 42 }] } }).toHaveProperty('some.nested.1.value', 42);
+    expect({ foo: 'bar' }).toHaveProperty('foo', expect.stringMatching(/^b/));
+  });
 });

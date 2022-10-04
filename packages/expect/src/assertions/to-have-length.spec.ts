@@ -50,4 +50,10 @@ describe('toHaveLength', () => {
     expect([]).not.toHaveLength(1);
     testError(() => expect([]).not.toHaveLength(0), 'expected  not to have length 0');
   });
+
+  describe('documentation examples', () => {
+    expect([1, 2, 3]).toHaveLength(3);
+    expect('hello').toHaveLength(5);
+    testError(() => expect([]).toHaveLength(2));
+  });
 });

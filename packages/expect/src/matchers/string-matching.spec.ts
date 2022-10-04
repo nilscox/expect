@@ -1,5 +1,7 @@
 import assert from 'assert';
+import { expect } from '../expect';
 import { castAsMatcher } from '../helpers/create-matcher';
+import { testError } from '../test/test-error';
 import { stringMatching } from './string-matching';
 
 describe('stringMatching', () => {
@@ -9,5 +11,11 @@ describe('stringMatching', () => {
     assert.ok(isMatching('test'));
     assert.ok(isMatching('tast'));
     assert.ok(!isMatching('taste'));
+  });
+
+  it('documentation examples', () => {
+    expect({ foo: 'bar' }).toEqual({ foo: expect.stringMatching(/^b/) });
+    testError(() => expect({ foo: 'bar' }).toEqual({ foo: expect.stringMatching(/foo/) }));
+    testError(() => expect<any>({ foo: 'bar' }).toEqual(expect.stringMatching(/^b/)));
   });
 });

@@ -25,7 +25,7 @@ expect.addAssertion({
     } catch (caught) {
       actual = caught;
 
-      if (expected !== undefined && !deepEqual(expected, caught)) {
+      if (expected !== undefined && !deepEqual(caught, expected)) {
         error = new AssertionFailed(caught);
       }
     }

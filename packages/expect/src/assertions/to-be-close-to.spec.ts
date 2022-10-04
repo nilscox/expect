@@ -37,4 +37,11 @@ describe('toBeCloseTo', () => {
     expect(1).not.toBeCloseTo(2);
     testError(() => expect(1).not.toBeCloseTo(1.001), 'expected 1 not to be close to 1.001');
   });
+
+  it('documentation examples', () => {
+    expect(0.1 + 0.2).toBeCloseTo(0.3);
+    testError(() => expect(2).toBeCloseTo(3));
+    testError(() => expect(2).toBeCloseTo(1, { threshold: 1 }));
+    expect(2).toBeCloseTo(1, { threshold: 1, strict: false });
+  });
 });

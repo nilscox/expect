@@ -1,5 +1,7 @@
 import assert from 'assert';
+import { expect } from '../expect';
 import { castAsMatcher } from '../helpers/create-matcher';
+import { testError } from '../test/test-error';
 import { any } from './any';
 import { objectWith } from './object-with';
 import { stringMatching } from './string-matching';
@@ -30,5 +32,10 @@ describe('objectWith', () => {
     // @ts-expect-error
     assert.ok(!isMatching({ id: 1 }));
     assert.ok(!isMatching({ id: 1, name: 'yo hey' }));
+  });
+
+  it('documentation examples', () => {
+    expect({ foo: 'bar', baz: 'qux' }).toEqual(expect.objectWith<any>({ foo: 'bar' }));
+    testError(() => expect({ foo: 'bar' }).toEqual(expect.objectWith({ foo: 'bar', baz: 'qux' })));
   });
 });

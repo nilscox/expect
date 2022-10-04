@@ -51,4 +51,9 @@ describe('toBeLessThan', () => {
     expect(1).not.toBeLessThan(1);
     testError(() => expect(1).not.toBeLessThan(2), 'expected 1 not to be less than 2');
   });
+
+  it('documentation examples', () => {
+    expect(1).toBeLessThan(2);
+    testError(() => expect(2).toBeLessThan(1));
+  });
 });

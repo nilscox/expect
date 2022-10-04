@@ -1,5 +1,5 @@
 import { AssertionFailed } from '../errors/assertion-failed';
-import { isArray } from '../errors/guard-error';
+import { isArray, isString } from '../errors/guard-error';
 import { expect } from '../expect';
 
 declare global {
@@ -12,8 +12,14 @@ declare global {
 
 expect.addAssertion({
   name: 'toInclude',
-  guard: isArray,
+  guard(actual): actual is Array<unknown> | string {
+    return isArray(actual) || isString(actual);
+  },
   assert(actual, expectedValue) {
+    if (typeof actual === 'string' && typeof expectedValue === 'string') {
+      return actual.includes(expectedValue);
+    }
+
     for (const value of actual) {
       if (this.deepEqual(value, expectedValue)) {
         return;

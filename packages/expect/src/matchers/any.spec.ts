@@ -1,5 +1,7 @@
 import assert from 'assert';
+import { expect } from '../expect';
 import { castAsMatcher } from '../helpers/create-matcher';
+import { testError } from '../test/test-error';
 import { any } from './any';
 
 describe('any', () => {
@@ -42,5 +44,13 @@ describe('any', () => {
     const symbol: Symbol = any(Symbol);
     const object: any = any(Object);
     const func: () => {} = any(Function);
+  });
+
+  it('documentation examples', () => {
+    expect(42).toEqual(expect.any(Number));
+    testError(() => expect<any>({ foo: 'bar' }).toEqual({ foo: expect.any(Boolean) }));
+
+    class Toto {}
+    expect({ foo: new Toto() }).toEqual({ foo: expect.any(Toto) });
   });
 });
