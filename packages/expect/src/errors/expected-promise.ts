@@ -1,4 +1,4 @@
-import { AnyAssertionDefinition } from '../expect';
+import { AnyAssertionDefinition } from '../expect/expect-types';
 import { ExpectError } from './expect-error';
 
 export class ExpectedPromise extends ExpectError {
