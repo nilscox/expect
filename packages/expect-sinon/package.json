@@ -13,7 +13,7 @@
   },
   "devDependencies": {
     "@types/sinon": "^10.0.13",
-    "sinon": "^14.0.0"
+    "sinon": "^14.0.1"
   },
   "peerDependencies": {
     "@nilscox/expect": "0.1.0",

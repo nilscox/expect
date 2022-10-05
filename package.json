@@ -9,11 +9,11 @@
     "test": "mocha"
   },
   "devDependencies": {
-    "@types/mocha": "^9.1.1",
-    "@types/node": "^18.7.23",
-    "esbuild": "^0.15.9",
+    "@types/mocha": "^10.0.0",
+    "@types/node": "^18.8.2",
+    "esbuild": "^0.15.10",
     "esbuild-register": "^3.3.3",
     "mocha": "^10.0.0",
-    "typescript": "^4.8.3"
+    "typescript": "^4.8.4"
   }
 }
