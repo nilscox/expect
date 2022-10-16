@@ -1,0 +1,17 @@
+{
+  "name": "example",
+  "scripts": {
+    "test": "mocha"
+  },
+  "mocha": {
+    "spec": "src/todo.spec.ts",
+    "extension": "ts",
+    "require": [
+      "esbuild-register",
+      "./mocha.setup.ts"
+    ]
+  },
+  "devDependencies": {
+    "mocha": "^10.0.0"
+  }
+}
