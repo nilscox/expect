@@ -1,12 +1,6 @@
 import { AssertionFailed } from '../errors/assertion-failed';
 import { ValueFormatter } from '../helpers/format-value';
 
-declare global {
-  namespace Expect {
-    interface Assertions<Actual = unknown> {}
-  }
-}
-
 export type Helpers = {
   deepEqual: (a: unknown, b: unknown) => boolean;
   formatValue: ValueFormatter;
@@ -30,6 +24,10 @@ export interface AssertionDefinition<Name extends AssertionNames, Actual> {
     ...args: Parameters<Expect.Assertions[Name]>
   ): string;
 }
+
+export type AssertionDefinitions = {
+  [Name in AssertionNames]: AssertionDefinition<Name, unknown>;
+};
 
 export type AssertionNames = keyof Expect.Assertions;
 

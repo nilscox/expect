@@ -35,4 +35,12 @@ describe('todo', () => {
 
     expect(todo).toBeCompleted();
   });
+
+  it('custom matcher', () => {
+    const todo = createTodo('Buy beers');
+
+    completeTodo(todo);
+
+    expect([todo]).toInclude(expect.completedTodo());
+  });
 });

@@ -9,7 +9,6 @@ import {
   AnyAssertionDefinition,
   AnyAssertionParams,
   AnyAssertionResult,
-  AssertionDefinition,
   AssertionNames,
 } from './expect-types';
 

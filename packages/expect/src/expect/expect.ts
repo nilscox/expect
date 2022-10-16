@@ -4,19 +4,16 @@ import { any } from '../matchers/any';
 import { anything } from '../matchers/anything';
 import { objectWith } from '../matchers/object-with';
 import { stringMatching } from '../matchers/string-matching';
+import { addAssertion, addCustomAssertion, cleanupAssertion } from './assertions';
 import { async, rejects } from './async';
 import { createAssertion } from './create-assertion';
 import {
   AnyAssertionDefinition,
   AnyAssertionResult,
-  AssertionDefinition,
+  AssertionDefinitions,
   AssertionNames,
 } from './expect-types';
-import { addMatcher } from './matchers';
-
-type AssertionDefinitions = {
-  [Name in AssertionNames]: AssertionDefinition<Name, unknown>;
-};
+import { addCustomMatcher, addMatcher, cleanupMatchers } from './matchers';
 
 type Not<Actual> = {
   not: Expect.Assertions<Actual>;
@@ -29,12 +26,8 @@ declare global {
     }
 
     interface ExpectFunction {
-      _assertions: AssertionDefinitions;
-      addAssertion<Name extends AssertionNames, Actual>(assertion: AssertionDefinition<Name, Actual>): void;
-    }
-
-    interface ExpectFunction {
       formatValue: typeof formatValue;
+      cleanup(): void;
     }
   }
 }
@@ -52,14 +45,9 @@ export const expect: Expect.ExpectFunction = (actual: unknown) => ({
 });
 
 expect._assertions = {} as AssertionDefinitions;
-
-expect.addAssertion = <Name extends AssertionNames, Actual>(assertion: AssertionDefinition<Name, Actual>) => {
-  if (assertion.name in expect._assertions) {
-    throw new Error(`cannot add assertion "${assertion.name}" because it already exits`);
-  }
-
-  expect._assertions[assertion.name] = assertion as AssertionDefinitions[Name];
-};
+expect._customAssertions = new Set();
+expect.addAssertion = addAssertion.bind(expect);
+expect.addCustomAssertion = addCustomAssertion.bind(expect);
 
 expect.formatValue = formatValue;
 
@@ -68,7 +56,14 @@ expect.any = any;
 expect.stringMatching = stringMatching;
 expect.objectWith = objectWith;
 
+expect._customMatchers = new Set();
 expect.addMatcher = addMatcher.bind(expect);
+expect.addCustomMatcher = addCustomMatcher.bind(expect);
 
 expect.async = async.bind(expect);
 expect.rejects = rejects.bind(expect);
+
+expect.cleanup = () => {
+  cleanupAssertion.call(expect);
+  cleanupMatchers.call(expect);
+};

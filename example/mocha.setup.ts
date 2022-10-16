@@ -1,4 +1,5 @@
-import expect, { AssertionFailed } from '@nilscox/expect';
+import expect, { AssertionFailed, createMatcher } from '@nilscox/expect';
+import { RootHookObject } from 'mocha';
 
 import { isTodo, Todo } from './src/todo';
 
@@ -7,12 +8,24 @@ declare global {
     export interface Assertions {
       toBeCompleted(): void;
     }
+
+    export interface CustomMatchers {
+      completedTodo: typeof completedTodo;
+    }
   }
 }
 
-export const mochaHooks = {
+const completedTodo = createMatcher((value: Todo) => {
+  return value.completedAt !== undefined;
+});
+
+export const mochaHooks: RootHookObject = {
+  afterAll() {
+    expect.cleanup();
+  },
+
   beforeAll() {
-    expect.addAssertion({
+    expect.addCustomAssertion({
       name: 'toBeCompleted',
 
       expectedType: 'a Todo',
@@ -44,5 +57,7 @@ export const mochaHooks = {
         return message;
       },
     });
+
+    expect.addCustomMatcher('completedTodo', completedTodo);
   },
 };
