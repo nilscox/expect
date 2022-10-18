@@ -1,7 +1,7 @@
 import expect, { AssertionFailed, createMatcher } from '@nilscox/expect';
 import { RootHookObject } from 'mocha';
 
-import { isTodo, Todo } from './src/todo';
+import { Todo } from './src/todo';
 
 declare global {
   namespace Expect {
@@ -25,11 +25,14 @@ export const mochaHooks: RootHookObject = {
   },
 
   beforeAll() {
+    // mocha clears the require cache in watch mode or something like that
+    const TodoRequire: typeof Todo = require('./src/todo').Todo;
+
     expect.addCustomAssertion({
       name: 'toBeCompleted',
 
       expectedType: 'a Todo',
-      guard: isTodo,
+      guard: TodoRequire.isTodo,
 
       assert(todo) {
         if (todo.completedAt === undefined) {

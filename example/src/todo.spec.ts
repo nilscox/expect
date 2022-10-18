@@ -1,45 +1,46 @@
 import expect from '@nilscox/expect';
 
-import { completeTodo, createTodo, Todo } from './todo';
+import { Todo } from './todo';
 
 describe('todo', () => {
   it('creates a new todo', () => {
-    const todo = createTodo('Buy beers');
+    const todo = new Todo('Buy beers');
 
-    expect(todo).toEqual({
+    expect(todo.toJSON()).toEqual({
       text: 'Buy beers',
+      isCompleted: false,
       completedAt: undefined,
     });
   });
 
   it('marks a todo as completed', () => {
-    const todo = createTodo('Buy beers');
+    const todo = new Todo('Buy beers');
 
-    completeTodo(todo);
+    todo.complete();
 
     expect(todo).toHaveProperty('completedAt', expect.any(Date));
   });
 
   it('fails when the todo is already completed', () => {
-    const todo = createTodo('Buy beers');
+    const todo = new Todo('Buy beers');
 
     todo.completedAt = new Date();
 
-    expect(() => completeTodo(todo)).toThrow(expect.stringMatching(/already completed/));
+    expect(() => todo.complete()).toThrow(expect.stringMatching(/already completed/));
   });
 
   it('custom assertion', () => {
-    const todo = createTodo('Buy beers');
+    const todo = new Todo('Buy beers');
 
-    completeTodo(todo);
+    todo.complete();
 
     expect(todo).toBeCompleted();
   });
 
   it('custom matcher', () => {
-    const todo = createTodo('Buy beers');
+    const todo = new Todo('Buy beers');
 
-    completeTodo(todo);
+    todo.complete();
 
     expect([todo]).toInclude(expect.completedTodo());
   });

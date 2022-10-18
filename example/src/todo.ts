@@ -1,24 +1,25 @@
-export type Todo = {
-  text: string;
+export class Todo {
   completedAt?: Date;
-};
 
-export const createTodo = (text: string): Todo => ({
-  text,
-});
+  constructor(public text: string) {}
 
-export const completeTodo = (todo: Todo) => {
-  if (todo.completedAt !== undefined) {
-    throw new Error('todo already completed');
+  static isTodo(value: unknown): value is Todo {
+    return value instanceof Todo;
   }
 
-  todo.completedAt = new Date();
-};
+  complete() {
+    if (this.completedAt !== undefined) {
+      throw new Error('todo already completed');
+    }
 
-export const isTodo = (value: any): value is Todo => {
-  return [
-    value,
-    typeof value.text === 'string',
-    value.completedAt === undefined || value.completedAt instanceof Date,
-  ].every(Boolean);
-};
+    this.completedAt = new Date();
+  }
+
+  toJSON() {
+    return {
+      text: this.text,
+      isCompleted: this.completedAt !== undefined,
+      completedAt: this.completedAt,
+    };
+  }
+}
