@@ -42,6 +42,7 @@ describe('any', () => {
     const bigint: bigint = any(BigInt);
     const boolean: Boolean = any(Boolean);
     const symbol: Symbol = any(Symbol);
+    const date: Date = any(Date);
     const object: any = any(Object);
     const func: () => {} = any(Function);
   });

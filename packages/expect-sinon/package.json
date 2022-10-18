@@ -16,7 +16,7 @@
     "sinon": "^14.0.1"
   },
   "peerDependencies": {
-    "@nilscox/expect": "0.1.1",
+    "@nilscox/expect": "^0.1.0",
     "sinon": "^14.0.0"
   }
 }

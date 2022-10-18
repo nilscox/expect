@@ -7,6 +7,7 @@ type ConstructorToType<T> =
   T extends BigIntConstructor   ? bigint :
   T extends BooleanConstructor  ? boolean :
   T extends SymbolConstructor   ? symbol :
+  T extends DateConstructor     ? Date :
   T extends ObjectConstructor   ? any :
   T extends FunctionConstructor ? (...args: any[]) => any :
   T;
