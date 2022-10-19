@@ -20,8 +20,8 @@ describe('async', () => {
   describe('promise runtime type checking', () => {
     it('fails when a promise is given to expect()', async () => {
       testError(
-        () => expect(Promise.resolve()).toBeUndefined(),
-        'expect(actual).toBeUndefined(): actual must not be a promise, use expect.async(actual) instead'
+        () => expect(Promise.resolve()).not.toBeDefined(),
+        'expect(actual).toBeDefined(): actual must not be a promise, use expect.async(actual) instead'
       );
     });
 

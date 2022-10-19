@@ -235,7 +235,7 @@ You can easily [add new assertions](#custom-assertions) to extend the library's 
 
 Here are the core assertions that are built into the library.
 
-- [toBeUndefined](#tobeundefined)
+- [toBeDefined](#tobedefined)
 - [toBe](#tobe)
 - [toEqual](#toequal)
 - [toBeLessThan and toBeMoreThan](#tobelessthan-and-tobemorethan)
@@ -245,13 +245,13 @@ Here are the core assertions that are built into the library.
 - [toInclude](#toinclude)
 - [toHaveProperty](#tohaveproperty)
 
-#### toBeUndefined
+#### toBeDefined
 
-Assert that a value is [`undefined`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined).
+Assert that a value is not [`undefined`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined).
 
 ```ts
-expect(undefined).toBeUndefined(); // pass
-expect(1).toBeUndefined(); // fails
+expect(1).toBeDefined(); // pass
+expect(undefined).toBeDefined(); // fails
 ```
 
 #### toBe

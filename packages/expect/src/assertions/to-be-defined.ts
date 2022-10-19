@@ -4,16 +4,16 @@ import { expect } from '../expect';
 declare global {
   namespace Expect {
     export interface Assertions {
-      toBeUndefined(): void;
+      toBeDefined(): void;
     }
   }
 }
 
 expect.addAssertion({
-  name: 'toBeUndefined',
+  name: 'toBeDefined',
   assert(actual) {
-    if (actual !== undefined) {
-      throw new AssertionFailed({ expected: undefined });
+    if (actual === undefined) {
+      throw new AssertionFailed();
     }
   },
   getMessage(actual) {
@@ -23,7 +23,7 @@ expect.addAssertion({
       message += ' not';
     }
 
-    message += ` to be undefined`;
+    message += ` to be defined`;
 
     return message;
   },
