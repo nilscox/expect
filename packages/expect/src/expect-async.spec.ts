@@ -80,7 +80,7 @@ describe('async', () => {
 
       await testErrorAsync(
         expect.rejects(promise('error')).with(new Error('nope')),
-        'expected "error" to equal Error: nope'
+        'expected "error" to equal [Error: nope]'
       );
     });
 

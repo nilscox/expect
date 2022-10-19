@@ -40,4 +40,11 @@ describe('formatValue', () => {
       '[anonymous function]'
     );
   });
+
+  it('formats an error', () => {
+    assert.equal(formatValue(new Error('message')), '[Error: message]');
+
+    class CustomError extends Error {}
+    assert.equal(formatValue(new CustomError('message')), '[CustomError: message]');
+  });
 });

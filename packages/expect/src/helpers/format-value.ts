@@ -14,11 +14,15 @@ export const formatValue: ValueFormatter = (value) => {
       return `[${value.map(formatValue).join(', ')}]`;
     }
 
-    if (value.constructor !== Object) {
-      return String(value);
+    if (value.constructor === Object) {
+      return JSON.stringify(value);
     }
 
-    return JSON.stringify(value);
+    if (value instanceof Error) {
+      return `[${value.constructor.name}: ${value.message}]`;
+    }
+
+    return String(value);
   }
 
   if (typeof value === 'function') {

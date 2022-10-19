@@ -32,7 +32,7 @@ describe('toThrow', () => {
 
   it('function not throwing a specific error', () => {
     testError(() => expect(doNothing).toThrow(error), {
-      message: 'expected [function doNothing] to throw Error: error but it did not throw',
+      message: 'expected [function doNothing] to throw [Error: error] but it did not throw',
       actual: undefined,
       expected: error,
     });
@@ -42,7 +42,7 @@ describe('toThrow', () => {
     const other = new Error('other');
 
     testError(() => expect(throwError).toThrow(other), {
-      message: 'expected [function throwError] to throw Error: other but it threw Error: error',
+      message: 'expected [function throwError] to throw [Error: other] but it threw [Error: error]',
       actual: error,
       expected: other,
     });
@@ -61,7 +61,7 @@ describe('toThrow', () => {
 
     testError(
       () => expect(throwError).not.toThrow(error),
-      'expected [function throwError] not to throw Error: error but it did'
+      'expected [function throwError] not to throw [Error: error] but it did'
     );
   });
 
