@@ -19,7 +19,7 @@ export interface AssertionDefinition<Name extends AssertionNames, Actual> {
   ): ReturnType<Expect.Assertions[Name]>;
 
   getMessage(
-    this: Helpers & { not: boolean; error?: AssertionFailed },
+    this: Helpers & { not: boolean; error: AssertionFailed },
     actual: Actual,
     ...args: Parameters<Expect.Assertions[Name]>
   ): string;

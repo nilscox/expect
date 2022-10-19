@@ -1,5 +1,4 @@
-import expect from '@nilscox/expect';
-import { testError } from '@nilscox/expect/src/test/test-error';
+import expect, { testError } from '@nilscox/expect';
 import sinon from 'sinon';
 
 import './to-have-been-called-with';
@@ -18,7 +17,7 @@ describe('toHaveBeenCalledWith', () => {
 
     testError(
       () => expect(spy).toHaveBeenCalledWith(),
-      'expected function to have been called without argument'
+      'expected [anonymous function] to have been called without argument'
     );
   });
 
@@ -39,7 +38,7 @@ describe('toHaveBeenCalledWith', () => {
 
     testError(
       () => expect(spy).toHaveBeenCalledWith('a', 1),
-      'expected function to have been called with "a", 1'
+      'expected [anonymous function] to have been called with "a", 1'
     );
   });
 
@@ -52,7 +51,7 @@ describe('toHaveBeenCalledWith', () => {
 
     testError(
       () => expect(spy).toHaveBeenCalledWith(expect.stringMatching(/taste/)),
-      'expected function to have been called with matchValue'
+      'expected [anonymous function] to have been called with [function matchValue]'
     );
   });
 
@@ -66,12 +65,12 @@ describe('toHaveBeenCalledWith', () => {
 
     testError(
       () => expect(spy).not.toHaveBeenCalledWith('a'),
-      'expected function not to have been called with "a"'
+      'expected [anonymous function] not to have been called with "a"'
     );
 
     testError(
       () => expect(spy).not.toHaveBeenCalledWith('a', 1),
-      'expected function not to have been called with "a", 1'
+      'expected [anonymous function] not to have been called with "a", 1'
     );
   });
 });

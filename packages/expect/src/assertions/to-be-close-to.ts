@@ -18,10 +18,10 @@ expect.addAssertion({
     const delta = Math.abs(actual - value);
 
     if (delta > threshold || (strict && delta == threshold)) {
-      throw new AssertionFailed();
+      throw new AssertionFailed({ meta: { value, strict, threshold } });
     }
   },
-  getMessage(actual, value, { threshold = 0.001, strict = true } = {}) {
+  getMessage(actual, value) {
     let message = `expected ${this.formatValue(actual)}`;
 
     if (this.not) {

@@ -8,7 +8,11 @@ describe('toInclude', () => {
   });
 
   it('array not including the value', () => {
-    testError(() => expect([1, 2]).toInclude(3), 'expected 1,2 to include 3');
+    testError(() => expect([1, 2]).toInclude(3), {
+      message: 'expected [1, 2] to include 3',
+      actual: [1, 2],
+      meta: { element: 3 },
+    });
   });
 
   it('string including a substring', () => {
@@ -17,7 +21,7 @@ describe('toInclude', () => {
 
   it('not.toInclude()', () => {
     expect([1]).not.toInclude(2);
-    testError(() => expect([1]).not.toInclude(1), 'expected 1 not to include 1');
+    testError(() => expect([1]).not.toInclude(1), 'expected [1] not to include 1');
   });
 
   it('documentation examples', () => {

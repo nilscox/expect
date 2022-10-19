@@ -7,7 +7,14 @@ describe('toBeLessThan', () => {
   });
 
   it('number being equal to another number', () => {
-    testError(() => expect(1).toBeLessThan(1), 'expected 1 to be less than 1');
+    testError(() => expect(1).toBeLessThan(1), {
+      message: 'expected 1 to be less than 1',
+      actual: 1,
+      meta: {
+        value: 1,
+        strict: true,
+      },
+    });
   });
 
   it('number being above another number', () => {
@@ -42,7 +49,14 @@ describe('toBeLessThan', () => {
     });
 
     it('number being above another number', () => {
-      testError(() => expect(2).toBeLessThan(1, options), 'expected 2 to be less or equal to 1');
+      testError(() => expect(2).toBeLessThan(1, options), {
+        message: 'expected 2 to be less or equal to 1',
+        actual: 2,
+        meta: {
+          value: 1,
+          strict: false,
+        },
+      });
     });
   });
 

@@ -13,7 +13,7 @@ expect.addAssertion({
   name: 'toBeUndefined',
   assert(actual) {
     if (actual !== undefined) {
-      throw new AssertionFailed();
+      throw new AssertionFailed({ expected: undefined });
     }
   },
   getMessage(actual) {

@@ -1,7 +1,6 @@
 import { AssertionFailed } from '../errors/assertion-failed';
 import { isFunction } from '../errors/guard-error';
 import { expect } from '../expect';
-import { deepEqual } from '../helpers/deep-equal';
 
 declare global {
   namespace Expect {
@@ -21,12 +20,12 @@ expect.addAssertion({
 
     try {
       func();
-      error = new AssertionFailed(undefined);
+      error = new AssertionFailed({ actual: undefined, expected });
     } catch (caught) {
       actual = caught;
 
-      if (expected !== undefined && !deepEqual(caught, expected)) {
-        error = new AssertionFailed(caught);
+      if (expected !== undefined && !this.deepEqual(caught, expected)) {
+        error = new AssertionFailed({ expected, actual: caught });
       }
     }
 
@@ -37,7 +36,7 @@ expect.addAssertion({
     return actual;
   },
   getMessage(func, expected) {
-    const actual = this.error?.meta;
+    const actual = this.error?.actual;
     let message = `expected ${this.formatValue(func)}`;
 
     if (this.not) {
@@ -57,7 +56,7 @@ expect.addAssertion({
         message += ` but it did not throw`;
       }
     } else {
-      message += ` but it threw ${actual}`;
+      message += ` but it threw ${this.formatValue(actual)}`;
     }
 
     return message;

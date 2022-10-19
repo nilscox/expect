@@ -7,7 +7,11 @@ describe('toBe', () => {
   });
 
   it('different primitive types', () => {
-    testError(() => expect(1).toBe(2), 'expected 1 to be 2');
+    testError(() => expect(1).toBe(2), {
+      message: 'expected 1 to be 2',
+      expected: 2,
+      actual: 1,
+    });
   });
 
   it('same object reference', () => {
@@ -16,7 +20,7 @@ describe('toBe', () => {
   });
 
   it('different object references', () => {
-    testError(() => expect({}).toBe({}), 'expected [object Object] to be [object Object]');
+    testError(() => expect({}).toBe({}), 'expected {} to be {}');
   });
 
   it('not.toBe()', () => {

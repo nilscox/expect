@@ -5,7 +5,7 @@ import { expect } from '../expect';
 declare global {
   namespace Expect {
     export interface Assertions {
-      toInclude(value: unknown): void;
+      toInclude(element: unknown): void;
     }
   }
 }
@@ -15,27 +15,27 @@ expect.addAssertion({
   guard(actual): actual is Array<unknown> | string {
     return isArray(actual) || isString(actual);
   },
-  assert(actual, expectedValue) {
-    if (typeof actual === 'string' && typeof expectedValue === 'string') {
-      return actual.includes(expectedValue);
+  assert(actual, element) {
+    if (typeof actual === 'string' && typeof element === 'string') {
+      return actual.includes(element);
     }
 
     for (const value of actual) {
-      if (this.deepEqual(value, expectedValue)) {
+      if (this.deepEqual(value, element)) {
         return;
       }
     }
 
-    throw new AssertionFailed();
+    throw new AssertionFailed({ meta: { element } });
   },
-  getMessage(actual, regexp) {
+  getMessage(actual, element) {
     let message = `expected ${this.formatValue(actual)}`;
 
     if (this.not) {
       message += ' not';
     }
 
-    message += ` to include ${regexp}`;
+    message += ` to include ${element}`;
 
     return message;
   },

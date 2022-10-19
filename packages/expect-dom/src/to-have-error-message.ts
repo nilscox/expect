@@ -9,10 +9,10 @@ declare global {
 }
 
 enum AssertionFailedReason {
-  noAriaInvalid,
-  noErrorMessage,
-  errorMessageNotFound,
-  unexpectedMessage,
+  noAriaInvalid = 'noAriaInvalid',
+  noErrorMessage = 'noErrorMessage',
+  errorMessageNotFound = 'errorMessageNotFound',
+  unexpectedMessage = 'unexpectedMessage',
 }
 
 expect.addAssertion({
@@ -21,33 +21,45 @@ expect.addAssertion({
   guard(actual): actual is HTMLElement {
     return actual instanceof HTMLElement;
   },
-  assert(element, expectedMessage) {
+  assert(element, expected) {
     const hasExpectedMessage = arguments.length === 2;
 
+    const error = (reason: AssertionFailedReason, errorMessageId?: string, actual?: unknown) => {
+      return new AssertionFailed({
+        expected,
+        actual,
+        meta: {
+          element,
+          reason,
+          errorMessageId,
+        },
+      });
+    };
+
     if (!element.getAttribute('aria-invalid')) {
-      throw new AssertionFailed({ reason: AssertionFailedReason.noAriaInvalid });
+      throw error(AssertionFailedReason.noAriaInvalid);
     }
 
     const errorMessageId = element.getAttribute('aria-errormessage');
 
     if (!errorMessageId) {
-      throw new AssertionFailed({ reason: AssertionFailedReason.noErrorMessage });
+      throw error(AssertionFailedReason.noErrorMessage);
     }
 
     const actualMessageElement = document.getElementById(errorMessageId);
     const actualMessage = actualMessageElement?.textContent;
 
     if (!actualMessageElement) {
-      throw new AssertionFailed({ reason: AssertionFailedReason.errorMessageNotFound, errorMessageId });
+      throw error(AssertionFailedReason.errorMessageNotFound, errorMessageId);
     }
 
-    if (hasExpectedMessage && expectedMessage !== actualMessage) {
-      throw new AssertionFailed({ reason: AssertionFailedReason.unexpectedMessage, actualMessage });
+    if (hasExpectedMessage && expected !== actualMessage) {
+      throw error(AssertionFailedReason.unexpectedMessage, errorMessageId, actualMessage);
     }
   },
   getMessage(element, expectedMessage) {
     const hasExpectedMessage = arguments.length === 2;
-    const meta = this.error?.meta as any;
+    const { actual, meta } = this.error;
     let message = `expected ${this.formatValue(element)}`;
 
     if (this.not) {
@@ -64,20 +76,22 @@ expect.addAssertion({
       return message;
     }
 
-    if (meta.reason === AssertionFailedReason.noAriaInvalid) {
+    const { reason, errorMessageId } = meta as { reason: AssertionFailedReason; errorMessageId: string };
+
+    if (reason === AssertionFailedReason.noAriaInvalid) {
       message += ' but it does not have attribute aria-invalid=true';
     }
 
-    if (meta.reason === AssertionFailedReason.noErrorMessage) {
+    if (reason === AssertionFailedReason.noErrorMessage) {
       message += ' but it does not have attribute aria-errormessage';
     }
 
-    if (meta.reason === AssertionFailedReason.errorMessageNotFound) {
-      message += ` but the error element was not found (id=${this.formatValue(meta.errorMessageId)})`;
+    if (reason === AssertionFailedReason.errorMessageNotFound) {
+      message += ` but the error element was not found (id=${this.formatValue(errorMessageId)})`;
     }
 
-    if (meta.reason === AssertionFailedReason.unexpectedMessage) {
-      message += ` but it is ${this.formatValue(meta.actualMessage)}`;
+    if (reason === AssertionFailedReason.unexpectedMessage) {
+      message += ` but it is ${this.formatValue(actual)}`;
     }
 
     return message;

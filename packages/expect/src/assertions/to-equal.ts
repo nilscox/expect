@@ -1,6 +1,5 @@
 import { AssertionFailed } from '../errors/assertion-failed';
 import { expect } from '../expect';
-import { deepEqual } from '../helpers/deep-equal';
 
 declare global {
   namespace Expect {
@@ -13,8 +12,8 @@ declare global {
 expect.addAssertion({
   name: 'toEqual',
   assert(actual, expected) {
-    if (!deepEqual(actual, expected)) {
-      throw new AssertionFailed();
+    if (!this.deepEqual(actual, expected)) {
+      throw new AssertionFailed({ expected });
     }
   },
   getMessage(actual, expected) {

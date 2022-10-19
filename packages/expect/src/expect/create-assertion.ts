@@ -1,5 +1,4 @@
 import { isPromise } from 'util/types';
-import { AssertionError } from '../errors/assertion-error';
 import { AssertionFailed } from '../errors/assertion-failed';
 import { GuardError } from '../errors/guard-error';
 import { UnexpectedPromise } from '../errors/unexpected-promise';
@@ -18,24 +17,6 @@ const checkAssertionGuard = (actual: unknown, assertion: AnyAssertionDefinition)
   }
 };
 
-const throwAssertionError = (
-  assertion: AnyAssertionDefinition,
-  not: boolean,
-  actual: unknown,
-  args: AnyAssertionParams,
-  error?: AssertionFailed
-) => {
-  const context = {
-    ...helpers,
-    not,
-    error,
-  };
-
-  const message = assertion.getMessage.call(context, actual, ...args);
-
-  throw new AssertionError(message, assertion.name, actual, args);
-};
-
 export const createAssertion = (not: boolean, actual: unknown, assertion: AnyAssertionDefinition) => {
   return (...args: AnyAssertionParams): AnyAssertionResult => {
     if (isPromise(actual)) {
@@ -44,24 +25,44 @@ export const createAssertion = (not: boolean, actual: unknown, assertion: AnyAss
 
     checkAssertionGuard(actual, assertion);
 
+    let result: unknown;
+    let error: AssertionFailed | undefined = undefined;
+
     try {
-      const result = assertion.assert.call(helpers, actual, ...args);
+      result = assertion.assert.call(helpers, actual, ...args);
 
       if (not) {
-        throwAssertionError(assertion, not, actual, args);
+        error = new AssertionFailed();
+      }
+    } catch (err) {
+      if (!(err instanceof AssertionFailed)) {
+        throw error;
       }
 
-      return result;
-    } catch (error) {
-      if (error instanceof AssertionFailed) {
-        if (not) {
-          return;
-        }
+      if (not) {
+        return;
+      }
 
-        throwAssertionError(assertion, not, actual, args, error);
+      error = err;
+    }
+
+    if (error) {
+      const context = {
+        ...helpers,
+        not,
+        error,
+      };
+
+      error.message = assertion.getMessage.call(context, actual, ...args);
+      error.not = not;
+
+      if (!('actual' in error)) {
+        error.actual = actual;
       }
 
       throw error;
     }
+
+    return result;
   };
 };

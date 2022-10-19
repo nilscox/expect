@@ -99,7 +99,7 @@ First, we use [declaration merging](https://www.typescriptlang.org/docs/handbook
 declare global {
   namespace Expect {
     export interface Assertions {
-      toHaveStatus(expectedStatus: number): void;
+      toHaveStatus(expected: number): void;
     }
   }
 }
@@ -120,20 +120,20 @@ expect.addAssertion({
 
   // the first parameter is typed according to our type guard, and the others or
   // typed from the assertion's definition
-  assert(response, expectedStatus) {
-    if (response.status !== expectedStatus) {
-      throw new AssertionFailed();
+  assert(response, expected) {
+    if (response.status !== expected) {
+      throw new AssertionFailed({ actual, expected });
     }
   },
 
-  getMessage(response, expectedStatus) {
+  getMessage(response, expected) {
     let message = 'expected response';
 
     if (this.not) {
       message += ' not';
     }
 
-    message += ` to have status ${this.formatValue(expectedStatus)}`;
+    message += ` to have status ${this.formatValue(expected)}`;
 
     if (this.not) {
       message += ' but does';
@@ -235,7 +235,7 @@ You can easily [add new assertions](#custom-assertions) to extend the library's 
 
 Here are the core assertions that are built into the library.
 
-- [toBeDefined](#tobedefined)
+- [toBeUndefined](#tobeundefined)
 - [toBe](#tobe)
 - [toEqual](#toequal)
 - [toBeLessThan and toBeMoreThan](#tobelessthan-and-tobemorethan)
@@ -245,13 +245,13 @@ Here are the core assertions that are built into the library.
 - [toInclude](#toinclude)
 - [toHaveProperty](#tohaveproperty)
 
-#### toBeDefined
+#### toBeUndefined
 
-Assert that a value is not `undefined`.
+Assert that a value is [`undefined`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined).
 
 ```ts
-expect(1).toBeDefined(); // pass
-expect(undefined).toBeDefined(); // fails
+expect(undefined).toBeUndefined(); // pass
+expect(1).toBeUndefined(); // fails
 ```
 
 #### toBe

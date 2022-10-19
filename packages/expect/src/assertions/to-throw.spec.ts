@@ -24,23 +24,28 @@ describe('toThrow', () => {
   });
 
   it('function not throwing any error', () => {
-    testError(() => expect(doNothing).toThrow(), 'expected doNothing to throw anything but it did not throw');
+    testError(() => expect(doNothing).toThrow(), {
+      message: 'expected [function doNothing] to throw anything but it did not throw',
+      actual: undefined,
+    });
   });
 
   it('function not throwing a specific error', () => {
-    testError(
-      () => expect(doNothing).toThrow(error),
-      'expected doNothing to throw Error: error but it did not throw'
-    );
+    testError(() => expect(doNothing).toThrow(error), {
+      message: 'expected [function doNothing] to throw Error: error but it did not throw',
+      actual: undefined,
+      expected: error,
+    });
   });
 
   it('function throwing a different error', () => {
     const other = new Error('other');
 
-    testError(
-      () => expect(throwError).toThrow(other),
-      'expected throwError to throw Error: other but it threw Error: error'
-    );
+    testError(() => expect(throwError).toThrow(other), {
+      message: 'expected [function throwError] to throw Error: other but it threw Error: error',
+      actual: error,
+      expected: other,
+    });
   });
 
   it('matching the error using a matcher', () => {
@@ -49,11 +54,14 @@ describe('toThrow', () => {
 
   it('not.toThrow()', () => {
     expect(doNothing).not.toThrow();
-    testError(() => expect(throwError).not.toThrow(), 'expected throwError not to throw anything but it did');
+    testError(
+      () => expect(throwError).not.toThrow(),
+      'expected [function throwError] not to throw anything but it did'
+    );
 
     testError(
       () => expect(throwError).not.toThrow(error),
-      'expected throwError not to throw Error: error but it did'
+      'expected [function throwError] not to throw Error: error but it did'
     );
   });
 

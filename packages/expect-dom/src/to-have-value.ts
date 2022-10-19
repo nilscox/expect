@@ -16,23 +16,23 @@ expect.addAssertion({
   guard(actual): actual is InputType {
     return actual instanceof HTMLInputElement || actual instanceof HTMLTextAreaElement;
   },
-  assert(element, expectedValue) {
-    const actualValue = element.value;
+  assert(element, expected) {
+    const actual = element.value;
 
-    if (actualValue === null) {
-      if (expectedValue === '') {
+    if (actual === null) {
+      if (expected === '') {
         return;
       } else {
-        throw new AssertionFailed(actualValue);
+        throw new AssertionFailed({ actual, expected, meta: { element } });
       }
     }
 
-    if (!this.deepEqual(actualValue, expectedValue)) {
-      throw new AssertionFailed(actualValue);
+    if (!this.deepEqual(actual, expected)) {
+      throw new AssertionFailed({ actual, expected, meta: { element } });
     }
   },
-  getMessage(element, expectedValue) {
-    const actualValue = this.error?.meta;
+  getMessage(element, expected) {
+    const { actual } = this.error;
     let message = `expected ${this.formatValue(element)}`;
 
     if (this.not) {
@@ -40,10 +40,10 @@ expect.addAssertion({
     }
 
     message += ` to have value`;
-    message += ` = ${this.formatValue(expectedValue)}`;
+    message += ` = ${this.formatValue(expected)}`;
 
-    if (actualValue) {
-      message += ` but it is ${this.formatValue(actualValue)}`;
+    if (actual) {
+      message += ` but it is ${this.formatValue(actual)}`;
     }
 
     return message;

@@ -27,7 +27,7 @@ expect.addAssertion({
   },
   assert(actual, length) {
     if (actual.length !== length) {
-      throw new AssertionFailed();
+      throw new AssertionFailed({ actual: actual.length, expected: length });
     }
   },
   getMessage(actual, length) {

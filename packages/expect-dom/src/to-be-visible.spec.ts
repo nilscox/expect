@@ -25,10 +25,16 @@ describe('toBeVisible', () => {
     const style = `${key}: ${value}`;
 
     it(`element with style ${style}`, () => {
-      testError(
-        () => expect(createStyledDiv({ [key]: value })).toBeVisible(),
-        `expected [object HTMLDivElement] to be visible but it has style "${style}"`
-      );
+      const div = createStyledDiv({ [key]: value });
+
+      testError(() => expect(div).toBeVisible(), {
+        message: `expected [object HTMLDivElement] to be visible but it has style "${style}"`,
+        actual: div,
+        meta: {
+          key,
+          value,
+        },
+      });
     });
   }
 

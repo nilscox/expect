@@ -21,9 +21,12 @@ describe('toHaveBeenCalled', () => {
 
     testError(
       () => expect(spy).not.toHaveBeenCalled(),
-      ['expected function not to have been called but it was', 'calls:', '"hello"', '"hello", "world"'].join(
-        '\n'
-      )
+      [
+        'expected [anonymous function] not to have been called but it was',
+        'calls:',
+        '"hello"',
+        '"hello", "world"',
+      ].join('\n')
     );
   });
 });

@@ -7,7 +7,11 @@ describe('toEqual', () => {
   });
 
   it('different primitive types', () => {
-    testError(() => expect<number>(1).toEqual(2), 'expected 1 to equal 2');
+    testError(() => expect<number>(1).toEqual(2), {
+      message: 'expected 1 to equal 2',
+      expected: 2,
+      actual: 1,
+    });
   });
 
   it('same object reference', () => {
@@ -21,8 +25,8 @@ describe('toEqual', () => {
   });
 
   it('different object references and non-matching objects', () => {
-    testError(() => expect({}).toEqual({ a: 1 }), 'expected [object Object] to equal [object Object]');
-    testError(() => expect<{}>({ a: 1 }).toEqual({}), 'expected [object Object] to equal [object Object]');
+    testError(() => expect({}).toEqual({ a: 1 }), 'expected {} to equal {"a":1}');
+    testError(() => expect<{}>({ a: 1 }).toEqual({}), 'expected {"a":1} to equal {}');
   });
 
   it('not.toEqual()', () => {

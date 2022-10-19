@@ -44,4 +44,14 @@ describe('todo', () => {
 
     expect([todo]).toInclude(expect.completedTodo());
   });
+
+  it('assertion error', () => {
+    const todo = new Todo('Buy beers');
+
+    expect(todo.toJSON()).toEqual({
+      text: 'Buy shoes',
+      isCompleted: true,
+      completedAt: undefined,
+    });
+  });
 });

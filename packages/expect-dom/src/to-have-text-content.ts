@@ -14,13 +14,15 @@ expect.addAssertion({
   guard(actual): actual is HTMLElement {
     return actual instanceof HTMLElement;
   },
-  assert(element, text) {
-    if (!this.deepEqual(element.textContent, text)) {
-      throw new AssertionFailed(element.textContent);
+  assert(element, expected) {
+    const actual = element.textContent;
+
+    if (!this.deepEqual(actual, expected)) {
+      throw new AssertionFailed({ actual, expected, meta: { element } });
     }
   },
   getMessage(element, expectedValue) {
-    const actualText = this.error?.meta;
+    const { actual } = this.error;
     let message = `expected ${this.formatValue(element)}`;
 
     if (this.not) {
@@ -30,8 +32,8 @@ expect.addAssertion({
     message += ' to have text';
     message += ` ${this.formatValue(expectedValue)}`;
 
-    if (actualText) {
-      message += ` but it is ${this.formatValue(actualText)}`;
+    if (actual) {
+      message += ` but it is ${this.formatValue(actual)}`;
     } else if (this.not) {
       message += ' but it does';
     }

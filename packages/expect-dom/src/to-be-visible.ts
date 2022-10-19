@@ -18,15 +18,15 @@ expect.addAssertion({
     const { display, visibility, opacity } = window.getComputedStyle(element);
 
     if (display === 'none') {
-      throw new AssertionFailed({ key: 'display', value: 'none' });
+      throw new AssertionFailed({ meta: { key: 'display', value: 'none' } });
     }
 
     if (visibility === 'hidden' || visibility === 'collapse') {
-      throw new AssertionFailed({ key: 'visibility', value: visibility });
+      throw new AssertionFailed({ meta: { key: 'visibility', value: visibility } });
     }
 
     if (opacity === '0') {
-      throw new AssertionFailed({ key: 'opacity', value: '0' });
+      throw new AssertionFailed({ meta: { key: 'opacity', value: '0' } });
     }
   },
   getMessage(element) {

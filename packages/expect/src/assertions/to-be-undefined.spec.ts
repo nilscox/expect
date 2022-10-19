@@ -7,7 +7,11 @@ describe('toBeUndefined', () => {
   });
 
   it('defined value', () => {
-    testError(() => expect(1).toBeUndefined(), 'expected 1 to be undefined');
+    testError(() => expect(1).toBeUndefined(), {
+      message: 'expected 1 to be undefined',
+      actual: 1,
+      expected: undefined,
+    });
   });
 
   it('not.toBeUndefined()', () => {

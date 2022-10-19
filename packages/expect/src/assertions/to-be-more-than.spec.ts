@@ -3,7 +3,14 @@ import { testError } from '../test/test-error';
 
 describe('toBeMoreThan', () => {
   it('number being below another number', () => {
-    testError(() => expect(1).toBeMoreThan(2), 'expected 1 to be more than 2');
+    testError(() => expect(1).toBeMoreThan(2), {
+      message: 'expected 1 to be more than 2',
+      actual: 1,
+      meta: {
+        value: 2,
+        strict: true,
+      },
+    });
   });
 
   it('number being equal to another number', () => {
@@ -34,7 +41,14 @@ describe('toBeMoreThan', () => {
     const options = { strict: false };
 
     it('number being below another number', () => {
-      testError(() => expect(1).toBeMoreThan(2, options), 'expected 1 to be more or equal to 2');
+      testError(() => expect(1).toBeMoreThan(2, options), {
+        message: 'expected 1 to be more or equal to 2',
+        actual: 1,
+        meta: {
+          value: 2,
+          strict: false,
+        },
+      });
     });
 
     it('number being equal to another number', () => {

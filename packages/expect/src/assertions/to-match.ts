@@ -15,7 +15,7 @@ expect.addAssertion({
   guard: isString,
   assert(actual, regexp) {
     if (!regexp.exec(actual)) {
-      throw new AssertionFailed();
+      throw new AssertionFailed({ meta: { regexp } });
     }
   },
   getMessage(actual, regexp) {

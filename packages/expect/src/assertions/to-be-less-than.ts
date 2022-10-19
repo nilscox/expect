@@ -16,7 +16,7 @@ expect.addAssertion({
   guard: isNumber,
   assert(actual: number, value: number, { strict = true } = {}) {
     if (actual > value || (strict && actual == value)) {
-      throw new AssertionFailed();
+      throw new AssertionFailed({ meta: { value, strict } });
     }
   },
   getMessage(actual, value, { strict = true } = {}) {

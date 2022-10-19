@@ -54,10 +54,19 @@ describe('toHaveErrorMessage', () => {
   });
 
   it('not invalid input', () => {
-    testError(
-      () => expect(createInput({})).toHaveErrorMessage('error'),
-      'expected [object HTMLInputElement] to have error message "error" but it does not have attribute aria-invalid=true'
-    );
+    const input = createInput({});
+
+    testError(() => expect(input).toHaveErrorMessage('error'), {
+      message:
+        'expected [object HTMLInputElement] to have error message "error" but it does not have attribute aria-invalid=true',
+      actual: undefined,
+      expected: 'error',
+      meta: {
+        element: input,
+        errorMessageId: undefined,
+        reason: 'noAriaInvalid',
+      },
+    });
   });
 
   it('invalid input without error message', () => {
@@ -75,13 +84,18 @@ describe('toHaveErrorMessage', () => {
   });
 
   it('invalid input with unexpected error message', () => {
-    testError(
-      () =>
-        expect(createInput({ invalid: true, errorMessageId: 'id', message: 'err' })).toHaveErrorMessage(
-          'error'
-        ),
-      'expected [object HTMLInputElement] to have error message "error" but it is "err"'
-    );
+    const input = createInput({ invalid: true, errorMessageId: 'id', message: 'err' });
+
+    testError(() => expect(input).toHaveErrorMessage('error'), {
+      message: 'expected [object HTMLInputElement] to have error message "error" but it is "err"',
+      actual: 'err',
+      expected: 'error',
+      meta: {
+        element: input,
+        errorMessageId: 'id',
+        reason: 'unexpectedMessage',
+      },
+    });
   });
 
   it('not.toHaveErrorMessage', () => {

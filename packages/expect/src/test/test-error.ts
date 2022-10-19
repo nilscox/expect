@@ -1,32 +1,61 @@
 import assert from 'assert';
 import { ExpectError } from '../errors/expect-error';
 
-export const testError = (callback: () => void, message?: string) => {
+type ErrorAttributes = {
+  message: string;
+  actual: unknown;
+  expected?: unknown;
+  meta?: unknown;
+};
+
+export const testError = (callback: () => void, param?: string | ErrorAttributes) => {
   try {
     callback();
     throw new Error('testError: callback did not throw');
   } catch (error) {
-    if (message === undefined) {
+    if (!(error instanceof ExpectError)) {
+      throw error;
+    }
+
+    if (param === undefined) {
       return;
     }
 
-    if (error instanceof ExpectError) {
-      assert.equal(message, error.message);
-    } else {
-      throw error;
-    }
-  }
-};
+    const message = typeof param === 'string' ? param : undefined;
+    const attributes = typeof param === 'object' ? param : undefined;
 
-export const testErrorAsync = async (promise: Promise<unknown>, message: string) => {
-  try {
-    await promise;
-    throw new Error('testErrorAsync: promise did not reject');
-  } catch (error) {
-    if (error instanceof ExpectError) {
-      assert.equal(error.message, message);
-    } else {
-      throw error;
+    if (message) {
+      if (error instanceof ExpectError) {
+        assert.equal(message, error.message);
+      } else {
+        throw error;
+      }
+    }
+
+    if (attributes) {
+      const assertAttribute = (key: string, actual: unknown, expected: unknown) => {
+        assert.deepStrictEqual(
+          actual,
+          expected,
+          [
+            `invalid error attribute for key "${key}"`,
+            `error["${key}"] = ${actual}`,
+            `expected["${key}"] = ${expected}`,
+          ].join('\n')
+        );
+      };
+
+      for (const key of Object.getOwnPropertyNames(error)) {
+        if (key === 'stack' || key === 'not') {
+          continue;
+        }
+
+        assertAttribute(key, error[key as keyof ExpectError], attributes[key as keyof ErrorAttributes]);
+      }
+
+      for (const [key, expectedValue] of Object.entries(attributes)) {
+        assertAttribute(key, error[key as keyof ExpectError], expectedValue);
+      }
     }
   }
 };

@@ -10,6 +10,19 @@ describe('toHaveValue', () => {
     expect(input).toHaveValue('');
   });
 
+  it('input element without value but expected', () => {
+    const input = document.createElement('input');
+
+    testError(() => expect(input).toHaveValue('world'), {
+      message: 'expected [object HTMLInputElement] to have value = "world"',
+      actual: '',
+      expected: 'world',
+      meta: {
+        element: input,
+      },
+    });
+  });
+
   it('input element with expected value', () => {
     const input = document.createElement('input');
 
@@ -31,10 +44,14 @@ describe('toHaveValue', () => {
 
     input.value = 'hello';
 
-    testError(
-      () => expect(input).toHaveValue('world'),
-      'expected [object HTMLInputElement] to have value = "world" but it is "hello"'
-    );
+    testError(() => expect(input).toHaveValue('world'), {
+      message: 'expected [object HTMLInputElement] to have value = "world" but it is "hello"',
+      actual: 'hello',
+      expected: 'world',
+      meta: {
+        element: input,
+      },
+    });
   });
 
   it('not.toHaveValue', () => {

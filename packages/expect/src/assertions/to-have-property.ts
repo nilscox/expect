@@ -37,8 +37,10 @@ expect.addAssertion({
       throw new AssertionFailed();
     }
 
-    if (hasExpectedValue && !this.deepEqual(parent[lastProperty], expectedValue)) {
-      throw new AssertionFailed();
+    const actualValue = parent[lastProperty];
+
+    if (hasExpectedValue && !this.deepEqual(actualValue, expectedValue)) {
+      throw new AssertionFailed({ actual: actualValue, expected: expectedValue });
     }
   },
   getMessage(actual, property, expectedValue) {

@@ -13,7 +13,7 @@ expect.addAssertion({
   name: 'toBe',
   assert(actual, expected) {
     if (!Object.is(actual, expected)) {
-      throw new AssertionFailed();
+      throw new AssertionFailed({ expected });
     }
   },
   getMessage(actual, expected) {

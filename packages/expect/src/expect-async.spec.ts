@@ -1,6 +1,20 @@
 import assert from 'assert';
+import { ExpectError } from './errors/expect-error';
 import { expect } from './expect';
-import { testError, testErrorAsync } from './test/test-error';
+import { testError } from './test/test-error';
+
+export const testErrorAsync = async (promise: Promise<unknown>, message: string) => {
+  try {
+    await promise;
+    throw new Error('testErrorAsync: promise did not reject');
+  } catch (error) {
+    if (error instanceof ExpectError) {
+      assert.equal(error.message, message);
+    } else {
+      throw error;
+    }
+  }
+};
 
 describe('async', () => {
   describe('promise runtime type checking', () => {

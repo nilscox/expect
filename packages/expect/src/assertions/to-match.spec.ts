@@ -7,7 +7,11 @@ describe('toMatch', () => {
   });
 
   it('string not matching a regexp', () => {
-    testError(() => expect('chaton').toMatch(/t.st/), 'expected "chaton" to match /t.st/');
+    testError(() => expect('chaton').toMatch(/t.st/), {
+      message: 'expected "chaton" to match /t.st/',
+      actual: 'chaton',
+      meta: { regexp: /t.st/ },
+    });
   });
 
   it('not.toMatch()', () => {

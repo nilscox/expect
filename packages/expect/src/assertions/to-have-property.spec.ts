@@ -7,10 +7,10 @@ describe('toHaveProperty', () => {
   });
 
   it('object not having the property', () => {
-    testError(
-      () => expect({ foo: 1 }).toHaveProperty('bar'),
-      'expected [object Object] to have property "bar"'
-    );
+    testError(() => expect({ foo: 1 }).toHaveProperty('bar'), {
+      message: 'expected {"foo":1} to have property "bar"',
+      actual: { foo: 1 },
+    });
   });
 
   it('object having the property with a given value', () => {
@@ -41,10 +41,11 @@ describe('toHaveProperty', () => {
   });
 
   it('object having the property but without the given value', () => {
-    testError(
-      () => expect({ foo: 1 }).toHaveProperty('foo', 2),
-      'expected [object Object] to have property "foo" = 2'
-    );
+    testError(() => expect({ foo: 1 }).toHaveProperty('foo', 2), {
+      message: 'expected {"foo":1} to have property "foo" = 2',
+      actual: 1,
+      expected: 2,
+    });
   });
 
   it('array having the length property to a given value', () => {
@@ -52,20 +53,20 @@ describe('toHaveProperty', () => {
   });
 
   it('array having the length property with a different value', () => {
-    testError(() => expect([]).toHaveProperty('length', 1), 'expected  to have property "length" = 1');
+    testError(() => expect([]).toHaveProperty('length', 1), 'expected [] to have property "length" = 1');
   });
 
   it('not.notHaveProperty()', () => {
     expect({}).not.toHaveProperty('foo');
     testError(
       () => expect({ foo: 1 }).not.toHaveProperty('foo'),
-      'expected [object Object] not to have property "foo"'
+      'expected {"foo":1} not to have property "foo"'
     );
 
     expect({ foo: 1 }).not.toHaveProperty('foo', 'bar');
     testError(
       () => expect({ foo: 1 }).not.toHaveProperty('foo', 1),
-      'expected [object Object] not to have property "foo" = 1'
+      'expected {"foo":1} not to have property "foo" = 1'
     );
   });
 
