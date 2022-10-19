@@ -1,4 +1,6 @@
 import assert from 'assert';
+import { stringMatching } from '../matchers/string-matching';
+import { createMatcher } from './create-matcher';
 import { formatValue } from './format-value';
 
 describe('formatValue', () => {
@@ -46,5 +48,19 @@ describe('formatValue', () => {
 
     class CustomError extends Error {}
     assert.equal(formatValue(new CustomError('message')), '[CustomError: message]');
+  });
+
+  it('formats a matcher', () => {
+    assert.equal(formatValue(stringMatching(/t.st/)), 'a string matching /t.st/');
+  });
+
+  it('formats a matcher without formatting function', () => {
+    const matcher = createMatcher((value) => value === true);
+    assert.equal(formatValue(matcher()), '(value) => value === true');
+  });
+
+  it('formats an object containing a matcher', () => {
+    const matcher = stringMatching(/t.st/);
+    assert.equal(formatValue({ foo: { bar: matcher } }), '{"foo":{"bar":"a string matching /t.st/"}}');
   });
 });

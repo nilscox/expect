@@ -1,3 +1,6 @@
 import { createMatcher } from '../helpers/create-matcher';
 
-export const anything = createMatcher<any, []>(() => true);
+export const anything = createMatcher<any, []>(
+  () => true,
+  () => 'anything'
+);

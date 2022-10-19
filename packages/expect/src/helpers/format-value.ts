@@ -1,3 +1,5 @@
+import { isMatcher } from './create-matcher';
+
 export type ValueFormatter = (value: unknown) => string;
 
 export const formatValue: ValueFormatter = (value) => {
@@ -15,7 +17,13 @@ export const formatValue: ValueFormatter = (value) => {
     }
 
     if (value.constructor === Object) {
-      return JSON.stringify(value);
+      return JSON.stringify(value, (key, value) => {
+        if (isMatcher(value)) {
+          return value.toString();
+        }
+
+        return value;
+      });
     }
 
     if (value instanceof Error) {
@@ -23,6 +31,10 @@ export const formatValue: ValueFormatter = (value) => {
     }
 
     return String(value);
+  }
+
+  if (isMatcher(value)) {
+    return value.toString();
   }
 
   if (typeof value === 'function') {

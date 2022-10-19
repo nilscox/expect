@@ -51,7 +51,7 @@ describe('toHaveBeenCalledWith', () => {
 
     testError(
       () => expect(spy).toHaveBeenCalledWith(expect.stringMatching(/taste/)),
-      'expected [anonymous function] to have been called with [function matchValue]'
+      'expected [anonymous function] to have been called with a string matching /taste/'
     );
   });
 

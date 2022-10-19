@@ -21,12 +21,17 @@ const ctorMap = {
   function: Function,
 };
 
-export const any = createMatcher(<Ctor>(obj: ConstructorToType<Ctor>, constructor: Ctor) => {
-  const primitiveCtor = ctorMap[typeof obj as keyof typeof ctorMap];
+export const any = createMatcher(
+  <Ctor>(obj: ConstructorToType<Ctor>, constructor: Ctor) => {
+    const primitiveCtor = ctorMap[typeof obj as keyof typeof ctorMap];
 
-  if (primitiveCtor) {
-    return constructor === primitiveCtor;
+    if (primitiveCtor) {
+      return constructor === primitiveCtor;
+    }
+
+    return obj instanceof (constructor as any);
+  },
+  (constructor) => {
+    return `any ${(constructor as any).name}`;
   }
-
-  return obj instanceof (constructor as any);
-});
+);

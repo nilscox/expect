@@ -47,6 +47,13 @@ describe('any', () => {
     const func: () => {} = any(Function);
   });
 
+  it('formats an any matcher', () => {
+    testError(
+      () => expect<unknown>({ foo: 42 }).toEqual({ foo: any(String) }),
+      'expected {"foo":42} to equal {"foo":"any String"}'
+    );
+  });
+
   it('documentation examples', () => {
     expect(42).toEqual(expect.any(Number));
     testError(() => expect<any>({ foo: 'bar' }).toEqual({ foo: expect.any(Boolean) }));

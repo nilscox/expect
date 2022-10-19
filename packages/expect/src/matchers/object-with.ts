@@ -11,5 +11,8 @@ export const objectWith = createMatcher(
     } catch {
       return false;
     }
+  },
+  (object) => {
+    return `an object with ${JSON.stringify(object)}`;
   }
 );
