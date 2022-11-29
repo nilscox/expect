@@ -14,7 +14,6 @@ describe('objectWith', () => {
     assert.ok(isMatching({ id: 1 }));
 
     assert.ok(!isMatching({ id: 2 }));
-    // @ts-expect-error
     assert.ok(!isMatching([1]));
   });
 
@@ -29,13 +28,12 @@ describe('objectWith', () => {
     assert.ok(isMatching({ id: 4, name: 'hey yo' }));
     assert.ok(isMatching({ id: 2, name: 'hey ga' }));
 
-    // @ts-expect-error
     assert.ok(!isMatching({ id: 1 }));
     assert.ok(!isMatching({ id: 1, name: 'yo hey' }));
   });
 
   it('documentation examples', () => {
-    expect({ foo: 'bar', baz: 'qux' }).toEqual(expect.objectWith<any>({ foo: 'bar' }));
+    expect({ foo: 'bar', baz: 'qux' }).toEqual(expect.objectWith({ foo: 'bar' }));
     testError(() => expect({ foo: 'bar' }).toEqual(expect.objectWith({ foo: 'bar', baz: 'qux' })));
   });
 });
