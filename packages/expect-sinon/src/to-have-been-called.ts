@@ -1,9 +1,9 @@
 import expect, { AssertionFailed } from '@nilscox/expect';
-import sinon from 'sinon';
+import { isSpy } from './is-spy';
 
 declare global {
   namespace Expect {
-    export interface Assertions {
+    export interface SinonSpyAssertions<Actual> {
       toHaveBeenCalled(): void;
     }
   }
@@ -12,9 +12,7 @@ declare global {
 expect.addAssertion({
   name: 'toHaveBeenCalled',
   expectedType: 'a sinon.spy()',
-  guard(actual): actual is sinon.SinonSpy {
-    return actual != null && 'called' in actual;
-  },
+  guard: isSpy,
   assert(actual) {
     if (!actual.called) {
       throw new AssertionFailed();

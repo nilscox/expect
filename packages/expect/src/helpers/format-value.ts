@@ -2,6 +2,7 @@ import { isMatcher } from './create-matcher';
 
 export type ValueFormatter = (value: unknown) => string;
 
+// format matchers, dom elements
 export const formatValue: ValueFormatter = (value) => {
   if (typeof value === 'string') {
     return `"${value}"`;

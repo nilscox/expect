@@ -27,16 +27,6 @@ describe('toHaveLength', () => {
     });
   });
 
-  describe('object with a "length" key', () => {
-    it('same "length" value', () => {
-      expect({ length: 3 }).toHaveLength(3);
-    });
-
-    it('different "length" values', () => {
-      testError(() => expect({ length: 1 }).toHaveLength(0), 'expected {"length":1} to have length 0');
-    });
-  });
-
   describe('function number of arguments', () => {
     const func = () => {};
 

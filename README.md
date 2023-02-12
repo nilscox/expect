@@ -24,10 +24,10 @@ But not all of jest's matchers are implemented, so it's not a drop-in replacemen
 // typescript error because we expected foo to be a string
 expect({ foo: 'bar' }).toEqual({ foo: 42 });
 
-// assuming that service.login() returns a promise, we can use expect.async()
-await expect.async(service.login('email', 'password')).toEqual(expectedUser);
+// assuming that service.login() returns a promise
+await expect(service.login('email', 'password')).toResolve(expectedUser);
 
 // we can also retrieve a rejecting promise's error
-const error = await expect.rejects(service.login('email', '')).with(ValidationError);
+const error = await expect(service.login('email', '')).toRejectWith(ValidationError);
 expect(error.fields).toHaveProperty('password', 'required');
 ```

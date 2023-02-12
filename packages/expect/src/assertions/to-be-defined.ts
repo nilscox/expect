@@ -3,7 +3,7 @@ import { expect } from '../expect';
 
 declare global {
   namespace Expect {
-    export interface Assertions {
+    export interface GenericAssertions<Actual> {
       toBeDefined(): void;
     }
   }

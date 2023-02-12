@@ -50,37 +50,6 @@ expect(() => {}).not.toThrow(); // pass
 expect({ foo: 'bar' }).not.toHaveProperty('foo'); // fail
 ```
 
-### Async / Promise handling
-
-Async functions (functions returning a javascript [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)) can be asserted easily using `expect.async(promise)`, which returns the same assertions that a regular call to `expect()` returns. The promise will be awaited, and the resolved value will be passed to `expect()`.
-
-Make sure to **await** the call to `expect.async()`, or your test may fail silently!
-
-If the promise rejects, the error won't be handled and your test should fail. And if you don't pass a promise to `expect.async()`, an error will be thrown indicating that a promise was expected.
-
-```ts
-await expect.async(service.asyncMethod()).toEqual(someValue);
-```
-
-To perform assertions on rejecting promise, use `expect.rejects(promise).with(value)`. Contrary to `expect.async()`, `expect.rejects()` _do not_ return a set of assertions, but it returns only one function: `with()`.
-
-Like with `expect.async()`, make sure to **await** the call to `expect.reject()`.
-
-```ts
-await expect.reject(service.asyncMethod()).with(ValidationError);
-await expect.reject(service.asyncMethod()).with(new Error('oops'));
-```
-
-The value given to `with()` can either be a class type, a value, or a matcher. When a class type is given, the promise is expected to reject with an instance of this class, otherwise the call to `expect.reject()` itself will reject. If a value or a matcher is given, it will be used to check the rejected value.
-
-When the assertion passes, the call to `expect.reject()` will return the rejected value, allowing to perform more assertions afterward.
-
-```ts
-const error = await expect.reject(service.asyncMethod()).with(ValidationError);
-expect(error.message).toBe('validation failed');
-expect(error.invalidFields).toHaveProperty('email', 'already exists');
-```
-
 ## Extensions
 
 This library was designed with extensibility in mind, so it's super easy to add your own logic to it. Creating new assertions and matchers associated to **your domain** will make your tests **more meaningful**. For example, you can replace `expect(user).toHaveProperty('role', 'admin')` with `expect(user).toBeAdmin()`.
@@ -244,6 +213,9 @@ Here are the core assertions that are built into the library.
 - [toHaveLength](#tohavelength)
 - [toInclude](#toinclude)
 - [toHaveProperty](#tohaveproperty)
+- [toResolve](#toresolve)
+- [toReject](#toreject)
+- [toRejectWith](#torejectwith)
 
 #### toBeDefined
 
@@ -361,6 +333,35 @@ expect(throwError).toThrow(new Error('argh')); // fail
 expect(throwError).toThrow(expect.objectWith({ message: expect.stringMatching(/oo/) })); // pass
 ```
 
+#### toResolve
+
+Assert that a promise resolves, optionally checking the resolved value. The assertion will fail if the promise rejects. The call to `expect` will forward the resolved value.
+
+```ts
+expect(Promise.resolve(42)).toResolve(42); // pass
+expect(Promise.reject(new Error('oops'))).toResolve(); // fail
+expect(Promise.resolve('foo')).toResolve(expect.stringMatching(/oo/)); // pass
+```
+
+#### toReject
+
+Assert that a promise rejects, optionally checking the rejected value. The assertion will fail if the promise resolve. The call to `expect` will resolve the rejected value.
+
+```ts
+expect(Promise.reject(new Error('oops'))).toReject(); // pass
+expect(Promise.reject(new Error('argh'))).toReject(new Error('argh')); // pass
+expect(Promise.resolve(42)).toReject(); // fail
+```
+
+#### toRejectWith
+
+Assert that a promise rejects with an error of a given type. The call to `expect` will resolve the rejected value.
+
+```ts
+expect(Promise.reject(new Error('oops'))).toRejectWith(Error); // pass
+expect(Promise.reject(42)).toRejectWith(Error); // fail
+```
+
 ### Matchers
 
 Matchers are a way to customize the way values are deeply (recursively) compared within the library. They are used in numerous places, like in `.toEqual()`, `.toHaveProperty()`, [expect-sinon](../expect-sinon)'s `.toHaveBeenCalledWith()`, etc.
@@ -387,7 +388,7 @@ expect({ foo: 'bar', value: 42 }).toEqual({ foo: expect.anything(), value: 42 })
 The `expect.any(Constructor)` matcher allows any value having a given type. It can be a primitive type using the primitive's constructor (like `String` or `Boolean`), or a class type.
 
 ```ts
-expect(42).toEqual(expect.any(Number)); // pass
+expect<number>(42).toEqual(expect.any(Number)); // pass
 expect<any>({ foo: 'bar' }).toEqual({ foo: expect.any(Boolean) }); // fail
 
 class Toto {}

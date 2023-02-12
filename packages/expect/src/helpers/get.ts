@@ -1,3 +1,4 @@
+// todo: remove this
 export const get = (object: unknown, path: string): unknown => {
   let current: any = object;
 

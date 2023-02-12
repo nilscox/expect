@@ -2,8 +2,6 @@ import { AssertionDefinition, AssertionDefinitions, AssertionNames } from './exp
 
 declare global {
   namespace Expect {
-    interface Assertions<Actual = unknown> {}
-
     interface ExpectFunction {
       _assertions: AssertionDefinitions;
 

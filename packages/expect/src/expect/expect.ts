@@ -5,7 +5,6 @@ import { anything } from '../matchers/anything';
 import { objectWith } from '../matchers/object-with';
 import { stringMatching } from '../matchers/string-matching';
 import { addAssertion, addCustomAssertion, cleanupAssertion } from './assertions';
-import { async, rejects } from './async';
 import { createAssertion } from './create-assertion';
 import {
   AnyAssertionDefinition,
@@ -15,14 +14,45 @@ import {
 } from './expect-types';
 import { addCustomMatcher, addMatcher, cleanupMatchers } from './matchers';
 
-type Not<Actual> = {
-  not: Expect.Assertions<Actual>;
-};
+type AnyFunction = (...args: any[]) => any;
+type AnyPromise = Promise<any>;
+type AnyObject = Record<PropertyKey, any>;
 
 declare global {
   namespace Expect {
+    interface StringAssertions<Actual extends string> {}
+    interface NumberAssertions<Actual extends number> {}
+    interface BooleanAssertions<Actual extends boolean> {}
+    interface ArrayAssertions<Actual extends unknown[]> {}
+    interface FunctionAssertions<Actual extends AnyFunction> {}
+    interface PromiseAssertions<Actual extends Promise<unknown>> {}
+    interface ObjectAssertions<Actual extends AnyObject> {}
+    interface GenericAssertions<Actual> {}
+
+    interface Assertions
+      extends StringAssertions<any>,
+        NumberAssertions<any>,
+        BooleanAssertions<any>,
+        ArrayAssertions<any>,
+        FunctionAssertions<any>,
+        PromiseAssertions<any>,
+        ObjectAssertions<any>,
+        GenericAssertions<any> {}
+
+    type ExpectResult<Assertion, Actual> = Assertion &
+      Expect.GenericAssertions<Actual> & {
+        not: Assertion & Expect.GenericAssertions<Actual>;
+      };
+
     interface ExpectFunction {
-      <Actual>(actual: Actual): Expect.Assertions<Actual> & Not<Actual>;
+      <Actual extends string>(actual: Actual): ExpectResult<Expect.StringAssertions<Actual>, Actual>;
+      <Actual extends number>(actual: Actual): ExpectResult<Expect.NumberAssertions<Actual>, Actual>;
+      <Actual extends boolean>(actual: Actual): ExpectResult<Expect.BooleanAssertions<Actual>, Actual>;
+      <Actual extends unknown[]>(actual: Actual): ExpectResult<Expect.ArrayAssertions<Actual>, Actual>;
+      <Actual extends AnyFunction>(actual: Actual): ExpectResult<Expect.FunctionAssertions<Actual>, Actual>;
+      <Actual extends AnyPromise>(actual: Actual): ExpectResult<Expect.PromiseAssertions<Actual>, Actual>;
+      <Actual extends AnyObject>(actual: Actual): ExpectResult<Expect.ObjectAssertions<Actual>, Actual>;
+      <Actual>(actual: Actual): ExpectResult<Expect.GenericAssertions<Actual>, Actual>;
     }
 
     interface ExpectFunction {
@@ -59,9 +89,6 @@ expect.objectWith = objectWith;
 expect._customMatchers = new Set();
 expect.addMatcher = addMatcher.bind(expect);
 expect.addCustomMatcher = addCustomMatcher.bind(expect);
-
-expect.async = async.bind(expect);
-expect.rejects = rejects.bind(expect);
 
 expect.cleanup = () => {
   cleanupAssertion.call(expect);

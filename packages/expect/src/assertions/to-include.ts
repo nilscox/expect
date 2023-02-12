@@ -4,8 +4,12 @@ import { expect } from '../expect';
 
 declare global {
   namespace Expect {
-    export interface Assertions {
-      toInclude(element: unknown): void;
+    export interface StringAssertions<Actual> {
+      toInclude(substring: Actual[number]): void;
+    }
+
+    export interface ArrayAssertions<Actual> {
+      toInclude(element: Actual[number]): void;
     }
   }
 }

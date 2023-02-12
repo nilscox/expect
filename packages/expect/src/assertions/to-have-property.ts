@@ -3,7 +3,11 @@ import { expect } from '../expect';
 
 declare global {
   namespace Expect {
-    export interface Assertions<Actual> {
+    export interface ArrayAssertions<Actual> {
+      toHaveProperty(property: string, value?: unknown): void;
+    }
+
+    export interface ObjectAssertions<Actual> {
       toHaveProperty(property: string, value?: unknown): void;
     }
   }

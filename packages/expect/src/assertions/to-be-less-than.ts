@@ -4,7 +4,7 @@ import { expect } from '../expect';
 
 declare global {
   namespace Expect {
-    export interface Assertions<Actual> {
+    export interface NumberAssertions<Actual> {
       toBeLessThan(value: number, options?: { strict?: boolean }): void;
     }
   }

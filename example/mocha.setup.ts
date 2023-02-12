@@ -5,8 +5,14 @@ import { Todo } from './src/todo';
 
 declare global {
   namespace Expect {
-    export interface Assertions {
+    export interface TodoAssertions extends ObjectAssertions<Todo> {
       toBeCompleted(): void;
+    }
+
+    export interface Assertions extends TodoAssertions {}
+
+    interface ExpectFunction {
+      <Actual extends Todo>(actual: Actual): ExpectResult<TodoAssertions, Actual>;
     }
 
     export interface CustomMatchers {

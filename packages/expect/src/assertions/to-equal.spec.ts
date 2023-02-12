@@ -30,7 +30,7 @@ describe('toEqual', () => {
   });
 
   it('not.toEqual()', () => {
-    expect(42).not.toEqual(51);
+    expect<number>(42).not.toEqual(51);
     testError(() => expect(42).not.toEqual(42), 'expected 42 not to equal 42');
   });
 

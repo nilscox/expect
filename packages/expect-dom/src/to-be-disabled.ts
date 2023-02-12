@@ -2,7 +2,7 @@ import expect, { AssertionFailed } from '@nilscox/expect';
 
 declare global {
   namespace Expect {
-    export interface Assertions {
+    export interface HTMLElementAssertions<Actual> {
       toBeDisabled(): void;
     }
   }

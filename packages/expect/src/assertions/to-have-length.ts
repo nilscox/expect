@@ -3,7 +3,15 @@ import { expect } from '../expect';
 
 declare global {
   namespace Expect {
-    export interface Assertions {
+    export interface ArrayAssertions<Actual> {
+      toHaveLength(length: number): void;
+    }
+
+    export interface StringAssertions<Actual> {
+      toHaveLength(length: number): void;
+    }
+
+    export interface FunctionAssertions<Actual> {
       toHaveLength(length: number): void;
     }
   }

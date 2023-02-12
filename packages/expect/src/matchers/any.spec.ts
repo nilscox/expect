@@ -55,7 +55,7 @@ describe('any', () => {
   });
 
   it('documentation examples', () => {
-    expect(42).toEqual(expect.any(Number));
+    expect<number>(42).toEqual(expect.any(Number));
     testError(() => expect<any>({ foo: 'bar' }).toEqual({ foo: expect.any(Boolean) }));
 
     class Toto {}

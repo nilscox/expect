@@ -33,6 +33,6 @@ export type AssertionNames = keyof Expect.Assertions;
 
 export type AnyAssertionDefinition = AssertionDefinition<AssertionNames, unknown>;
 
-export type AnyAssertion = Expect.Assertions<any>[AssertionNames];
+export type AnyAssertion = Expect.Assertions[AssertionNames];
 export type AnyAssertionParams = Parameters<AnyAssertion>;
 export type AnyAssertionResult = ReturnType<AnyAssertion>;
