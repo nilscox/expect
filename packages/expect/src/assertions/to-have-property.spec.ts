@@ -30,6 +30,18 @@ describe('toHaveProperty', () => {
     expect({ foo: { bar: 1 } }).toHaveProperty('foo.bar', expect.any(Number));
   });
 
+  it('object not having the nested property', () => {
+    testError(() => expect({}).toHaveProperty('foo.bar'), {
+      message: 'expected {} to have property "foo.bar"',
+      actual: {},
+    });
+
+    testError(() => expect({}).toHaveProperty('foo.bar', 1), {
+      message: 'expected {} to have property "foo.bar" = 1',
+      actual: {},
+    });
+  });
+
   it('object having the property as a getter', () => {
     const object = new (class {
       get foo() {
@@ -43,8 +55,8 @@ describe('toHaveProperty', () => {
   it('object having the property but without the given value', () => {
     testError(() => expect({ foo: 1 }).toHaveProperty('foo', 2), {
       message: 'expected {"foo":1} to have property "foo" = 2',
-      actual: 1,
       expected: 2,
+      actual: 1,
     });
   });
 
@@ -68,6 +80,11 @@ describe('toHaveProperty', () => {
       () => expect({ foo: 1 }).not.toHaveProperty('foo', 1),
       'expected {"foo":1} not to have property "foo" = 1'
     );
+  });
+
+  it('invalid type', () => {
+    // @ts-expect-error
+    expect(42).toHaveProperty;
   });
 
   it('documentation examples', () => {

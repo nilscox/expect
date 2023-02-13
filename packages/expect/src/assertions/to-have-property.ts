@@ -33,12 +33,12 @@ expect.addAssertion({
       parent = parent[property];
 
       if (!parent) {
-        throw new AssertionFailed();
+        throw new AssertionFailed({ actual });
       }
     }
 
     if (!(lastProperty in parent)) {
-      throw new AssertionFailed();
+      throw new AssertionFailed({ actual });
     }
 
     const actualValue = parent[lastProperty];

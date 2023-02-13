@@ -10,12 +10,16 @@ declare global {
   }
 }
 
+type Meta = {
+  regexp: RegExp;
+};
+
 expect.addAssertion({
   name: 'toMatch',
   guard: isString,
   assert(actual, regexp) {
     if (!regexp.exec(actual)) {
-      throw new AssertionFailed({ meta: { regexp } });
+      throw new AssertionFailed<Meta>({ actual, meta: { regexp } });
     }
   },
   getMessage(actual, regexp) {

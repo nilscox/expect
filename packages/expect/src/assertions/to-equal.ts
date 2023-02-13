@@ -13,7 +13,7 @@ expect.addAssertion({
   name: 'toEqual',
   assert(actual, expected) {
     if (!this.deepEqual(actual, expected)) {
-      throw new AssertionFailed({ expected });
+      throw new AssertionFailed({ expected, actual });
     }
   },
   getMessage(actual, expected) {

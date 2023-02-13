@@ -8,6 +8,10 @@ declare global {
   }
 }
 
+type Meta = {
+  element: HTMLElement;
+};
+
 expect.addAssertion({
   name: 'toBeDisabled',
   expectedType: 'an instance of HTMLButtonElement',
@@ -16,7 +20,7 @@ expect.addAssertion({
   },
   assert(element) {
     if (!element.disabled) {
-      throw new AssertionFailed();
+      throw new AssertionFailed<Meta>({ meta: { element } });
     }
   },
   getMessage(element) {

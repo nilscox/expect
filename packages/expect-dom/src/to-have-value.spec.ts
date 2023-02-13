@@ -66,4 +66,9 @@ describe('toHaveValue', () => {
       'expected [object HTMLInputElement] not to have value = "hello"'
     );
   });
+
+  it('invalid type', () => {
+    // @ts-expect-error
+    expect(42).toHaveValue;
+  });
 });

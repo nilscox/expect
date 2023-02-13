@@ -57,4 +57,9 @@ describe('toResolve', () => {
       actual: 42,
     });
   });
+
+  it('invalid type', () => {
+    // @ts-expect-error
+    expect(42).toResolve;
+  });
 });

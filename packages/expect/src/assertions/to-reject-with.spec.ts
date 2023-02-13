@@ -30,6 +30,11 @@ describe('toRejectWith', () => {
     });
   });
 
+  it('invalid type', () => {
+    // @ts-expect-error
+    expect(42).toRejectWith;
+  });
+
   it('not.toRejectWith', async () => {
     const error = new Error('nope');
 

@@ -55,10 +55,6 @@ export const createAssertion = (not: boolean, actual: unknown, assertion: AnyAss
       error.message = assertion.getMessage.call(context, actual, ...args);
       error.not = not;
 
-      if (!('actual' in error)) {
-        error.actual = actual;
-      }
-
       throw error;
     }
 
@@ -103,10 +99,6 @@ const handleAsyncAssertion = async (
 
     error.message = assertion.getMessage.call(context, actual, ...args);
     error.not = not;
-
-    if (!('actual' in error)) {
-      error.actual = actual;
-    }
 
     throw error;
   }

@@ -14,6 +14,10 @@ declare global {
   }
 }
 
+type Meta = {
+  element: unknown;
+};
+
 expect.addAssertion({
   name: 'toInclude',
   guard(actual): actual is Array<unknown> | string {
@@ -30,7 +34,7 @@ expect.addAssertion({
       }
     }
 
-    throw new AssertionFailed({ meta: { element } });
+    throw new AssertionFailed<Meta>({ actual, meta: { element } });
   },
   getMessage(actual, element) {
     let message = `expected ${this.formatValue(actual)}`;

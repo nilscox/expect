@@ -1,18 +1,16 @@
-import { ExpectError } from './expect-error';
+import { AssertionError } from 'assert';
 
-export class AssertionFailed<Meta = unknown> extends ExpectError {
-  public expected?: unknown;
-  public actual?: unknown;
+export class AssertionFailed<Meta = unknown> extends AssertionError {
   public not?: boolean;
   public meta?: Meta;
 
   constructor(options: { expected?: unknown; actual?: unknown; meta?: Meta } = {}) {
-    super('assertion failed');
-    Object.assign(this, options);
+    super({
+      message: 'Assertion failed',
+      expected: options.expected,
+      actual: options.actual,
+    });
 
-    this.stack = this.stack
-      ?.split('\n')
-      .filter((line) => !line.match(/@nilscox\/expect/))
-      .join('\n');
+    this.meta = options.meta;
   }
 }

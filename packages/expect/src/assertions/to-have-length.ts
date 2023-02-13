@@ -21,17 +21,17 @@ type ObjectWithLength = { length: number };
 
 expect.addAssertion({
   name: 'toHaveLength',
-  expectedType: '{ length: number }',
+  expectedType: 'a string, an array or a function',
   guard(actual: unknown): actual is ObjectWithLength {
-    if (actual == null) {
+    if (typeof actual === 'function' || typeof actual === 'string') {
+      return true;
+    }
+
+    if (typeof actual !== 'object' || actual == null) {
       return false;
     }
 
-    if (!Object.getOwnPropertyNames(actual).includes('length')) {
-      return false;
-    }
-
-    return typeof (actual as Record<string, unknown>)['length'] === 'number';
+    return 'length' in actual && typeof actual['length'] === 'number';
   },
   assert(actual, length) {
     if (actual.length !== length) {

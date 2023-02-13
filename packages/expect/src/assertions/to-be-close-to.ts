@@ -10,6 +10,11 @@ declare global {
   }
 }
 
+type Meta = {
+  strict: boolean;
+  threshold: number;
+};
+
 expect.addAssertion({
   name: 'toBeCloseTo',
   expectedType: 'number',
@@ -18,7 +23,11 @@ expect.addAssertion({
     const delta = Math.abs(actual - value);
 
     if (delta > threshold || (strict && delta == threshold)) {
-      throw new AssertionFailed({ meta: { value, strict, threshold } });
+      throw new AssertionFailed<Meta>({
+        expected: value,
+        actual,
+        meta: { strict, threshold },
+      });
     }
   },
   getMessage(actual, value) {
@@ -29,6 +38,7 @@ expect.addAssertion({
     }
 
     message += ` to be close to ${this.formatValue(value)}`;
+    // message += ` (± ${this.error.meta.threshold})`;
 
     return message;
   },

@@ -24,6 +24,11 @@ describe('toInclude', () => {
     testError(() => expect([1]).not.toInclude(1), 'expected [1] not to include 1');
   });
 
+  it('invalid type', () => {
+    // @ts-expect-error
+    expect(42).toInclude;
+  });
+
   it('documentation examples', () => {
     expect([1, 2]).toInclude(2);
     testError(() => expect([1, 2]).toInclude(3));

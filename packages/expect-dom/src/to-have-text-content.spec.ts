@@ -45,4 +45,9 @@ describe('toHaveTextContent', () => {
       'expected [object HTMLDivElement] not to have text "hello" but it does'
     );
   });
+
+  it('invalid type', () => {
+    // @ts-expect-error
+    expect(42).toHaveTextContent;
+  });
 });

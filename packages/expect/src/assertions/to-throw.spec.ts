@@ -65,6 +65,11 @@ describe('toThrow', () => {
     );
   });
 
+  it('invalid type', () => {
+    // @ts-expect-error
+    expect(42).toThrow;
+  });
+
   it('documentation examples', () => {
     const throwError = () => {
       throw new Error('oops');

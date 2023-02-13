@@ -10,10 +10,8 @@ describe('toBeLessThan', () => {
     testError(() => expect(1).toBeLessThan(1), {
       message: 'expected 1 to be less than 1',
       actual: 1,
-      meta: {
-        value: 1,
-        strict: true,
-      },
+      expected: 1,
+      meta: { strict: true },
     });
   });
 
@@ -52,10 +50,8 @@ describe('toBeLessThan', () => {
       testError(() => expect(2).toBeLessThan(1, options), {
         message: 'expected 2 to be less or equal to 1',
         actual: 2,
-        meta: {
-          value: 1,
-          strict: false,
-        },
+        expected: 1,
+        meta: { strict: false },
       });
     });
   });
@@ -64,6 +60,11 @@ describe('toBeLessThan', () => {
     expect(2).not.toBeLessThan(1);
     expect(1).not.toBeLessThan(1);
     testError(() => expect(1).not.toBeLessThan(2), 'expected 1 not to be less than 2');
+  });
+
+  it('invalid type', () => {
+    // @ts-expect-error
+    expect('').toBeLessThan;
   });
 
   it('documentation examples', () => {

@@ -29,8 +29,8 @@ describe('toBeVisible', () => {
 
       testError(() => expect(div).toBeVisible(), {
         message: `expected [object HTMLDivElement] to be visible but it has style "${style}"`,
-        actual: div,
         meta: {
+          element: div,
           key,
           value,
         },
@@ -45,5 +45,10 @@ describe('toBeVisible', () => {
       () => expect(createStyledDiv({})).not.toBeVisible(),
       'expected [object HTMLDivElement] not to be visible but it is'
     );
+  });
+
+  it('invalid type', () => {
+    // @ts-expect-error
+    expect(42).toBeVisible;
   });
 });

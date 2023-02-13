@@ -60,11 +60,7 @@ const compareErrors = (actual: unknown, expected?: string | ErrorAttributes) => 
       );
     };
 
-    for (const key of Object.getOwnPropertyNames(actual)) {
-      if (key === 'stack' || key === 'not') {
-        continue;
-      }
-
+    for (const key of ['message', 'expected', 'actual', 'meta']) {
       assertAttribute(key, actual[key as keyof ExpectError], attributes[key as keyof ErrorAttributes]);
     }
 

@@ -11,8 +11,8 @@ describe('toHaveLength', () => {
     it('unexpected length', () => {
       testError(() => expect([]).toHaveLength(1), {
         message: 'expected [] to have length 1',
-        actual: 0,
         expected: 1,
+        actual: 0,
       });
     });
   });
@@ -43,6 +43,11 @@ describe('toHaveLength', () => {
   it('not.toHaveLength', () => {
     expect([]).not.toHaveLength(1);
     testError(() => expect([]).not.toHaveLength(0), 'expected [] not to have length 0');
+  });
+
+  it('invalid type', () => {
+    // @ts-expect-error
+    expect(42).toHaveLength;
   });
 
   it('documentation examples', () => {

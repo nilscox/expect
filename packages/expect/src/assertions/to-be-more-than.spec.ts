@@ -5,11 +5,9 @@ describe('toBeMoreThan', () => {
   it('number being below another number', () => {
     testError(() => expect(1).toBeMoreThan(2), {
       message: 'expected 1 to be more than 2',
+      expected: 2,
       actual: 1,
-      meta: {
-        value: 2,
-        strict: true,
-      },
+      meta: { strict: true },
     });
   });
 
@@ -43,9 +41,9 @@ describe('toBeMoreThan', () => {
     it('number being below another number', () => {
       testError(() => expect(1).toBeMoreThan(2, options), {
         message: 'expected 1 to be more or equal to 2',
+        expected: 2,
         actual: 1,
         meta: {
-          value: 2,
           strict: false,
         },
       });
@@ -64,6 +62,11 @@ describe('toBeMoreThan', () => {
     expect(1).not.toBeMoreThan(2);
     expect(1).not.toBeMoreThan(1);
     testError(() => expect(2).not.toBeMoreThan(1), 'expected 2 not to be more than 1');
+  });
+
+  it('invalid type', () => {
+    // @ts-expect-error
+    expect('').toBeMoreThan;
   });
 
   it('documentation examples', () => {

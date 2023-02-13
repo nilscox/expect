@@ -2,6 +2,7 @@ import { AssertionFailed } from '../errors/assertion-failed';
 import { ValueFormatter } from '../helpers/format-value';
 
 export type Helpers = {
+  // rename to compare
   deepEqual: (a: unknown, b: unknown) => boolean;
   formatValue: ValueFormatter;
 };

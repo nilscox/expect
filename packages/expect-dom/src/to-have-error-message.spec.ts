@@ -118,4 +118,9 @@ describe('toHaveErrorMessage', () => {
       'expected [object HTMLInputElement] not to have error message "error"'
     );
   });
+
+  it('invalid type', () => {
+    // @ts-expect-error
+    expect(42).toHaveErrorMessage;
+  });
 });

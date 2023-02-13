@@ -17,10 +17,12 @@ describe('toBeDisabled', () => {
   });
 
   it('not disabled button', () => {
-    testError(
-      () => expect(createButton()).toBeDisabled(),
-      'expected [object HTMLButtonElement] to be disabled'
-    );
+    const button = createButton();
+
+    testError(() => expect(button).toBeDisabled(), {
+      message: 'expected [object HTMLButtonElement] to be disabled',
+      meta: { element: button },
+    });
   });
 
   it('not.toBeDisabled', () => {
@@ -30,5 +32,10 @@ describe('toBeDisabled', () => {
       () => expect(createButton(true)).not.toBeDisabled(),
       'expected [object HTMLButtonElement] not to be disabled'
     );
+  });
+
+  it('invalid type', () => {
+    // @ts-expect-error
+    expect(42).toBeDisabled;
   });
 });
