@@ -1,5 +1,6 @@
+import assert from 'assert';
 import { isPromise } from 'util/types';
-import { AssertionFailed } from '../errors/assertion-failed';
+import { assertion } from '../errors/assertion-failed';
 import { expect } from '../expect';
 
 declare global {
@@ -12,33 +13,52 @@ declare global {
 
 expect.addAssertion({
   name: 'toRejectWith',
+
+  expectedType: 'a Promise',
   guard: isPromise,
-  async assert(promise, ExpectedType) {
-    let actual: unknown;
+
+  async prepareAsync(promise, ExpectedType) {
+    let resolved: unknown;
+    let error: unknown;
+    let didThrow = false;
 
     try {
-      actual = await promise;
-    } catch (error) {
-      if (error == null) {
-        throw error;
-      }
-
-      if (typeof error === 'object') {
-        if (!(error instanceof ExpectedType)) {
-          throw new AssertionFailed({ expected: ExpectedType, actual: typeof error, meta: error });
-        }
-      } else {
-        if (error.constructor !== ExpectedType) {
-          throw new AssertionFailed({ expected: ExpectedType, actual: typeof error, meta: error });
-        }
-      }
-
-      return error;
+      resolved = await promise;
+    } catch (caught) {
+      didThrow = true;
+      error = caught;
     }
 
-    throw new AssertionFailed({ expected: ExpectedType, meta: actual });
+    return {
+      actual: error?.constructor,
+      expected: ExpectedType,
+      meta: {
+        didThrow,
+        resolved,
+        error,
+      },
+    };
   },
-  getMessage(promise, expected) {
+
+  assert(ActualType, ExpectedType, { didThrow, error }) {
+    assertion(didThrow);
+
+    if (error == null) {
+      throw error;
+    }
+
+    assert(ExpectedType);
+
+    if (typeof error === 'object') {
+      assertion(error instanceof ExpectedType);
+    } else {
+      assertion(ActualType === ExpectedType);
+    }
+
+    return error as any;
+  },
+
+  getMessage(error) {
     let message = 'expected promise';
 
     if (this.not) {
@@ -47,8 +67,9 @@ expect.addAssertion({
 
     message += ' to reject';
 
-    if (expected) {
-      message += ` with a ${expected.name}`;
+    if (error.expected) {
+      assert(error.expected instanceof Function);
+      message += ` with an instance of ${error.expected.name}`;
     }
 
     if (this.not) {
@@ -56,10 +77,11 @@ expect.addAssertion({
       return message;
     }
 
-    if (this.error.actual) {
-      message += ` but it rejected with ${this.formatValue(this.error.actual)}`;
+    if (error.actual) {
+      assert(error.actual instanceof Function);
+      message += ` but it rejected with an instance of ${this.formatValue(error.actual.name)}`;
     } else {
-      message += ` but it resolved with ${this.formatValue(this.error.meta)}`;
+      message += ` but it resolved with ${this.formatValue(error.meta.resolved)}`;
     }
 
     return message;

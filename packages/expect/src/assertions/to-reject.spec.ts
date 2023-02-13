@@ -67,10 +67,13 @@ describe('toReject', () => {
 
     await testErrorAsync(expect(Promise.reject(error)).not.toReject(), {
       message: 'expected promise not to reject but it did',
+      actual: error,
     });
 
     await testErrorAsync(expect(Promise.reject(error)).not.toReject(error), {
       message: 'expected promise not to reject with [Error: nope] but it did',
+      actual: error,
+      expected: error,
     });
   });
 });

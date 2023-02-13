@@ -1,16 +1,21 @@
 import { AssertionError } from 'assert';
 
 export class AssertionFailed<Meta = unknown> extends AssertionError {
-  public not?: boolean;
-  public meta?: Meta;
+  public subject!: unknown;
+  public meta!: Meta;
 
-  constructor(options: { expected?: unknown; actual?: unknown; meta?: Meta } = {}) {
+  constructor(public readonly hint?: unknown) {
     super({
       message: 'Assertion failed',
-      expected: options.expected,
-      actual: options.actual,
     });
 
-    this.meta = options.meta;
+    // https://github.com/microsoft/TypeScript/issues/13965
+    Object.setPrototypeOf(this, new.target.prototype);
+  }
+}
+
+export function assertion(condition: unknown, hint?: unknown): asserts condition {
+  if (!condition) {
+    throw new AssertionFailed(hint);
   }
 }

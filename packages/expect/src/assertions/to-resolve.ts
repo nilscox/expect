@@ -1,5 +1,5 @@
 import { isPromise } from 'util/types';
-import { AssertionFailed } from '../errors/assertion-failed';
+import { assertion, AssertionFailed } from '../errors/assertion-failed';
 import { expect } from '../expect';
 
 declare global {
@@ -12,27 +12,46 @@ declare global {
 
 expect.addAssertion({
   name: 'toResolve',
+
+  expectedType: 'a Promise',
   guard: isPromise,
-  async assert(promise, expected) {
-    let actual: unknown;
+
+  async prepareAsync(promise, expected) {
+    let hasExpected = arguments.length === 2;
+
+    let resolved: unknown;
+    let error: unknown;
+    let didThrow = false;
 
     try {
-      actual = await promise;
-    } catch (error) {
-      throw new AssertionFailed({ expected, meta: error });
+      resolved = await promise;
+    } catch (caught) {
+      didThrow = true;
+      error = caught;
     }
 
-    if (arguments.length === 1) {
-      return actual;
-    }
+    return {
+      actual: resolved,
+      expected,
+      meta: {
+        hasExpected,
+        didThrow,
+        error,
+      },
+    };
+  },
 
-    if (!this.deepEqual(actual, expected)) {
-      throw new AssertionFailed({ expected, actual });
+  assert(actual, expected, { hasExpected, didThrow }) {
+    assertion(!didThrow);
+
+    if (hasExpected) {
+      assertion(this.deepEqual(actual, expected));
     }
 
     return actual;
   },
-  getMessage() {
+
+  getMessage(error) {
     let message = 'expected promise';
 
     if (this.not) {
@@ -41,14 +60,14 @@ expect.addAssertion({
 
     message += ' to resolve';
 
-    if (this.error.expected) {
-      message += ` with ${this.formatValue(this.error.expected)}`;
+    if (error.expected) {
+      message += ` with ${this.formatValue(error.expected)}`;
     }
 
-    if (this.error.meta) {
-      message += ` but it rejected with ${this.formatValue(this.error.meta)}`;
+    if (error.meta.error) {
+      message += ` but it rejected with ${this.formatValue(error.meta.error)}`;
     } else {
-      message += ` but it resolved with ${this.formatValue(this.error.actual)}`;
+      message += ` but it resolved with ${this.formatValue(error.actual)}`;
     }
 
     return message;

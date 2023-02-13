@@ -1,4 +1,4 @@
-import { AssertionFailed } from '../errors/assertion-failed';
+import { assertion } from '../errors/assertion-failed';
 import { isNumber } from '../errors/guard-error';
 import { expect } from '../expect';
 
@@ -10,21 +10,30 @@ declare global {
   }
 }
 
-type Meta = {
-  strict: boolean;
-};
-
 expect.addAssertion({
   name: 'toBeMoreThan',
+
   expectedType: 'number',
   guard: isNumber,
-  assert(actual: number, value, { strict = true } = {}) {
-    if (actual < value || (strict && actual == value)) {
-      throw new AssertionFailed<Meta>({ expected: value, actual, meta: { strict } });
+
+  prepare(actual, expected, { strict = true } = {}) {
+    return {
+      actual,
+      expected,
+      meta: { strict },
+    };
+  },
+
+  assert(actual: number, expected, { strict }) {
+    assertion(actual >= expected);
+
+    if (strict) {
+      assertion(actual !== expected);
     }
   },
-  getMessage(actual, value, { strict = true } = {}) {
-    let message = `expected ${this.formatValue(actual)}`;
+
+  getMessage(error) {
+    let message = `expected ${this.formatValue(error.actual)}`;
 
     if (this.not) {
       message += ' not';
@@ -32,13 +41,13 @@ expect.addAssertion({
 
     message += ' to be more';
 
-    if (strict) {
+    if (error.meta.strict) {
       message += ' than';
     } else {
       message += ' or equal to';
     }
 
-    message += ` ${this.formatValue(value)}`;
+    message += ` ${this.formatValue(error.expected)}`;
 
     return message;
   },

@@ -1,62 +1,76 @@
-import { AssertionFailed } from '../errors/assertion-failed';
+import { assertion } from '../errors/assertion-failed';
 import { isFunction } from '../errors/guard-error';
 import { expect } from '../expect';
 
 declare global {
   namespace Expect {
     export interface FunctionAssertions<Actual> {
-      toThrow(expected?: unknown): Actual | Promise<Actual>;
+      toThrow(expected?: unknown): Actual;
     }
   }
 }
 
 expect.addAssertion({
   name: 'toThrow',
+
   expectedType: 'a function',
   guard: isFunction,
-  assert(func: Function, expected?: unknown) {
-    let error: Error | undefined = undefined;
+
+  prepare(func, expected) {
+    const hasExpected = arguments.length === 2;
+
+    let didThrow = false;
     let actual: unknown;
 
     try {
       func();
-      error = new AssertionFailed({ actual: undefined, expected });
     } catch (caught) {
+      didThrow = true;
       actual = caught;
-
-      if (expected !== undefined && !this.deepEqual(caught, expected)) {
-        error = new AssertionFailed({ expected, actual: caught });
-      }
     }
 
-    if (error) {
-      throw error;
+    return {
+      actual,
+      expected,
+      meta: {
+        hasExpected,
+        didThrow,
+      },
+    };
+  },
+
+  assert(actual, expected, { hasExpected, didThrow }) {
+    assertion(didThrow);
+
+    if (hasExpected) {
+      assertion(this.deepEqual(actual, expected));
     }
 
     return actual;
   },
-  getMessage(func, expected) {
-    const actual = this.error?.actual;
-    let message = `expected ${this.formatValue(func)}`;
+
+  getMessage(error) {
+    let message = `expected ${this.formatValue(error.subject)}`;
 
     if (this.not) {
       message += ' not';
     }
 
-    if (expected) {
-      message += ` to throw ${this.formatValue(expected)}`;
+    if (error.meta.hasExpected) {
+      message += ` to throw ${this.formatValue(error.expected)}`;
     } else {
       message += ` to throw anything`;
     }
 
-    if (actual === undefined) {
-      if (this.not) {
-        message += ` but it did`;
-      } else {
-        message += ` but it did not throw`;
-      }
+    if (!error.meta.didThrow) {
+      message += ` but it did not throw`;
+      return message;
+    }
+
+    if (this.not) {
+      message += ` but it did`;
     } else {
-      message += ` but it threw ${this.formatValue(actual)}`;
+      message += ` but it threw ${this.formatValue(error.actual)}`;
     }
 
     return message;

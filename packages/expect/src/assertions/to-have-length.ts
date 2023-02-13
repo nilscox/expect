@@ -1,4 +1,5 @@
-import { AssertionFailed } from '../errors/assertion-failed';
+import assert from 'assert';
+import { assertion } from '../errors/assertion-failed';
 import { expect } from '../expect';
 
 declare global {
@@ -17,38 +18,48 @@ declare global {
   }
 }
 
-type ObjectWithLength = { length: number };
+type ObjectWithLength = {
+  length: number;
+};
 
 expect.addAssertion({
   name: 'toHaveLength',
+
   expectedType: 'a string, an array or a function',
-  guard(actual: unknown): actual is ObjectWithLength {
-    if (typeof actual === 'function' || typeof actual === 'string') {
+  guard(subject: unknown): subject is ObjectWithLength {
+    if (typeof subject === 'function' || typeof subject === 'string') {
       return true;
     }
 
-    if (typeof actual !== 'object' || actual == null) {
+    if (typeof subject !== 'object' || subject == null) {
       return false;
     }
 
-    return 'length' in actual && typeof actual['length'] === 'number';
+    return 'length' in subject && typeof subject['length'] === 'number';
   },
+
+  prepare(actual, length) {
+    return {
+      actual: actual.length,
+      expected: length,
+    };
+  },
+
   assert(actual, length) {
-    if (actual.length !== length) {
-      throw new AssertionFailed({ actual: actual.length, expected: length });
-    }
+    assertion(actual === length);
   },
-  getMessage(actual, length) {
-    let message = `expected ${this.formatValue(actual)}`;
+
+  getMessage(error) {
+    let message = `expected ${this.formatValue(error.subject)}`;
 
     if (this.not) {
       message += ' not';
     }
 
-    if (typeof actual === 'function') {
-      message += ` to take ${this.formatValue(length)} argument(s)`;
+    if (typeof error.subject === 'function') {
+      message += ` to take ${this.formatValue(error.expected)} argument(s)`;
     } else {
-      message += ` to have length ${this.formatValue(length)}`;
+      message += ` to have length ${this.formatValue(error.expected)}`;
     }
 
     return message;

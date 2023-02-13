@@ -11,10 +11,21 @@ declare global {
 
 expect.addAssertion({
   name: 'toHaveBeenCalledWith',
+
   expectedType: 'a sinon.spy()',
   guard: isSpy,
-  assert(actual, ...args) {
-    callsLoop: for (const call of actual.getCalls()) {
+
+  prepare(spy, ...args) {
+    return {
+      actual: spy.getCalls(),
+      meta: {
+        args,
+      },
+    };
+  },
+
+  assert(calls, expected, { args }) {
+    callsLoop: for (const call of calls) {
       if (args.length !== call.args.length) {
         continue;
       }
@@ -32,8 +43,9 @@ expect.addAssertion({
 
     throw new AssertionFailed();
   },
-  getMessage(actual, ...args) {
-    let message = `expected ${this.formatValue(actual)}`;
+
+  getMessage(error) {
+    let message = `expected ${this.formatValue(error.subject)}`;
 
     if (this.not) {
       message += ' not';
@@ -41,8 +53,8 @@ expect.addAssertion({
 
     message += ` to have been called `;
 
-    if (args.length > 0) {
-      message += `with ${args.map(this.formatValue).join(', ')}`;
+    if (error.meta.args.length > 0) {
+      message += `with ${error.meta.args.map(this.formatValue).join(', ')}`;
     } else {
       message += `without argument`;
     }

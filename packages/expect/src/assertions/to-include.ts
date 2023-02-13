@@ -1,4 +1,4 @@
-import { AssertionFailed } from '../errors/assertion-failed';
+import { assertion, AssertionFailed } from '../errors/assertion-failed';
 import { isArray, isString } from '../errors/guard-error';
 import { expect } from '../expect';
 
@@ -14,18 +14,28 @@ declare global {
   }
 }
 
-type Meta = {
-  element: unknown;
-};
-
 expect.addAssertion({
   name: 'toInclude',
+
+  expectedType: 'an array or a string',
   guard(actual): actual is Array<unknown> | string {
     return isArray(actual) || isString(actual);
   },
-  assert(actual, element) {
-    if (typeof actual === 'string' && typeof element === 'string') {
-      return actual.includes(element);
+
+  prepare(actual, element) {
+    return {
+      actual,
+      meta: {
+        element,
+        isString: typeof actual === 'string' && typeof element === 'string',
+      },
+    };
+  },
+
+  assert(actual, expected, { element, isString }) {
+    if (isString) {
+      assertion(actual.includes(element));
+      return;
     }
 
     for (const value of actual) {
@@ -34,16 +44,17 @@ expect.addAssertion({
       }
     }
 
-    throw new AssertionFailed<Meta>({ actual, meta: { element } });
+    throw new AssertionFailed();
   },
-  getMessage(actual, element) {
-    let message = `expected ${this.formatValue(actual)}`;
+
+  getMessage(error) {
+    let message = `expected ${this.formatValue(error.actual)}`;
 
     if (this.not) {
       message += ' not';
     }
 
-    message += ` to include ${element}`;
+    message += ` to include ${this.formatValue(error.meta.element)}`;
 
     return message;
   },

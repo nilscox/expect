@@ -11,12 +11,26 @@ describe('toInclude', () => {
     testError(() => expect([1, 2]).toInclude(3), {
       message: 'expected [1, 2] to include 3',
       actual: [1, 2],
-      meta: { element: 3 },
+      meta: {
+        element: 3,
+        isString: false,
+      },
     });
   });
 
   it('string including a substring', () => {
     expect('hello').toInclude('hell');
+  });
+
+  it('string not including a substring', () => {
+    testError(() => expect('hello').toInclude('world'), {
+      message: 'expected "hello" to include "world"',
+      actual: 'hello',
+      meta: {
+        element: 'world',
+        isString: true,
+      },
+    });
   });
 
   it('not.toInclude()', () => {

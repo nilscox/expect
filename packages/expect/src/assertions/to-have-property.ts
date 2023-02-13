@@ -1,4 +1,4 @@
-import { AssertionFailed } from '../errors/assertion-failed';
+import { assertion } from '../errors/assertion-failed';
 import { expect } from '../expect';
 
 declare global {
@@ -17,48 +17,65 @@ type NonNullObject = {};
 
 expect.addAssertion({
   name: 'toHaveProperty',
+
   expectedType: 'non-null object',
   guard(actual): actual is NonNullObject {
     return actual !== null && actual !== undefined;
   },
-  assert(actual: Record<PropertyKey, unknown>, property: string, expectedValue?: unknown) {
-    const hasExpectedValue = arguments.length === 3;
 
+  // property type is needed to correctly infer Meta type
+  prepare(subject, property: string, expected) {
+    const hasExpectedValue = arguments.length === 3;
     const path = property.split('.');
     const [lastProperty] = path.slice(-1);
 
-    let parent: any = actual;
+    let parent: any = subject;
 
     for (const property of path.slice(0, -1)) {
       parent = parent[property];
 
       if (!parent) {
-        throw new AssertionFailed({ actual });
+        continue;
       }
     }
 
-    if (!(lastProperty in parent)) {
-      throw new AssertionFailed({ actual });
+    let actual: unknown;
+    let hasProperty = Boolean(parent && lastProperty in parent);
+
+    if (hasProperty) {
+      actual = parent[lastProperty];
     }
 
-    const actualValue = parent[lastProperty];
+    return {
+      actual,
+      expected,
+      meta: {
+        hasExpectedValue,
+        hasProperty,
+        property,
+      },
+    };
+  },
 
-    if (hasExpectedValue && !this.deepEqual(actualValue, expectedValue)) {
-      throw new AssertionFailed({ actual: actualValue, expected: expectedValue });
+  assert(actual, expected, { hasExpectedValue, hasProperty }) {
+    assertion(hasProperty);
+
+    if (hasExpectedValue) {
+      assertion(this.deepEqual(actual, expected));
     }
   },
-  getMessage(actual, property, expectedValue) {
-    const hasExpectedValue = arguments.length === 3;
-    let message = `expected ${this.formatValue(actual)}`;
+
+  getMessage(error) {
+    let message = `expected ${this.formatValue(error.subject)}`;
 
     if (this.not) {
       message += ' not';
     }
 
-    message += ` to have property ${this.formatValue(property)}`;
+    message += ` to have property ${this.formatValue(error.meta.property)}`;
 
-    if (hasExpectedValue) {
-      message += ` = ${this.formatValue(expectedValue)}`;
+    if (error.meta.hasExpectedValue) {
+      message += ` = ${this.formatValue(error.expected)}`;
     }
 
     return message;

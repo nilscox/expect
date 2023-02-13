@@ -1,4 +1,4 @@
-import expect, { AssertionFailed } from '@nilscox/expect';
+import expect, { assertion, AssertionFailed } from '@nilscox/expect';
 import { isSpy } from './is-spy';
 
 declare global {
@@ -11,15 +11,25 @@ declare global {
 
 expect.addAssertion({
   name: 'toHaveBeenCalled',
+
   expectedType: 'a sinon.spy()',
   guard: isSpy,
-  assert(actual) {
-    if (!actual.called) {
-      throw new AssertionFailed();
-    }
+
+  prepare(spy) {
+    return {
+      actual: spy.called,
+      meta: {
+        calls: spy.getCalls(),
+      },
+    };
   },
-  getMessage(actual) {
-    let message = `expected ${this.formatValue(actual)}`;
+
+  assert(called) {
+    assertion(called);
+  },
+
+  getMessage(error) {
+    let message = `expected ${this.formatValue(error.subject)}`;
 
     if (this.not) {
       message += ' not';
@@ -31,10 +41,7 @@ expect.addAssertion({
       message += ' but it was\n';
       message += 'calls:\n';
 
-      message += actual
-        .getCalls()
-        .map(({ args }) => args.map(this.formatValue).join(', '))
-        .join('\n');
+      message += error.meta.calls.map(({ args }) => args.map(this.formatValue).join(', ')).join('\n');
     }
 
     return message;

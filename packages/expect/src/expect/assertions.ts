@@ -7,18 +7,20 @@ declare global {
 
       _customAssertions: Set<AssertionNames>;
 
-      addAssertion<Name extends AssertionNames, Actual>(assertion: AssertionDefinition<Name, Actual>): void;
+      addAssertion<Name extends AssertionNames, Subject, Value, Meta>(
+        assertion: AssertionDefinition<Name, Subject, Value, Meta>
+      ): void;
 
-      addCustomAssertion<Name extends AssertionNames, Actual>(
-        assertion: AssertionDefinition<Name, Actual>
+      addCustomAssertion<Name extends AssertionNames, Subject, Value, Meta>(
+        assertion: AssertionDefinition<Name, Subject, Value, Meta>
       ): void;
     }
   }
 }
 
-export const addAssertion = function <Name extends AssertionNames, Actual>(
+export const addAssertion = function <Name extends AssertionNames, Subject, Value, Meta>(
   this: Expect.ExpectFunction,
-  assertion: AssertionDefinition<Name, Actual>
+  assertion: AssertionDefinition<Name, Subject, Value, Meta>
 ) {
   if (assertion.name in this._assertions) {
     throw new Error(`cannot add assertion "${assertion.name}" because it already exits`);
@@ -27,9 +29,9 @@ export const addAssertion = function <Name extends AssertionNames, Actual>(
   this._assertions[assertion.name] = assertion as AssertionDefinitions[Name];
 };
 
-export const addCustomAssertion = function <Name extends AssertionNames, Actual>(
+export const addCustomAssertion = function <Name extends AssertionNames, Subject, Value, Meta>(
   this: Expect.ExpectFunction,
-  assertion: AssertionDefinition<Name, Actual>
+  assertion: AssertionDefinition<Name, Subject, Value, Meta>
 ) {
   this.addAssertion(assertion);
   this._customAssertions.add(assertion.name);

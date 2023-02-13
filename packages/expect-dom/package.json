@@ -1,6 +1,6 @@
 {
   "name": "@nilscox/expect-dom",
-  "version": "0.1.3",
+  "version": "0.3.0",
   "license": "Beerware",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

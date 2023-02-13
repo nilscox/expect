@@ -1,4 +1,4 @@
-import { AssertionFailed } from '../errors/assertion-failed';
+import { assertion } from '../errors/assertion-failed';
 import { expect } from '../expect';
 
 declare global {
@@ -11,19 +11,26 @@ declare global {
 
 expect.addAssertion({
   name: 'toBe',
-  assert(actual, expected) {
-    if (!Object.is(actual, expected)) {
-      throw new AssertionFailed({ expected, actual });
-    }
+
+  prepare(actual, expected) {
+    return {
+      actual,
+      expected,
+    };
   },
-  getMessage(actual, expected) {
-    let message = `expected ${this.formatValue(actual)}`;
+
+  assert(actual, expected) {
+    assertion(Object.is(actual, expected));
+  },
+
+  getMessage(error) {
+    let message = `expected ${this.formatValue(error.actual)}`;
 
     if (this.not) {
       message += ' not';
     }
 
-    message += ` to be ${this.formatValue(expected)}`;
+    message += ` to be ${this.formatValue(error.expected)}`;
 
     return message;
   },

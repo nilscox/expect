@@ -63,7 +63,7 @@ describe('toHaveValue', () => {
 
     testError(
       () => expect(input).not.toHaveValue('hello'),
-      'expected [object HTMLInputElement] not to have value = "hello"'
+      'expected [object HTMLInputElement] not to have value = "hello" but it does'
     );
   });
 

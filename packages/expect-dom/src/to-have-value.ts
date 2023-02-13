@@ -1,4 +1,4 @@
-import expect, { AssertionFailed } from '@nilscox/expect';
+import expect, { assertion } from '@nilscox/expect';
 
 declare global {
   namespace Expect {
@@ -12,38 +12,43 @@ type InputType = HTMLInputElement | HTMLTextAreaElement;
 
 expect.addAssertion({
   name: 'toHaveValue',
+
   expectedType: 'an instance of HTMLElement',
   guard(actual): actual is InputType {
     return actual instanceof HTMLInputElement || actual instanceof HTMLTextAreaElement;
   },
-  assert(element, expected) {
-    const actual = element.value;
 
-    if (actual === null) {
-      if (expected === '') {
-        return;
-      } else {
-        throw new AssertionFailed({ actual, expected, meta: { element } });
-      }
-    }
-
-    if (!this.deepEqual(actual, expected)) {
-      throw new AssertionFailed({ actual, expected, meta: { element } });
-    }
+  prepare(element, expected) {
+    return {
+      actual: element.value,
+      expected,
+      meta: { element },
+    };
   },
-  getMessage(element, expected) {
-    const { actual } = this.error;
-    let message = `expected ${this.formatValue(element)}`;
+
+  assert(value, expected) {
+    if (value === null) {
+      assertion(expected === '');
+      return;
+    }
+
+    assertion(this.deepEqual(value, expected));
+  },
+
+  getMessage(error) {
+    let message = `expected ${this.formatValue(error.meta.element)}`;
 
     if (this.not) {
       message += ' not';
     }
 
     message += ` to have value`;
-    message += ` = ${this.formatValue(expected)}`;
+    message += ` = ${this.formatValue(error.expected)}`;
 
-    if (actual) {
-      message += ` but it is ${this.formatValue(actual)}`;
+    if (this.not) {
+      message += ' but it does';
+    } else if (error.actual) {
+      message += ` but it is ${this.formatValue(error.actual)}`;
     }
 
     return message;

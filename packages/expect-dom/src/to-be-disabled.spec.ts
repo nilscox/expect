@@ -21,6 +21,8 @@ describe('toBeDisabled', () => {
 
     testError(() => expect(button).toBeDisabled(), {
       message: 'expected [object HTMLButtonElement] to be disabled',
+      actual: false,
+      expected: true,
       meta: { element: button },
     });
   });

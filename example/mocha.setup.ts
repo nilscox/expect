@@ -1,4 +1,4 @@
-import expect, { AssertionFailed, createMatcher } from '@nilscox/expect';
+import expect, { assertion, createMatcher } from '@nilscox/expect';
 import { RootHookObject } from 'mocha';
 
 import { Todo } from './src/todo';
@@ -40,16 +40,23 @@ export const mochaHooks: RootHookObject = {
       expectedType: 'a Todo',
       guard: TodoRequire.isTodo,
 
-      assert(todo) {
-        if (todo.completedAt === undefined) {
-          throw new AssertionFailed();
-        }
+      prepare(todo) {
+        return {
+          actual: todo.completedAt,
+          meta: {
+            text: todo.text,
+          },
+        };
       },
 
-      getMessage(todo) {
+      assert(completedAt) {
+        assertion(completedAt === undefined);
+      },
+
+      getMessage(error) {
         let message = 'expected todo';
 
-        message += ` ${this.formatValue(todo.text)}`;
+        message += ` ${this.formatValue(error.meta.text)}`;
 
         if (this.not) {
           message += ' not';

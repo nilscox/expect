@@ -1,5 +1,5 @@
 import { isPromise } from 'util/types';
-import { AssertionFailed } from '../errors/assertion-failed';
+import { assertion } from '../errors/assertion-failed';
 import { expect } from '../expect';
 
 declare global {
@@ -12,27 +12,46 @@ declare global {
 
 expect.addAssertion({
   name: 'toReject',
+
+  expectedType: 'a Promise',
   guard: isPromise,
-  async assert(promise, expected) {
-    let actual: unknown;
+
+  async prepareAsync(promise, expected) {
+    let hasExpected = arguments.length === 2;
+
+    let resolved: unknown;
+    let error: unknown;
+    let didThrow = false;
 
     try {
-      actual = await promise;
-    } catch (error) {
-      if (arguments.length === 1) {
-        return error;
-      }
-
-      if (!this.deepEqual(error, expected)) {
-        throw new AssertionFailed({ expected, actual: error });
-      }
-
-      return error;
+      resolved = await promise;
+    } catch (caught) {
+      didThrow = true;
+      error = caught;
     }
 
-    throw new AssertionFailed({ expected, meta: actual });
+    return {
+      actual: error,
+      expected,
+      meta: {
+        hasExpected,
+        didThrow,
+        resolved,
+      },
+    };
   },
-  getMessage(promise, expected) {
+
+  assert(actual, expected, { hasExpected, didThrow }) {
+    assertion(didThrow);
+
+    if (hasExpected) {
+      assertion(this.deepEqual(actual, expected));
+    }
+
+    return actual as any;
+  },
+
+  getMessage(error) {
     let message = 'expected promise';
 
     if (this.not) {
@@ -41,8 +60,8 @@ expect.addAssertion({
 
     message += ' to reject';
 
-    if (expected) {
-      message += ` with ${this.formatValue(expected)}`;
+    if (error.meta.hasExpected) {
+      message += ` with ${this.formatValue(error.expected)}`;
     }
 
     if (this.not) {
@@ -50,10 +69,10 @@ expect.addAssertion({
       return message;
     }
 
-    if (this.error.actual) {
-      message += ` but it rejected with ${this.formatValue(this.error.actual)}`;
+    if (error.actual) {
+      message += ` but it rejected with ${this.formatValue(error.actual)}`;
     } else {
-      message += ` but it resolved with ${this.formatValue(this.error.meta)}`;
+      message += ` but it resolved with ${this.formatValue(error.meta.resolved)}`;
     }
 
     return message;

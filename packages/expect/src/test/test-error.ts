@@ -8,15 +8,23 @@ type ErrorAttributes = {
   actual?: unknown;
   expected?: unknown;
   meta?: unknown;
+  hint?: unknown;
 };
 
 export const testError = (callback: () => void, expected?: string | ErrorAttributes) => {
+  let error: unknown;
+
   try {
     callback();
-    throw new Error('testError: callback did not throw');
-  } catch (error) {
-    compareErrors(error, expected);
+  } catch (caught) {
+    error = caught;
   }
+
+  if (!error) {
+    throw new Error('testError: callback did not throw');
+  }
+
+  compareErrors(error, expected);
 };
 
 export const testErrorAsync = async (promise: Promise<any>, expected?: string | ErrorAttributes) => {
@@ -29,7 +37,9 @@ export const testErrorAsync = async (promise: Promise<any>, expected?: string | 
 };
 
 const compareErrors = (actual: unknown, expected?: string | ErrorAttributes) => {
-  assert(actual instanceof AssertionFailed, 'actual is not an instance of AssertionFailed');
+  if (!(actual instanceof AssertionFailed)) {
+    throw actual;
+  }
 
   if (expected === undefined) {
     return;
@@ -60,12 +70,20 @@ const compareErrors = (actual: unknown, expected?: string | ErrorAttributes) => 
       );
     };
 
-    for (const key of ['message', 'expected', 'actual', 'meta']) {
-      assertAttribute(key, actual[key as keyof ExpectError], attributes[key as keyof ErrorAttributes]);
+    for (const key of ['message', 'expected', 'actual'] as const) {
+      assertAttribute(key, actual[key], attributes[key as keyof ErrorAttributes]);
     }
 
     for (const [key, expectedValue] of Object.entries(attributes)) {
-      assertAttribute(key, actual[key as keyof ExpectError], expectedValue);
+      if (key === 'meta') {
+        continue;
+      }
+
+      assertAttribute(key, actual[key as keyof AssertionFailed], expectedValue);
+    }
+
+    for (const [key, expectedValue] of Object.entries(attributes['meta'] ?? {})) {
+      assertAttribute(key, actual['meta'][key], expectedValue);
     }
   }
 };

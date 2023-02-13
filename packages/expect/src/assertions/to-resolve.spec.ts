@@ -19,18 +19,18 @@ describe('toResolve', () => {
 
     await testErrorAsync(expect(Promise.reject(42)).toResolve(), {
       message: 'expected promise to resolve but it rejected with 42',
-      meta: 42,
+      meta: { error: 42 },
     });
 
     await testErrorAsync(expect(Promise.reject(error)).toResolve(), {
       message: 'expected promise to resolve but it rejected with [Error: nope]',
-      meta: error,
+      meta: { error },
     });
 
     await testErrorAsync(expect(Promise.reject<number>(error)).toResolve(42), {
       message: 'expected promise to resolve with 42 but it rejected with [Error: nope]',
-      meta: error,
       expected: 42,
+      meta: { error },
     });
   });
 

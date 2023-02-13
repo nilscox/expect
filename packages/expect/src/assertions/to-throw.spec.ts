@@ -23,10 +23,14 @@ describe('toThrow', () => {
     expect(throwError).toThrow(error);
   });
 
-  it('function not throwing any error', () => {
+  it('function not throwing', () => {
     testError(() => expect(doNothing).toThrow(), {
       message: 'expected [function doNothing] to throw anything but it did not throw',
       actual: undefined,
+      meta: {
+        didThrow: false,
+        hasExpected: false,
+      },
     });
   });
 
@@ -35,7 +39,19 @@ describe('toThrow', () => {
       message: 'expected [function doNothing] to throw [Error: error] but it did not throw',
       actual: undefined,
       expected: error,
+      meta: {
+        didThrow: false,
+        hasExpected: true,
+      },
     });
+  });
+
+  it('function not throwing undefined', () => {
+    const throwUndefined = () => {
+      throw undefined;
+    };
+
+    expect(throwUndefined).toThrow(undefined);
   });
 
   it('function throwing a different error', () => {
@@ -45,6 +61,10 @@ describe('toThrow', () => {
       message: 'expected [function throwError] to throw [Error: other] but it threw [Error: error]',
       actual: error,
       expected: other,
+      meta: {
+        didThrow: true,
+        hasExpected: true,
+      },
     });
   });
 

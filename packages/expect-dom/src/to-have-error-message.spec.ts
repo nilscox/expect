@@ -2,6 +2,7 @@ import expect from '@nilscox/expect';
 import { testError } from '@nilscox/expect/src/test/test-error';
 
 import './to-have-error-message';
+import { ErrorMessageAssertionFailedReason } from './to-have-error-message';
 
 describe('toHaveErrorMessage', () => {
   const createInput = ({
@@ -59,12 +60,11 @@ describe('toHaveErrorMessage', () => {
     testError(() => expect(input).toHaveErrorMessage('error'), {
       message:
         'expected [object HTMLInputElement] to have error message "error" but it does not have attribute aria-invalid=true',
-      actual: undefined,
       expected: 'error',
+      hint: ErrorMessageAssertionFailedReason.noAriaInvalid,
       meta: {
         element: input,
-        errorMessageId: undefined,
-        reason: 'noAriaInvalid',
+        errorMessageId: null,
       },
     });
   });
@@ -90,10 +90,10 @@ describe('toHaveErrorMessage', () => {
       message: 'expected [object HTMLInputElement] to have error message "error" but it is "err"',
       actual: 'err',
       expected: 'error',
+      hint: ErrorMessageAssertionFailedReason.unexpectedMessage,
       meta: {
         element: input,
         errorMessageId: 'id',
-        reason: 'unexpectedMessage',
       },
     });
   });

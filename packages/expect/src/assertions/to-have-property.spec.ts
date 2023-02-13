@@ -2,14 +2,18 @@ import { expect } from '../expect';
 import { testError } from '../test/test-error';
 
 describe('toHaveProperty', () => {
-  it('object having the property', () => {
+  it('object having the expected property', () => {
     expect({ foo: 1 }).toHaveProperty('foo');
   });
 
   it('object not having the property', () => {
     testError(() => expect({ foo: 1 }).toHaveProperty('bar'), {
       message: 'expected {"foo":1} to have property "bar"',
-      actual: { foo: 1 },
+      meta: {
+        hasProperty: false,
+        hasExpectedValue: false,
+        property: 'bar',
+      },
     });
   });
 
@@ -25,20 +29,22 @@ describe('toHaveProperty', () => {
     expect({ foo: {} }).toHaveProperty('foo', {});
   });
 
-  it('object having the nested property', () => {
+  it('object having a nested property', () => {
     expect({ foo: { bar: 1 } }).toHaveProperty('foo.bar', 1);
     expect({ foo: { bar: 1 } }).toHaveProperty('foo.bar', expect.any(Number));
   });
 
-  it('object not having the nested property', () => {
-    testError(() => expect({}).toHaveProperty('foo.bar'), {
-      message: 'expected {} to have property "foo.bar"',
-      actual: {},
-    });
+  it('object not having a nested property', () => {
+    testError(() => expect({}).toHaveProperty('foo.bar'), 'expected {} to have property "foo.bar"');
 
     testError(() => expect({}).toHaveProperty('foo.bar', 1), {
       message: 'expected {} to have property "foo.bar" = 1',
-      actual: {},
+      expected: 1,
+      meta: {
+        hasProperty: false,
+        hasExpectedValue: true,
+        property: 'foo.bar',
+      },
     });
   });
 
@@ -57,6 +63,11 @@ describe('toHaveProperty', () => {
       message: 'expected {"foo":1} to have property "foo" = 2',
       expected: 2,
       actual: 1,
+      meta: {
+        hasProperty: true,
+        hasExpectedValue: true,
+        property: 'foo',
+      },
     });
   });
 

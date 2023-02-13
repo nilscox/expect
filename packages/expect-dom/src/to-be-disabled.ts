@@ -1,4 +1,4 @@
-import expect, { AssertionFailed } from '@nilscox/expect';
+import expect, { assertion } from '@nilscox/expect';
 
 declare global {
   namespace Expect {
@@ -14,17 +14,26 @@ type Meta = {
 
 expect.addAssertion({
   name: 'toBeDisabled',
+
   expectedType: 'an instance of HTMLButtonElement',
   guard(actual): actual is HTMLButtonElement {
     return actual instanceof HTMLButtonElement;
   },
-  assert(element) {
-    if (!element.disabled) {
-      throw new AssertionFailed<Meta>({ meta: { element } });
-    }
+
+  prepare(element) {
+    return {
+      actual: element.disabled,
+      expected: true,
+      meta: { element },
+    };
   },
-  getMessage(element) {
-    let message = `expected ${this.formatValue(element)}`;
+
+  assert(actual, expected) {
+    assertion(actual === expected);
+  },
+
+  getMessage(error) {
+    let message = `expected ${this.formatValue(error.meta.element)}`;
 
     if (this.not) {
       message += ' not';

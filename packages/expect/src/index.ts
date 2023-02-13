@@ -18,7 +18,7 @@ import './assertions/to-throw';
 export default expect;
 export type Expect = typeof expect;
 
-export { AssertionFailed } from './errors/assertion-failed';
+export { AssertionFailed, assertion } from './errors/assertion-failed';
 
 export { createMatcher } from './helpers/create-matcher';
 

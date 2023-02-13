@@ -16,19 +16,24 @@ const checkAssertionGuard = (actual: unknown, assertion: AnyAssertionDefinition)
   }
 };
 
-export const createAssertion = (not: boolean, actual: unknown, assertion: AnyAssertionDefinition) => {
+export const createAssertion = (not: boolean, subject: unknown, assertion: AnyAssertionDefinition) => {
   return (...args: AnyAssertionParams): AnyAssertionResult => {
-    checkAssertionGuard(actual, assertion);
+    checkAssertionGuard(subject, assertion);
 
-    if (isPromise(actual)) {
-      return handleAsyncAssertion(not, actual, assertion, ...args);
+    if (isPromise(subject)) {
+      return handleAsyncAssertion(not, subject, assertion, ...args);
     }
 
     let result: unknown;
     let error: AssertionFailed | undefined = undefined;
 
+    const { actual, expected, meta } = {
+      actual: subject,
+      ...assertion.prepare?.(subject, ...args),
+    };
+
     try {
-      result = assertion.assert.call(helpers, actual, ...args);
+      result = assertion.assert.call(helpers, actual, expected, meta);
 
       if (not) {
         error = new AssertionFailed();
@@ -45,20 +50,25 @@ export const createAssertion = (not: boolean, actual: unknown, assertion: AnyAss
       error = err;
     }
 
-    if (error) {
-      const context = {
-        ...helpers,
-        not,
-        error,
-      };
-
-      error.message = assertion.getMessage.call(context, actual, ...args);
-      error.not = not;
-
-      throw error;
+    if (!error) {
+      return result;
     }
 
-    return result;
+    const context = {
+      ...helpers,
+      not,
+      error,
+    };
+
+    error.operator = assertion.name;
+    error.subject = subject;
+    error.expected = expected;
+    error.actual = actual;
+    error.meta = meta;
+
+    error.message = assertion.getMessage.call(context, error);
+
+    throw error;
   };
 };
 
@@ -68,12 +78,13 @@ const handleAsyncAssertion = async (
   assertion: AnyAssertionDefinition,
   ...args: AnyAssertionParams
 ) => {
-  let actual: unknown;
   let result: unknown;
   let error: AssertionFailed | undefined = undefined;
 
+  const { actual, expected, meta } = (await assertion.prepareAsync?.(promise, ...args)) ?? {};
+
   try {
-    result = await assertion.assert.call(helpers, promise, ...args);
+    result = assertion.assert.call(helpers, actual, expected, meta);
 
     if (not) {
       error = new AssertionFailed();
@@ -90,18 +101,22 @@ const handleAsyncAssertion = async (
     error = err;
   }
 
-  if (error) {
-    const context = {
-      ...helpers,
-      not,
-      error,
-    };
-
-    error.message = assertion.getMessage.call(context, actual, ...args);
-    error.not = not;
-
-    throw error;
+  if (!error) {
+    return result;
   }
 
-  return result;
+  const context = {
+    ...helpers,
+    not,
+    error,
+  };
+
+  error.operator = assertion.name;
+  error.expected = expected;
+  error.actual = actual;
+  error.meta = meta;
+
+  error.message = assertion.getMessage.call(context, error);
+
+  throw error;
 };

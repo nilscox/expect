@@ -14,13 +14,13 @@ describe('toBeCloseTo', () => {
 
   it('number being not close enough to another number', () => {
     testError(() => expect(1.001001).toBeCloseTo(1), {
-      message: 'expected 1.001001 to be close to 1',
+      message: 'expected 1.001001 to be close to 1 (± 0.001)',
       expected: 1,
       actual: 1.001001,
       meta: { strict: true, threshold: 0.001 },
     });
 
-    testError(() => expect(0.999).toBeCloseTo(1), 'expected 0.999 to be close to 1');
+    testError(() => expect(0.999).toBeCloseTo(1), 'expected 0.999 to be close to 1 (± 0.001)');
   });
 
   it('number being close to another number with a custom threshold', () => {
@@ -30,7 +30,7 @@ describe('toBeCloseTo', () => {
 
   it('number being not close enough to another number with a custom threshold', () => {
     testError(() => expect(2).toBeCloseTo(1, { threshold: 0.1 }), {
-      message: 'expected 2 to be close to 1',
+      message: 'expected 2 to be close to 1 (± 0.1)',
       expected: 1,
       actual: 2,
       meta: { strict: true, threshold: 0.1 },
@@ -44,7 +44,7 @@ describe('toBeCloseTo', () => {
 
     it('number not being close to another number', () => {
       testError(() => expect(2).toBeCloseTo(0, { threshold: 1, strict: false }), {
-        message: 'expected 2 to be close to 0',
+        message: 'expected 2 to be close to 0 (± 1)',
         expected: 0,
         actual: 2,
         meta: { strict: false, threshold: 1 },
@@ -54,7 +54,7 @@ describe('toBeCloseTo', () => {
 
   it('not.toBeCloseTo()', () => {
     expect(1).not.toBeCloseTo(2);
-    testError(() => expect(1).not.toBeCloseTo(1.001), 'expected 1 not to be close to 1.001');
+    testError(() => expect(1).not.toBeCloseTo(1.001), 'expected 1 not to be close to 1.001 (± 0.001)');
   });
 
   it('invalid type', () => {

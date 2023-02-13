@@ -18,15 +18,23 @@ describe('toRejectWith', () => {
 
   it('non-rejecting promise', async () => {
     await testErrorAsync(expect(Promise.resolve(42)).toRejectWith(Number), {
-      message: 'expected promise to reject with a Number but it resolved with 42',
+      message: 'expected promise to reject with an instance of Number but it resolved with 42',
       expected: Number,
-      meta: 42,
+      meta: {
+        didThrow: false,
+        resolved: 42,
+        error: undefined,
+      },
     });
 
     await testErrorAsync(expect(Promise.resolve(42)).toRejectWith(Error), {
-      message: 'expected promise to reject with a Error but it resolved with 42',
+      message: 'expected promise to reject with an instance of Error but it resolved with 42',
       expected: Error,
-      meta: 42,
+      meta: {
+        didThrow: false,
+        resolved: 42,
+        error: undefined,
+      },
     });
   });
 
@@ -41,8 +49,9 @@ describe('toRejectWith', () => {
     await expect(Promise.resolve(42)).not.toRejectWith(String);
     await expect(Promise.reject(error)).not.toRejectWith(String);
 
-    await testErrorAsync(expect(Promise.reject(error)).not.toRejectWith(Error), {
-      message: 'expected promise not to reject with a Error but it did',
-    });
+    await testErrorAsync(
+      expect(Promise.reject(error)).not.toRejectWith(Error),
+      'expected promise not to reject with an instance of Error but it did'
+    );
   });
 });

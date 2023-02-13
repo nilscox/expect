@@ -7,32 +7,39 @@ export type Helpers = {
   formatValue: ValueFormatter;
 };
 
-export interface AssertionDefinition<Name extends AssertionNames, Actual> {
+export interface AssertionDefinition<Name extends AssertionNames, Subject, Value, Meta> {
   name: Name;
 
   expectedType?: string;
-  guard?(actual: unknown): actual is Actual;
+  guard?(subject: unknown): subject is Subject;
+
+  prepare?(
+    subject: Subject,
+    ...args: Parameters<Expect.Assertions[Name]>
+  ): { actual: Value; expected?: Value; meta?: Meta };
+
+  prepareAsync?(
+    promise: Promise<Subject>,
+    ...args: Parameters<Expect.Assertions[Name]>
+  ): Promise<{ actual: Value; expected?: Value; meta?: Meta }>;
 
   assert(
     this: Helpers,
-    actual: Actual,
-    ...args: Parameters<Expect.Assertions[Name]>
-  ): ReturnType<Expect.Assertions[Name]>;
+    actual: Value,
+    expected: Value,
+    meta: Meta
+  ): ReturnType<Expect.Assertions[Name]> | Promise<ReturnType<Expect.Assertions[Name]>>;
 
-  getMessage(
-    this: Helpers & { not: boolean; error: AssertionFailed },
-    actual: Actual,
-    ...args: Parameters<Expect.Assertions[Name]>
-  ): string;
+  getMessage(this: Helpers & { not: boolean }, error: AssertionFailed<Meta>): string;
 }
 
 export type AssertionDefinitions = {
-  [Name in AssertionNames]: AssertionDefinition<Name, unknown>;
+  [Name in AssertionNames]: AssertionDefinition<Name, unknown, unknown, unknown>;
 };
 
 export type AssertionNames = keyof Expect.Assertions;
 
-export type AnyAssertionDefinition = AssertionDefinition<AssertionNames, unknown>;
+export type AnyAssertionDefinition = AssertionDefinition<AssertionNames, unknown, unknown, unknown>;
 
 export type AnyAssertion = Expect.Assertions[AssertionNames];
 export type AnyAssertionParams = Parameters<AnyAssertion>;

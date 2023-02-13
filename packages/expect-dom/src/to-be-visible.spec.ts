@@ -16,6 +16,12 @@ describe('toBeVisible', () => {
     expect(createStyledDiv({})).toBeVisible();
   });
 
+  const styles = {
+    display: 'block',
+    visibility: 'visible',
+    opacity: '',
+  };
+
   for (const [key, value] of [
     ['display', 'none'],
     ['visibility', 'hidden'],
@@ -29,10 +35,10 @@ describe('toBeVisible', () => {
 
       testError(() => expect(div).toBeVisible(), {
         message: `expected [object HTMLDivElement] to be visible but it has style "${style}"`,
+        hint: key,
+        actual: { ...styles, [key]: value },
         meta: {
           element: div,
-          key,
-          value,
         },
       });
     });

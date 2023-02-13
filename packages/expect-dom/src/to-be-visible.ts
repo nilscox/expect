@@ -1,4 +1,4 @@
-import expect, { AssertionFailed } from '@nilscox/expect';
+import expect, { assertion } from '@nilscox/expect';
 
 declare global {
   namespace Expect {
@@ -8,36 +8,31 @@ declare global {
   }
 }
 
-type Meta = {
-  element: HTMLElement;
-  key: 'display' | 'visibility' | 'opacity';
-  value: string;
-};
-
 expect.addAssertion({
   name: 'toBeVisible',
+
   expectedType: 'an instance of HTMLElement',
   guard(actual): actual is HTMLElement {
     return actual instanceof HTMLElement;
   },
-  assert(element) {
+
+  prepare(element) {
     const { display, visibility, opacity } = window.getComputedStyle(element);
 
-    if (display === 'none') {
-      throw new AssertionFailed<Meta>({ meta: { element, key: 'display', value: 'none' } });
-    }
-
-    if (visibility === 'hidden' || visibility === 'collapse') {
-      throw new AssertionFailed<Meta>({ meta: { element, key: 'visibility', value: visibility } });
-    }
-
-    if (opacity === '0') {
-      throw new AssertionFailed<Meta>({ meta: { element, key: 'opacity', value: '0' } });
-    }
+    return {
+      actual: { display, visibility, opacity },
+      meta: { element },
+    };
   },
-  getMessage(element) {
-    let meta = this.error?.meta as { key: string; value: string } | undefined;
-    let message = `expected ${this.formatValue(element)}`;
+
+  assert({ display, visibility, opacity }) {
+    assertion(display !== 'none', 'display');
+    assertion(visibility !== 'hidden' && visibility !== 'collapse', 'visibility');
+    assertion(opacity !== '0', 'opacity');
+  },
+
+  getMessage(error) {
+    let message = `expected ${this.formatValue(error.meta.element)}`;
 
     if (this.not) {
       message += ' not';
@@ -47,10 +42,11 @@ expect.addAssertion({
 
     if (this.not) {
       message += ' but it is';
-    }
+    } else if (error.meta) {
+      const key = error.hint as keyof typeof error.actual;
+      const value = error.actual?.[key];
 
-    if (meta) {
-      message += ` but it has style "${meta.key}: ${meta.value}"`;
+      message += ` but it has style "${key}: ${value}"`;
     }
 
     return message;
