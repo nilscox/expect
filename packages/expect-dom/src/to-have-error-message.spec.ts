@@ -67,6 +67,13 @@ describe('toHaveErrorMessage', () => {
         errorMessageId: null,
       },
     });
+
+    input.setAttribute('aria-invalid', 'false');
+
+    testError(
+      () => expect(input).toHaveErrorMessage('error'),
+      'expected [object HTMLInputElement] to have error message "error" but it does not have attribute aria-invalid=true'
+    );
   });
 
   it('invalid input without error message', () => {

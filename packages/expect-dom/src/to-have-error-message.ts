@@ -18,12 +18,6 @@ export enum ErrorMessageAssertionFailedReason {
 type Reason = ErrorMessageAssertionFailedReason;
 const Reason = ErrorMessageAssertionFailedReason;
 
-type Meta = {
-  element: HTMLElement;
-  reason: Reason;
-  errorMessageId?: string;
-};
-
 expect.addAssertion({
   name: 'toHaveErrorMessage',
 
@@ -55,7 +49,7 @@ expect.addAssertion({
   },
 
   assert(actual, expected, { hasExpectedMessage, hasAriaInvalid, errorMessageId, errorMessageElement }) {
-    assertion(hasAriaInvalid, Reason.noAriaInvalid);
+    assertion(hasAriaInvalid === 'true', Reason.noAriaInvalid);
     assertion(errorMessageId, Reason.noErrorMessage);
     assertion(errorMessageElement, Reason.errorMessageNotFound);
 
