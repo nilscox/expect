@@ -65,7 +65,7 @@ declare global {
 export const createAssertions = (not: boolean, actual: unknown) => {
   return mapObject<AssertionNames, AnyAssertionDefinition, AnyAssertionResult>(
     expect._assertions,
-    (assertion) => createAssertion(not, actual, assertion)
+    (assertion) => createAssertion(assertion, not, actual)
   );
 };
 
