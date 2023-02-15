@@ -1,6 +1,7 @@
 import assert from 'assert';
 import { isPromise } from 'util/types';
 import { assertion } from '../errors/assertion-failed';
+import { isFunction } from '../errors/guard-error';
 import { expect } from '../expect';
 
 declare global {
@@ -59,31 +60,22 @@ expect.addAssertion({
   },
 
   getMessage(error) {
-    let message = 'expected promise';
+    const formatter = this.formatter
+      .append('expected promise')
+      .not.append('to reject')
+      .if(isFunction, error.expected, {
+        then: (expected) => `with an instance of ${expected.name}`,
+      });
 
     if (this.not) {
-      message += ' not';
+      return formatter.append('but it did').result();
     }
 
-    message += ' to reject';
-
-    if (error.expected) {
-      assert(error.expected instanceof Function);
-      message += ` with an instance of ${error.expected.name}`;
-    }
-
-    if (this.not) {
-      message += ' but it did';
-      return message;
-    }
-
-    if (error.actual) {
-      assert(error.actual instanceof Function);
-      message += ` but it rejected with an instance of ${this.formatValue(error.actual.name)}`;
-    } else {
-      message += ` but it resolved with ${this.formatValue(error.meta.resolved)}`;
-    }
-
-    return message;
+    return formatter
+      .if(isFunction, error.actual, {
+        then: (actual) => `but it rejected with an instance of ${actual.name}`,
+        else: `but it resolved with ${this.formatValue(error.meta.resolved)}`,
+      })
+      .result();
   },
 });

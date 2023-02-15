@@ -59,7 +59,7 @@ describe('toHaveErrorMessage', () => {
 
     testError(() => expect(input).toHaveErrorMessage('error'), {
       message:
-        'expected [object HTMLInputElement] to have error message "error" but it does not have attribute aria-invalid=true',
+        'expected HTMLInputElement {} to have error message "error" but it does not have attribute aria-invalid=true',
       expected: 'error',
       hint: ErrorMessageAssertionFailedReason.noAriaInvalid,
       meta: {
@@ -72,21 +72,21 @@ describe('toHaveErrorMessage', () => {
 
     testError(
       () => expect(input).toHaveErrorMessage('error'),
-      'expected [object HTMLInputElement] to have error message "error" but it does not have attribute aria-invalid=true'
+      'expected HTMLInputElement {} to have error message "error" but it does not have attribute aria-invalid=true'
     );
   });
 
   it('invalid input without error message', () => {
     testError(
       () => expect(createInput({ invalid: true })).toHaveErrorMessage('error'),
-      'expected [object HTMLInputElement] to have error message "error" but it does not have attribute aria-errormessage'
+      'expected HTMLInputElement {} to have error message "error" but it does not have attribute aria-errormessage'
     );
   });
 
   it('invalid input with error message but without error element', () => {
     testError(
       () => expect(createInput({ invalid: true, errorMessageId: 'messageId' })).toHaveErrorMessage('error'),
-      'expected [object HTMLInputElement] to have error message "error" but the error element was not found (id="messageId")'
+      'expected HTMLInputElement {} to have error message "error" but the error element was not found (id="messageId")'
     );
   });
 
@@ -94,7 +94,7 @@ describe('toHaveErrorMessage', () => {
     const input = createInput({ invalid: true, errorMessageId: 'id', message: 'err' });
 
     testError(() => expect(input).toHaveErrorMessage('error'), {
-      message: 'expected [object HTMLInputElement] to have error message "error" but it is "err"',
+      message: 'expected HTMLInputElement {} to have error message "error" but it is "err"',
       actual: 'err',
       expected: 'error',
       hint: ErrorMessageAssertionFailedReason.unexpectedMessage,
@@ -114,7 +114,7 @@ describe('toHaveErrorMessage', () => {
         expect(
           createInput({ invalid: true, errorMessageId: 'id', message: 'error' })
         ).not.toHaveErrorMessage(),
-      'expected [object HTMLInputElement] not to have error message'
+      'expected HTMLInputElement {} not to have error message'
     );
 
     testError(
@@ -122,7 +122,7 @@ describe('toHaveErrorMessage', () => {
         expect(createInput({ invalid: true, errorMessageId: 'id', message: 'error' })).not.toHaveErrorMessage(
           'error'
         ),
-      'expected [object HTMLInputElement] not to have error message "error"'
+      'expected HTMLInputElement {} not to have error message "error"'
     );
   });
 

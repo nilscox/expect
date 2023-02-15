@@ -29,21 +29,13 @@ expect.addAssertion({
   },
 
   getMessage(error) {
-    let message = `expected ${this.formatValue(error.meta.element)}`;
-
-    if (this.not) {
-      message += ' not';
-    }
-
-    message += ' to have text';
-    message += ` ${this.formatValue(error.expected)}`;
-
-    if (this.not) {
-      message += ' but it does';
-    } else if (error.actual) {
-      message += ` but it is ${this.formatValue(error.actual)}`;
-    }
-
-    return message;
+    return this.formatter
+      .expected(error.meta.element)
+      .not.append('to have text')
+      .value(error.expected)
+      .if(!this.not && Boolean(error.actual), {
+        then: `but it is ${this.formatValue(error.actual)}`,
+      })
+      .result();
   },
 });

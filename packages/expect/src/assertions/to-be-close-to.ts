@@ -35,15 +35,12 @@ expect.addAssertion({
   },
 
   getMessage(error) {
-    let message = `expected ${this.formatValue(error.actual)}`;
-
-    if (this.not) {
-      message += ' not';
-    }
-
-    message += ` to be close to ${this.formatValue(error.expected)}`;
-    message += ` (± ${error.meta.threshold})`;
-
-    return message;
+    return this.formatter
+      .append('expected')
+      .value(error.actual)
+      .not.append('to be close to')
+      .value(error.expected)
+      .append(`(± ${error.meta.threshold})`)
+      .result();
   },
 });

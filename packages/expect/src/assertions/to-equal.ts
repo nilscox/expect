@@ -21,14 +21,6 @@ expect.addAssertion({
   },
 
   getMessage(error) {
-    let message = `expected ${this.formatValue(error.actual)}`;
-
-    if (this.not) {
-      message += ' not';
-    }
-
-    message += ` to equal ${this.formatValue(error.expected)}`;
-
-    return message;
+    return this.formatter.expected(error.actual).not.append('to equal').value(error.expected).result();
   },
 });

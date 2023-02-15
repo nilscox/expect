@@ -28,7 +28,7 @@ describe('toHaveTextContent', () => {
     const div = createDiv('hello');
 
     testError(() => expect(div).toHaveTextContent('world'), {
-      message: 'expected [object HTMLDivElement] to have text "world" but it is "hello"',
+      message: 'expected HTMLDivElement {} to have text "world" but it is "hello"',
       actual: 'hello',
       expected: 'world',
       meta: {
@@ -42,7 +42,7 @@ describe('toHaveTextContent', () => {
 
     testError(
       () => expect(createDiv('hello')).not.toHaveTextContent('hello'),
-      'expected [object HTMLDivElement] not to have text "hello" but it does'
+      'expected HTMLDivElement {} not to have text "hello"'
     );
   });
 

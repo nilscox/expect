@@ -29,14 +29,6 @@ expect.addAssertion({
   },
 
   getMessage(error) {
-    let message = `expected ${this.formatValue(error.meta.element)}`;
-
-    if (this.not) {
-      message += ' not';
-    }
-
-    message += ' to be disabled';
-
-    return message;
+    return this.formatter.expected(error.meta.element).not.append('to be disabled').result();
   },
 });

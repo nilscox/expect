@@ -1,10 +1,10 @@
-import util from 'util';
+import util, { InspectOptions } from 'util';
 import { isMatcher } from './create-matcher';
 
-export type ValueFormatter = (value: unknown) => string;
+export type ValueFormatter = (value: unknown, options?: InspectOptions) => string;
 
-// format matchers, dom elements
-export const formatValue: ValueFormatter = (value) => {
+// format dom elements
+export const formatValue: ValueFormatter = (value, options) => {
   if (typeof value === 'string') {
     return `"${value}"`;
   }
@@ -15,18 +15,18 @@ export const formatValue: ValueFormatter = (value) => {
     }
 
     if (Array.isArray(value)) {
-      return `[${value.map(formatValue).join(', ')}]`;
+      return `[${value.map((value) => formatValue(value, options)).join(', ')}]`;
     }
 
     if (value instanceof Error) {
       return `[${value.constructor.name}: ${value.message}]`;
     }
 
-    return util.inspect(value);
+    return util.inspect(value, options);
   }
 
   if (isMatcher(value)) {
-    return util.inspect(value);
+    return util.inspect(value, options);
   }
 
   if (typeof value === 'function') {

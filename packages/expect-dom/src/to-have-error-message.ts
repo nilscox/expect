@@ -59,40 +59,26 @@ expect.addAssertion({
   },
 
   getMessage(error) {
-    let message = `expected ${this.formatValue(error.meta.element)}`;
-
-    if (this.not) {
-      message += ' not';
-    }
-
-    message += ' to have error message';
-
-    if (error.meta.hasExpectedMessage) {
-      message += ` ${this.formatValue(error.expected)}`;
-    }
-
-    // if (!error.meta.has) {
-    //   return message;
-    // }
-
     const reason = error.hint as Reason;
 
-    if (reason === Reason.noAriaInvalid) {
-      message += ' but it does not have attribute aria-invalid=true';
-    }
-
-    if (reason === Reason.noErrorMessage) {
-      message += ' but it does not have attribute aria-errormessage';
-    }
-
-    if (reason === Reason.errorMessageNotFound) {
-      message += ` but the error element was not found (id=${this.formatValue(error.meta.errorMessageId)})`;
-    }
-
-    if (reason === Reason.unexpectedMessage) {
-      message += ` but it is ${this.formatValue(error.actual)}`;
-    }
-
-    return message;
+    return this.formatter
+      .expected(error.meta.element)
+      .not.append('to have error message')
+      .if(error.meta.hasExpectedMessage, {
+        then: this.formatValue(error.expected),
+      })
+      .if(reason === Reason.noAriaInvalid, {
+        then: 'but it does not have attribute aria-invalid=true',
+      })
+      .if(reason === Reason.noErrorMessage, {
+        then: 'but it does not have attribute aria-errormessage',
+      })
+      .if(reason === Reason.errorMessageNotFound, {
+        then: `but the error element was not found (id=${this.formatValue(error.meta.errorMessageId)})`,
+      })
+      .if(reason === Reason.unexpectedMessage, {
+        then: `but it is ${this.formatValue(error.actual)}`,
+      })
+      .result();
   },
 });

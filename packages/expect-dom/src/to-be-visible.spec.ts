@@ -1,3 +1,4 @@
+import util from 'util';
 import expect from '@nilscox/expect';
 import { testError } from '@nilscox/expect/test/test-error';
 
@@ -34,7 +35,7 @@ describe('toBeVisible', () => {
       const div = createStyledDiv({ [key]: value });
 
       testError(() => expect(div).toBeVisible(), {
-        message: `expected [object HTMLDivElement] to be visible but it has style "${style}"`,
+        message: `expected #1 to be visible but it has style "${style}"\n\n#1: ${util.inspect(div)}`,
         hint: key,
         actual: { ...styles, [key]: value },
         meta: {
@@ -49,7 +50,7 @@ describe('toBeVisible', () => {
 
     testError(
       () => expect(createStyledDiv({})).not.toBeVisible(),
-      'expected [object HTMLDivElement] not to be visible but it is'
+      `expected #1 not to be visible\n\n#1: ${util.inspect(createStyledDiv({}))}`
     );
   });
 

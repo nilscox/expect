@@ -1,5 +1,5 @@
 import { isPromise } from 'util/types';
-import { assertion, AssertionFailed } from '../errors/assertion-failed';
+import { assertion } from '../errors/assertion-failed';
 import { expect } from '../expect';
 
 declare global {
@@ -52,24 +52,14 @@ expect.addAssertion({
   },
 
   getMessage(error) {
-    let message = 'expected promise';
-
-    if (this.not) {
-      message += ' not';
-    }
-
-    message += ' to resolve';
-
-    if (error.expected) {
-      message += ` with ${this.formatValue(error.expected)}`;
-    }
-
-    if (error.meta.error) {
-      message += ` but it rejected with ${this.formatValue(error.meta.error)}`;
-    } else {
-      message += ` but it resolved with ${this.formatValue(error.actual)}`;
-    }
-
-    return message;
+    return this.formatter
+      .append('expected promise')
+      .not.append('to resolve')
+      .if(Boolean(error.expected), { then: `with ${this.formatValue(error.expected)}` })
+      .if(Boolean(error.meta.error), {
+        then: `but it rejected with ${this.formatValue(error.meta.error)}`,
+        else: `but it resolved with ${this.formatValue(error.actual)}`,
+      })
+      .result();
   },
 });

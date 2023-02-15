@@ -52,29 +52,20 @@ expect.addAssertion({
   },
 
   getMessage(error) {
-    let message = 'expected promise';
+    const formatter = this.formatter
+      .append('expected promise')
+      .not.append('to reject')
+      .if(error.meta.hasExpected, { then: `with ${this.formatValue(error.expected)}` });
 
     if (this.not) {
-      message += ' not';
+      return formatter.append('but it did').result();
     }
 
-    message += ' to reject';
-
-    if (error.meta.hasExpected) {
-      message += ` with ${this.formatValue(error.expected)}`;
-    }
-
-    if (this.not) {
-      message += ' but it did';
-      return message;
-    }
-
-    if (error.actual) {
-      message += ` but it rejected with ${this.formatValue(error.actual)}`;
-    } else {
-      message += ` but it resolved with ${this.formatValue(error.meta.resolved)}`;
-    }
-
-    return message;
+    return formatter
+      .if(Boolean(error.actual), {
+        then: `but it rejected with ${this.formatValue(error.actual)}`,
+        else: `but it resolved with ${this.formatValue(error.meta.resolved)}`,
+      })
+      .result();
   },
 });

@@ -66,18 +66,11 @@ expect.addAssertion({
   },
 
   getMessage(error) {
-    let message = `expected ${this.formatValue(error.subject)}`;
-
-    if (this.not) {
-      message += ' not';
-    }
-
-    message += ` to have property ${this.formatValue(error.meta.property)}`;
-
-    if (error.meta.hasExpectedValue) {
-      message += ` = ${this.formatValue(error.expected)}`;
-    }
-
-    return message;
+    return this.formatter
+      .expected(error.subject)
+      .not.append('to have property')
+      .value(error.meta.property)
+      .if(error.meta.hasExpectedValue, { then: `= ${this.formatValue(error.expected)}` })
+      .result();
   },
 });

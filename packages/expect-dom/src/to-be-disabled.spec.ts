@@ -20,7 +20,7 @@ describe('toBeDisabled', () => {
     const button = createButton();
 
     testError(() => expect(button).toBeDisabled(), {
-      message: 'expected [object HTMLButtonElement] to be disabled',
+      message: 'expected HTMLButtonElement {} to be disabled',
       actual: false,
       expected: true,
       meta: { element: button },
@@ -32,7 +32,7 @@ describe('toBeDisabled', () => {
 
     testError(
       () => expect(createButton(true)).not.toBeDisabled(),
-      'expected [object HTMLButtonElement] not to be disabled'
+      'expected HTMLButtonElement {} not to be disabled'
     );
   });
 

@@ -1,4 +1,4 @@
-import expect, { assertion, AssertionFailed } from '@nilscox/expect';
+import expect, { assertion } from '@nilscox/expect';
 import { isSpy } from './is-spy';
 
 declare global {
@@ -29,21 +29,14 @@ expect.addAssertion({
   },
 
   getMessage(error) {
-    let message = `expected ${this.formatValue(error.subject)}`;
-
-    if (this.not) {
-      message += ' not';
-    }
-
-    message += ` to have been called`;
-
-    if (this.not) {
-      message += ' but it was\n';
-      message += 'calls:\n';
-
-      message += error.meta.calls.map(({ args }) => args.map(this.formatValue).join(', ')).join('\n');
-    }
-
-    return message;
+    return this.formatter
+      .expected(error.subject)
+      .not.append('to have been called')
+      .if(this.not, {
+        then: `\ncalls:\n${error.meta.calls
+          .map(({ args }) => args.map((arg) => this.formatValue(arg)).join(', '))
+          .join('\n')}`,
+      })
+      .result();
   },
 });

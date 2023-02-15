@@ -14,7 +14,7 @@ describe('toHaveValue', () => {
     const input = document.createElement('input');
 
     testError(() => expect(input).toHaveValue('world'), {
-      message: 'expected [object HTMLInputElement] to have value = "world"',
+      message: 'expected HTMLInputElement {} to have value = "world"',
       actual: '',
       expected: 'world',
       meta: {
@@ -45,7 +45,7 @@ describe('toHaveValue', () => {
     input.value = 'hello';
 
     testError(() => expect(input).toHaveValue('world'), {
-      message: 'expected [object HTMLInputElement] to have value = "world" but it is "hello"',
+      message: 'expected HTMLInputElement {} to have value = "world" but it is "hello"',
       actual: 'hello',
       expected: 'world',
       meta: {
@@ -63,7 +63,7 @@ describe('toHaveValue', () => {
 
     testError(
       () => expect(input).not.toHaveValue('hello'),
-      'expected [object HTMLInputElement] not to have value = "hello" but it does'
+      'expected HTMLInputElement {} not to have value = "hello"'
     );
   });
 

@@ -48,14 +48,6 @@ expect.addAssertion({
   },
 
   getMessage(error) {
-    let message = `expected ${this.formatValue(error.actual)}`;
-
-    if (this.not) {
-      message += ' not';
-    }
-
-    message += ` to include ${this.formatValue(error.meta.element)}`;
-
-    return message;
+    return this.formatter.expected(error.subject).not.append('to include').value(error.meta.element).result();
   },
 });

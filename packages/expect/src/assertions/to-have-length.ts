@@ -51,18 +51,12 @@ expect.addAssertion({
   },
 
   getMessage(error) {
-    let message = `expected ${this.formatValue(error.subject)}`;
-
-    if (this.not) {
-      message += ' not';
-    }
-
-    if (typeof error.subject === 'function') {
-      message += ` to take ${this.formatValue(error.expected)} argument(s)`;
-    } else {
-      message += ` to have length ${this.formatValue(error.expected)}`;
-    }
-
-    return message;
+    return this.formatter
+      .expected(error.subject)
+      .not.if(typeof error.subject === 'function', {
+        then: `to take ${this.formatValue(error.expected)} argument(s)`,
+        else: `to have length ${this.formatValue(error.expected)}`,
+      })
+      .result();
   },
 });

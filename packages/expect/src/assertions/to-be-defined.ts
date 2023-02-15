@@ -17,14 +17,6 @@ expect.addAssertion({
   },
 
   getMessage(error) {
-    let message = `expected ${this.formatValue(error.actual)}`;
-
-    if (this.not) {
-      message += ' not';
-    }
-
-    message += ` to be defined`;
-
-    return message;
+    return this.formatter.expected(error.actual).not.append('to be defined').result();
   },
 });

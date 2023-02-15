@@ -1,4 +1,5 @@
 import { AssertionFailed } from '../errors/assertion-failed';
+import { MessageFormatter } from '../helpers/message-formatter';
 import { ValueFormatter } from '../helpers/format-value';
 
 export type Helpers = {
@@ -30,7 +31,10 @@ export interface AssertionDefinition<Name extends AssertionNames, Subject, Value
     meta: Meta
   ): ReturnType<Expect.Assertions[Name]> | Promise<ReturnType<Expect.Assertions[Name]>>;
 
-  getMessage(this: Helpers & { not: boolean }, error: AssertionFailed<Meta>): string;
+  getMessage(
+    this: Helpers & { not: boolean; formatter: MessageFormatter },
+    error: AssertionFailed<Meta>
+  ): string;
 }
 
 export type AssertionDefinitions = {

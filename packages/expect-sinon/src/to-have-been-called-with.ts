@@ -45,20 +45,13 @@ expect.addAssertion({
   },
 
   getMessage(error) {
-    let message = `expected ${this.formatValue(error.subject)}`;
-
-    if (this.not) {
-      message += ' not';
-    }
-
-    message += ` to have been called `;
-
-    if (error.meta.args.length > 0) {
-      message += `with ${error.meta.args.map(this.formatValue).join(', ')}`;
-    } else {
-      message += `without argument`;
-    }
-
-    return message;
+    return this.formatter
+      .expected(error.subject)
+      .not.append('to have been called')
+      .if(error.meta.args.length > 0, {
+        then: `with ${error.meta.args.map((arg) => this.formatValue(arg)).join(', ')}`,
+        else: 'without argument',
+      })
+      .result();
   },
 });

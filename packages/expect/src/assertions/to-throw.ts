@@ -50,29 +50,20 @@ expect.addAssertion({
   },
 
   getMessage(error) {
-    let message = `expected ${this.formatValue(error.subject)}`;
-
-    if (this.not) {
-      message += ' not';
-    }
-
-    if (error.meta.hasExpected) {
-      message += ` to throw ${this.formatValue(error.expected)}`;
-    } else {
-      message += ` to throw anything`;
-    }
+    const formatter = this.formatter.expected(error.subject).not.if(error.meta.hasExpected, {
+      then: `to throw ${this.formatValue(error.expected)}`,
+      else: 'to throw anything',
+    });
 
     if (!error.meta.didThrow) {
-      message += ` but it did not throw`;
-      return message;
+      return formatter.append('but it did not throw').result();
     }
 
-    if (this.not) {
-      message += ` but it did`;
-    } else {
-      message += ` but it threw ${this.formatValue(error.actual)}`;
-    }
-
-    return message;
+    return formatter
+      .if(this.not, {
+        then: 'but it did',
+        else: `but it threw ${this.formatValue(error.actual)}`,
+      })
+      .result();
   },
 });

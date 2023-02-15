@@ -2,6 +2,7 @@ import { isPromise } from 'util/types';
 import { AssertionFailed } from '../errors/assertion-failed';
 import { GuardError } from '../errors/guard-error';
 import { deepEqual } from '../helpers/deep-equal';
+import { messageFormatter } from '../helpers/message-formatter';
 import { formatValue } from '../helpers/format-value';
 import { AnyAssertionDefinition, AnyAssertionParams, AnyAssertionResult, Helpers } from './expect-types';
 
@@ -78,10 +79,10 @@ const handleAssertion = (
     return result;
   }
 
-  const context = {
+  const context: ThisParameterType<AnyAssertionDefinition['getMessage']> = {
     ...helpers,
     not,
-    error,
+    formatter: messageFormatter({ not, maxInlineLength: 60 }),
   };
 
   error.operator = assertion.name;

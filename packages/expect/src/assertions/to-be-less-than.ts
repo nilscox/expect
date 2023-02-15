@@ -33,22 +33,14 @@ expect.addAssertion({
   },
 
   getMessage(error) {
-    let message = `expected ${this.formatValue(error.actual)}`;
-
-    if (this.not) {
-      message += ' not';
-    }
-
-    message += ' to be less';
-
-    if (error.meta.strict) {
-      message += ' than';
-    } else {
-      message += ' or equal to';
-    }
-
-    message += ` ${this.formatValue(error.expected)}`;
-
-    return message;
+    return this.formatter
+      .expected(error.actual)
+      .not.append('to be less')
+      .if(error.meta.strict, {
+        then: 'than',
+        else: 'or equal to',
+      })
+      .value(error.expected)
+      .result();
   },
 });
