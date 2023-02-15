@@ -9,6 +9,7 @@
   ],
   "scripts": {
     "clean": "rm -rf dist && rm *.tsbuildinfo",
-    "build": "tsc"
+    "build": "tsc",
+    "test": "mocha"
   }
 }

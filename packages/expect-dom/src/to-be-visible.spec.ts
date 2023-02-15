@@ -1,5 +1,5 @@
 import expect from '@nilscox/expect';
-import { testError } from 'expect/src/test/test-error';
+import { testError } from '@nilscox/expect/test/test-error';
 
 import './to-be-visible';
 

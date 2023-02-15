@@ -1,6 +1,5 @@
 import assert from 'assert';
 import { AssertionFailed } from '../errors/assertion-failed';
-import { ExpectError } from '../errors/expect-error';
 import { isMatcher } from '../helpers/create-matcher';
 
 type ErrorAttributes = {

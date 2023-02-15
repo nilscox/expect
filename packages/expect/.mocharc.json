@@ -1,0 +1,5 @@
+{
+  "require": ["esbuild-register"],
+  "extension": "ts",
+  "spec": "src/**/*.spec.ts"
+}

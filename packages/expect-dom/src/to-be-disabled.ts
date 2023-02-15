@@ -8,10 +8,6 @@ declare global {
   }
 }
 
-type Meta = {
-  element: HTMLElement;
-};
-
 expect.addAssertion({
   name: 'toBeDisabled',
 

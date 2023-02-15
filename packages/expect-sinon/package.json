@@ -9,7 +9,8 @@
   ],
   "scripts": {
     "clean": "rm -rf dist",
-    "build": "tsc -b"
+    "build": "tsc -b",
+    "test": "mocha"
   },
   "devDependencies": {
     "@types/sinon": "^10.0.13",

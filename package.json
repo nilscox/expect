@@ -6,7 +6,7 @@
   "scripts": {
     "clean": "yarn workspaces run clean",
     "build": "yarn workspaces run build",
-    "test": "mocha"
+    "test": "yarn workspaces run test"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.0",

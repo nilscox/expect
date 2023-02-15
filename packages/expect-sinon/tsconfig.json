@@ -3,6 +3,11 @@
   "include": ["src"],
   "references": [{ "path": "../expect/tsconfig.json" }],
   "compilerOptions": {
-    "outDir": "dist"
+    "outDir": "dist",
+    "baseUrl": ".",
+    "paths": {
+      "@nilscox/expect": ["../expect/src"],
+      "@nilscox/expect/*": ["../expect/src/*"]
+    }
   }
 }

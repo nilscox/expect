@@ -1,5 +1,5 @@
 import expect from '@nilscox/expect';
-import { testError } from '@nilscox/expect/src/test/test-error';
+import { testError } from '@nilscox/expect/test/test-error';
 
 import './to-have-error-message';
 import { ErrorMessageAssertionFailedReason } from './to-have-error-message';

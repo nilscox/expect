@@ -9,11 +9,13 @@
   ],
   "scripts": {
     "clean": "rm -rf dist",
-    "build": "tsc -b"
+    "build": "tsc -b",
+    "test": "mocha"
   },
   "devDependencies": {
     "jsdom": "^20.0.1",
-    "jsdom-global": "^3.0.2"
+    "jsdom-global": "^3.0.2",
+    "tsconfig-paths": "^4.1.2"
   },
   "peerDependencies": {
     "@nilscox/expect": "^0.1.0"

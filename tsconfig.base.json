@@ -7,10 +7,6 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "sourceMap": true,
-    "baseUrl": "./packages",
-    "paths": {
-      "@nilscox/expect": ["expect/src"]
-    }
+    "sourceMap": true
   }
 }
