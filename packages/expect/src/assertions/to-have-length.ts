@@ -1,4 +1,3 @@
-import assert from 'assert';
 import { assertion } from '../errors/assertion-failed';
 import { expect } from '../expect';
 
