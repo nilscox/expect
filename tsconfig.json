@@ -1,15 +1,8 @@
 {
-  "compilerOptions": {
-    "target": "es6",
-    "module": "commonjs",
-    "declaration": true,
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "sourceMap": true,
-    "baseUrl": "./packages",
-    "paths": {
-      "@nilscox/expect": ["expect/src"]
-    }
-  }
+  "files": [],
+  "references": [
+    { "path": "./packages/expect" },
+    { "path": "./packages/expect-dom" },
+    { "path": "./packages/expect-sinon" }
+  ]
 }

@@ -34,7 +34,9 @@ expect.addAssertion({
       return false;
     }
 
-    return 'length' in subject && typeof subject['length'] === 'number';
+    // todo
+    // return 'length' in subject && typeof subject.length === 'number';
+    return 'length' in subject && typeof (subject as Record<'length', unknown>).length === 'number';
   },
 
   prepare(actual, length) {
