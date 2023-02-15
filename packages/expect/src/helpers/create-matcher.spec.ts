@@ -1,3 +1,4 @@
+import util from 'util';
 import assert from 'assert';
 import { castAsMatcher, createMatcher, isMatcher } from './create-matcher';
 
@@ -19,5 +20,29 @@ describe('createMatcher', () => {
 
     assert.ok(equalsTest('test'));
     assert.ok(!equalsTest('chaton'));
+  });
+
+  it('prints a matcher using util.inspect', () => {
+    const matchSomething = createMatcher(() => true);
+
+    assert.equal(util.inspect(matchSomething()), '() => true');
+  });
+
+  it('prints a matcher with a custom serializer', () => {
+    const matchSomething = createMatcher(
+      () => true,
+      () => 'serialized'
+    );
+
+    assert.equal(util.inspect(matchSomething()), 'serialized');
+  });
+
+  it('prints a matcher with a custom serializer and arguments', () => {
+    const matchSomething = createMatcher(
+      (value: unknown, arg: boolean) => true,
+      (arg) => `serialized ${arg}`
+    );
+
+    assert.equal(util.inspect(matchSomething(true)), 'serialized true');
   });
 });

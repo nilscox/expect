@@ -1,3 +1,4 @@
+import util from 'util';
 import { expect } from '../expect';
 import { createMatcher } from '../helpers/create-matcher';
 import { mapObject } from '../helpers/map-object';
@@ -13,6 +14,6 @@ export const objectWith = createMatcher(
     }
   },
   (object) => {
-    return `an object with ${JSON.stringify(object)}`;
+    return `an object with ${util.inspect(object)}`;
   }
 );

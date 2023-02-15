@@ -1,4 +1,5 @@
 import assert from 'assert';
+
 import { stringMatching } from '../matchers/string-matching';
 import { createMatcher } from './create-matcher';
 import { formatValue } from './format-value';
@@ -20,7 +21,7 @@ describe('formatValue', () => {
   });
 
   it('formats an object', () => {
-    assert.equal(formatValue({ foo: 'bar' }), '{"foo":"bar"}');
+    assert.equal(formatValue({ foo: 'bar' }), "{ foo: 'bar' }");
   });
 
   it('formats an array', () => {
@@ -61,6 +62,6 @@ describe('formatValue', () => {
 
   it('formats an object containing a matcher', () => {
     const matcher = stringMatching(/t.st/);
-    assert.equal(formatValue({ foo: { bar: matcher } }), '{"foo":{"bar":"a string matching /t.st/"}}');
+    assert.equal(formatValue({ foo: { bar: matcher } }), '{ foo: { bar: a string matching /t.st/ } }');
   });
 });

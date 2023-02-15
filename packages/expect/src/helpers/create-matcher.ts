@@ -1,3 +1,4 @@
+import util from 'util';
 import { get } from './get';
 
 export type Matcher<Type> = (value: Type) => boolean;
@@ -6,7 +7,7 @@ const matcherSymbol = Symbol('matcher');
 
 export const createMatcher = <Type, Args extends unknown[]>(
   check: (value: Type, ...args: Args) => boolean,
-  toString?: (...args: Args) => string
+  toString: (...args: Args) => string = () => check.toString()
 ) => {
   const matcher = (...args: Args) => {
     const matchValue = (value: Type) => {
@@ -16,11 +17,7 @@ export const createMatcher = <Type, Args extends unknown[]>(
     matchValue.symbol = matcherSymbol;
     matchValue.args = args;
 
-    if (toString) {
-      matchValue.toString = () => toString?.(...args);
-    } else {
-      matchValue.toString = () => check.toString();
-    }
+    (matchValue as any)[util.inspect.custom] = () => toString(...args);
 
     return matchValue;
   };

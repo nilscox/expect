@@ -8,7 +8,7 @@ describe('toHaveProperty', () => {
 
   it('object not having the property', () => {
     testError(() => expect({ foo: 1 }).toHaveProperty('bar'), {
-      message: 'expected {"foo":1} to have property "bar"',
+      message: 'expected { foo: 1 } to have property "bar"',
       meta: {
         hasProperty: false,
         hasExpectedValue: false,
@@ -60,7 +60,7 @@ describe('toHaveProperty', () => {
 
   it('object having the property but without the given value', () => {
     testError(() => expect({ foo: 1 }).toHaveProperty('foo', 2), {
-      message: 'expected {"foo":1} to have property "foo" = 2',
+      message: 'expected { foo: 1 } to have property "foo" = 2',
       expected: 2,
       actual: 1,
       meta: {
@@ -83,13 +83,13 @@ describe('toHaveProperty', () => {
     expect({}).not.toHaveProperty('foo');
     testError(
       () => expect({ foo: 1 }).not.toHaveProperty('foo'),
-      'expected {"foo":1} not to have property "foo"'
+      'expected { foo: 1 } not to have property "foo"'
     );
 
     expect({ foo: 1 }).not.toHaveProperty('foo', 'bar');
     testError(
       () => expect({ foo: 1 }).not.toHaveProperty('foo', 1),
-      'expected {"foo":1} not to have property "foo" = 1'
+      'expected { foo: 1 } not to have property "foo" = 1'
     );
   });
 

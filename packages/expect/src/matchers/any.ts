@@ -32,6 +32,10 @@ export const any = createMatcher(
     return obj instanceof (constructor as any);
   },
   (constructor) => {
+    if (Object.values(ctorMap).includes(constructor as any)) {
+      return `any ${(constructor as any).name.toLowerCase()}`;
+    }
+
     return `any ${(constructor as any).name}`;
   }
 );

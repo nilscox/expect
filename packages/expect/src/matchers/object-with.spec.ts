@@ -1,4 +1,5 @@
 import assert from 'assert';
+import util from 'util';
 import { expect } from '../expect';
 import { castAsMatcher } from '../helpers/create-matcher';
 import { testError } from '../test/test-error';
@@ -30,6 +31,22 @@ describe('objectWith', () => {
 
     assert.ok(!isMatching({ id: 1 }));
     assert.ok(!isMatching({ id: 1, name: 'yo hey' }));
+  });
+
+  it('formats an objectWith matcher', () => {
+    const isMatching = objectWith({
+      id: 4,
+    });
+
+    assert.equal(util.inspect(isMatching), 'an object with { id: 4 }');
+  });
+
+  it('formats combined matchers', () => {
+    const objectWithId = objectWith({
+      id: any(Number),
+    });
+
+    assert.equal(util.inspect(objectWithId), 'an object with { id: any number }');
   });
 
   it('documentation examples', () => {

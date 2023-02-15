@@ -1,3 +1,4 @@
+import util from 'util';
 import assert from 'assert';
 import { expect } from '../expect';
 import { castAsMatcher } from '../helpers/create-matcher';
@@ -11,6 +12,10 @@ describe('stringMatching', () => {
     assert.ok(isMatching('test'));
     assert.ok(isMatching('tast'));
     assert.ok(!isMatching('taste'));
+  });
+
+  it('formats a stringMatcher matcher', () => {
+    assert.equal(util.inspect(stringMatching(/t.st$/)), 'a string matching /t.st$/');
   });
 
   it('documentation examples', () => {

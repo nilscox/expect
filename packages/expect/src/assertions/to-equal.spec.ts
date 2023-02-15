@@ -25,8 +25,8 @@ describe('toEqual', () => {
   });
 
   it('different object references and non-matching objects', () => {
-    testError(() => expect({}).toEqual({ a: 1 }), 'expected {} to equal {"a":1}');
-    testError(() => expect<{}>({ a: 1 }).toEqual({}), 'expected {"a":1} to equal {}');
+    testError(() => expect({}).toEqual({ a: 1 }), 'expected {} to equal { a: 1 }');
+    testError(() => expect<{}>({ a: 1 }).toEqual({}), 'expected { a: 1 } to equal {}');
   });
 
   it('not.toEqual()', () => {

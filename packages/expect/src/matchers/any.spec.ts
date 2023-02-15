@@ -1,3 +1,4 @@
+import util from 'util';
 import assert from 'assert';
 import { expect } from '../expect';
 import { castAsMatcher } from '../helpers/create-matcher';
@@ -48,10 +49,8 @@ describe('any', () => {
   });
 
   it('formats an any matcher', () => {
-    testError(
-      () => expect<unknown>({ foo: 42 }).toEqual({ foo: any(String) }),
-      'expected {"foo":42} to equal {"foo":"any String"}'
-    );
+    assert.equal(util.inspect(any(String)), 'any string');
+    assert.equal(util.inspect({ foo: any(String) }), '{ foo: any string }');
   });
 
   it('documentation examples', () => {
