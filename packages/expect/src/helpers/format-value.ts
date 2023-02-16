@@ -5,6 +5,11 @@ export type ValueFormatter = (value: unknown, options?: InspectOptions) => strin
 
 // format dom elements
 export const formatValue: ValueFormatter = (value, options) => {
+  options = {
+    colors: true,
+    ...options,
+  };
+
   if (typeof value === 'string') {
     return `"${value}"`;
   }

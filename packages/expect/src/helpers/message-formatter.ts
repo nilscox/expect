@@ -1,3 +1,4 @@
+import { styles } from './styles';
 import { formatValue } from './format-value';
 
 type FormatterOptions = {
@@ -36,7 +37,7 @@ class MessageFormatter {
   }
 
   append(chunk: string) {
-    this.chunks.push(chunk);
+    this.chunks.push(styles.red(chunk));
     return this;
   }
 
@@ -79,15 +80,18 @@ class MessageFormatter {
   }
 
   value(value: unknown) {
-    const formatted = formatValue(value);
+    this.chunks.push(this.formatValue(value));
+    return this;
+  }
+
+  private formatValue(value: unknown) {
+    const formatted = styles.reset(formatValue(value));
 
     if (formatted.length <= this.options.maxInlineLength) {
-      this.chunks.push(formatted);
+      return formatted;
     } else {
-      this.chunks.push('#' + this.ref(formatValue(value, { compact: false, breakLength: 1 })));
+      return '#' + this.ref(styles.reset(formatValue(value, { compact: false, breakLength: 1 })));
     }
-
-    return this;
   }
 
   private ref = (value: string) => {
