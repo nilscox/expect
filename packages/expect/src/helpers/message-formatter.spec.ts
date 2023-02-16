@@ -1,5 +1,6 @@
 import assert from 'assert';
 import { messageFormatter, MessageFormatter } from './message-formatter';
+import { removeStyles } from './styles';
 
 describe('formatMessage', () => {
   let formatter: MessageFormatter;
@@ -11,50 +12,50 @@ describe('formatMessage', () => {
   it('empty value', () => {
     const message = formatter.result();
 
-    assert.equal(message, '');
+    assert.equal(removeStyles(message), '');
   });
 
   it('simple message', () => {
     const message = formatter.append('message').result();
 
-    assert.equal(message, 'message');
+    assert.equal(removeStyles(message), 'message');
   });
 
   it('start with expected', () => {
     const message = formatter.expected(42).result();
 
-    assert.equal(message, 'expected 42');
+    assert.equal(removeStyles(message), 'expected 42');
   });
 
   it('formats a message splitted into in multiple chunks', () => {
     const message = formatter.append('one').append('two').append('three').result();
 
-    assert.equal(message, 'one two three');
+    assert.equal(removeStyles(message), 'one two three');
   });
 
   it('appends a chunk conditionally', () => {
     const message = formatter.if(true, { then: 'yes' }).result();
 
-    assert.equal(message, 'yes');
+    assert.equal(removeStyles(message), 'yes');
   });
 
   it('appends a chunk conditionally (else)', () => {
     const message = formatter.if(false, { then: 'yes', else: 'no' }).result();
 
-    assert.equal(message, 'no');
+    assert.equal(removeStyles(message), 'no');
   });
 
   it('appends a chunk conditionally using a type guard', () => {
     const isNumber = (value: unknown): value is number => typeof value === 'number';
     const message = formatter.if(isNumber, 42 as unknown, { then: (value) => String(value + 1) }).result();
 
-    assert.equal(message, '43');
+    assert.equal(removeStyles(message), '43');
   });
 
   it('non-inverted message', () => {
     const message = formatter.append('42 is').not.append('defined').result();
 
-    assert.equal(message, '42 is defined');
+    assert.equal(removeStyles(message), '42 is defined');
   });
 
   it('inverted message', () => {
@@ -62,13 +63,13 @@ describe('formatMessage', () => {
 
     const message = formatter.append('undefined is').not.append('defined').result();
 
-    assert.equal(message, 'undefined is not defined');
+    assert.equal(removeStyles(message), 'undefined is not defined');
   });
 
   it('value formatting', () => {
     const message = formatter.value({ foo: 'bar' }).result();
 
-    assert.equal(message, "{ foo: 'bar' }");
+    assert.equal(removeStyles(message), "{ foo: 'bar' }");
   });
 
   it('long value formatting', () => {
@@ -83,7 +84,7 @@ describe('formatMessage', () => {
   foo: 'bar'
 }`;
 
-    assert.equal(message, expected);
+    assert.equal(removeStyles(message), expected);
   });
 
   it('long value formatting with multiple references', () => {
@@ -97,7 +98,7 @@ describe('formatMessage', () => {
 
 #2: 34`;
 
-    assert.equal(message, expected);
+    assert.equal(removeStyles(message), expected);
   });
 
   it('full message formatting', () => {
@@ -134,6 +135,6 @@ describe('formatMessage', () => {
   magic: 42
 }`;
 
-    assert.equal(message, expected);
+    assert.equal(removeStyles(message), expected);
   });
 });

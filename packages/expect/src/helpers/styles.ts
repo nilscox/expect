@@ -10,6 +10,10 @@ export const styles = Object.keys(util.inspect.colors).reduce(
   {} as Record<Style, (text: string) => string>
 );
 
+export const removeStyles = (input: string) => {
+  return input.replace(/\u001b\[.*?m/g, '');
+};
+
 type Style =
   | 'reset'
   | 'bold'

@@ -1,6 +1,7 @@
 import assert from 'assert';
 import { AssertionFailed } from '../errors/assertion-failed';
 import { isMatcher } from '../helpers/create-matcher';
+import { removeStyles } from '../helpers/styles';
 
 type ErrorAttributes = {
   message: string;
@@ -44,14 +45,18 @@ const compareErrors = (actual: unknown, expected?: string | ErrorAttributes) => 
     return;
   }
 
+  actual.message = removeStyles(actual.message);
+
   const message = typeof expected === 'string' ? expected : undefined;
   const attributes = typeof expected === 'object' ? expected : undefined;
 
   if (message) {
-    assert.equal(actual.message, message);
+    assert.equal(actual.message, removeStyles(message));
   }
 
   if (attributes) {
+    attributes.message = removeStyles(attributes.message);
+
     const assertAttribute = (key: string, actual: unknown, expected: unknown) => {
       if (isMatcher(expected)) {
         assert.equal(String(actual), String(expected));

@@ -3,6 +3,7 @@ import assert from 'assert';
 import { stringMatching } from '../matchers/string-matching';
 import { createMatcher } from './create-matcher';
 import { formatValue } from './format-value';
+import { removeStyles } from './styles';
 
 describe('formatValue', () => {
   it('formats a number', () => {
@@ -21,7 +22,7 @@ describe('formatValue', () => {
   });
 
   it('formats an object', () => {
-    assert.equal(formatValue({ foo: 'bar' }), "{ foo: 'bar' }");
+    assert.equal(removeStyles(formatValue({ foo: 'bar' })), "{ foo: 'bar' }");
   });
 
   it('formats an array', () => {

@@ -56,17 +56,17 @@ class MessageFormatter {
       branches: { then: (value: T) => string; else?: string }
     ) => {
       if (guard(value)) {
-        this.chunks.push(branches.then(value));
+        this.append(branches.then(value));
       } else if (branches.else !== undefined) {
-        this.chunks.push(branches.else);
+        this.append(branches.else);
       }
     };
 
     const valueOverload = (condition: boolean, branches: { then: string; else?: string }) => {
       if (condition) {
-        this.chunks.push(branches.then);
+        this.append(branches.then);
       } else if (branches.else !== undefined) {
-        this.chunks.push(branches.else);
+        this.append(branches.else);
       }
     };
 
@@ -84,13 +84,13 @@ class MessageFormatter {
     return this;
   }
 
-  private formatValue(value: unknown) {
+  formatValue(value: unknown) {
     const formatted = styles.reset(formatValue(value));
 
     if (formatted.length <= this.options.maxInlineLength) {
       return formatted;
     } else {
-      return '#' + this.ref(styles.reset(formatValue(value, { compact: false, breakLength: 1 })));
+      return styles.reset('#' + this.ref(formatValue(value, { compact: false, breakLength: 1 })));
     }
   }
 
