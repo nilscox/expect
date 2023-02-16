@@ -50,7 +50,7 @@ export const mochaHooks: RootHookObject = {
       },
 
       assert(completedAt) {
-        assertion(completedAt === undefined);
+        assertion(completedAt !== undefined);
       },
 
       getMessage(error) {
