@@ -79,10 +79,13 @@ const handleAssertion = (
     return result;
   }
 
+  const formatter = messageFormatter({ not, maxInlineLength: 60 });
+
   const context: ThisParameterType<AnyAssertionDefinition['getMessage']> = {
     ...helpers,
     not,
-    formatter: messageFormatter({ not, maxInlineLength: 60 }),
+    formatter,
+    formatValue: formatter.formatValue.bind(formatter),
   };
 
   error.operator = assertion.name;
