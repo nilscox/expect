@@ -1,6 +1,6 @@
 import assert from 'assert';
 import { expect } from '../expect';
-import { testError } from '../test/test-error';
+import { testError } from '../helpers/test-error';
 
 describe('toThrow', () => {
   const error = new Error('error');

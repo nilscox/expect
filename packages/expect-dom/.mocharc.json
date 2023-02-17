@@ -1,5 +1,0 @@
-{
-  "require": ["esbuild-register", "tsconfig-paths/register", "jsdom-global/register"],
-  "extension": "ts",
-  "spec": "src/**/*.spec.ts"
-}

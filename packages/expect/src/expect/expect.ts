@@ -1,9 +1,8 @@
-import { inspect } from 'util';
-import { mapObject } from '../helpers/map-object';
 import { any } from '../matchers/any';
 import { anything } from '../matchers/anything';
 import { objectWith } from '../matchers/object-with';
 import { stringMatching } from '../matchers/string-matching';
+import { mapObject } from '../utils/map-object';
 import { addAssertion } from './assertions';
 import { createAssertion } from './create-assertion';
 import {

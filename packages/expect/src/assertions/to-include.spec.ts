@@ -1,5 +1,5 @@
 import { expect } from '../expect';
-import { testError } from '../test/test-error';
+import { testError } from '../helpers/test-error';
 
 describe('toInclude', () => {
   it('array including the value', () => {

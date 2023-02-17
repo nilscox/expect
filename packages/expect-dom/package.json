@@ -8,6 +8,16 @@
   "files": [
     "dist"
   ],
+  "mocha": {
+    "require": [
+      "esbuild-register",
+      "tsconfig-paths/register",
+      "jsdom-global/register",
+      "./src/index.ts"
+    ],
+    "extension": "ts",
+    "spec": "src/**/*.spec.ts"
+  },
   "scripts": {
     "clean": "rm -rf dist",
     "build": "tsc -b",

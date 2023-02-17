@@ -1,7 +1,7 @@
 import assert from 'assert';
 
 import { expect } from '../expect';
-import { testErrorAsync } from '../test/test-error';
+import { testErrorAsync } from '../helpers/test-error';
 
 describe('toResolve', () => {
   it('resolving promise', async () => {

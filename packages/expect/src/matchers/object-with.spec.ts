@@ -2,7 +2,7 @@ import assert from 'assert';
 import util from 'util';
 import { expect } from '../expect';
 import { castAsMatcher } from '../helpers/create-matcher';
-import { testError } from '../test/test-error';
+import { testError } from '../helpers/test-error';
 import { any } from './any';
 import { objectWith } from './object-with';
 import { stringMatching } from './string-matching';

@@ -2,7 +2,7 @@ import util from 'util';
 import assert from 'assert';
 import { expect } from '../expect';
 import { castAsMatcher } from '../helpers/create-matcher';
-import { testError } from '../test/test-error';
+import { testError } from '../helpers/test-error';
 import { any } from './any';
 
 describe('any', () => {

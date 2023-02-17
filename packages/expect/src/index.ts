@@ -32,5 +32,4 @@ export type Expect = typeof expect;
 export { AssertionFailed, assertion } from './errors/assertion-failed';
 
 export { createMatcher } from './helpers/create-matcher';
-
-export { testError } from './test/test-error';
+export { testError } from './helpers/test-error';

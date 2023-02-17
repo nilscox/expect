@@ -8,6 +8,13 @@
   "files": [
     "dist"
   ],
+  "mocha": {
+    "require": [
+      "esbuild-register"
+    ],
+    "extension": "ts",
+    "spec": "src/**/*.spec.ts"
+  },
   "scripts": {
     "clean": "rm -rf dist && rm *.tsbuildinfo",
     "build": "tsc",

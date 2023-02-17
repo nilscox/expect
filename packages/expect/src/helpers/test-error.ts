@@ -1,7 +1,7 @@
 import assert from 'assert';
 import { AssertionFailed } from '../errors/assertion-failed';
-import { isMatcher } from '../helpers/create-matcher';
-import { removeStyles } from '../helpers/styles';
+import { isMatcher } from './create-matcher';
+import { removeStyles } from './styles';
 
 type ErrorAttributes = {
   message: string;

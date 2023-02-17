@@ -1,7 +1,5 @@
 import expect from '@nilscox/expect';
-import { testError } from '@nilscox/expect/test/test-error';
-
-import './to-be-disabled';
+import { testError } from '@nilscox/expect/helpers/test-error';
 
 describe('toBeDisabled', () => {
   const createButton = (disabled = false) => {

@@ -1,7 +1,7 @@
 import util from 'util';
 import { expect } from '../expect';
 import { createMatcher } from '../helpers/create-matcher';
-import { mapObject } from '../helpers/map-object';
+import { mapObject } from '../utils/map-object';
 
 // todo: allow to create a custom matcher that throws instead of returning false
 export const objectWith = createMatcher(

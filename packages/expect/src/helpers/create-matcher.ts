@@ -1,5 +1,5 @@
 import util from 'util';
-import { get } from './get';
+import { get } from '../utils/get';
 
 export type Matcher<Type> = (value: Type) => boolean;
 

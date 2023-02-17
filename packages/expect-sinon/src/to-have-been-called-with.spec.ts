@@ -1,8 +1,6 @@
 import expect, { testError } from '@nilscox/expect';
 import sinon from 'sinon';
 
-import './to-have-been-called-with';
-
 describe('toHaveBeenCalledWith', () => {
   it('spy called with no argument', () => {
     const spy = sinon.spy();
