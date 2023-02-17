@@ -87,18 +87,21 @@ class MessageFormatter {
     return this;
   }
 
-  value(value: unknown) {
-    this.chunks.push(this.formatValue(value));
+  value(value: unknown, options?: ValueFormatterOptions) {
+    this.chunks.push(this.formatValue(value, options));
     return this;
   }
 
-  formatValue(value: unknown) {
-    const formatted = styles.reset(this.options.formatValue(value));
+  formatValue(value: unknown, options?: ValueFormatterOptions) {
+    const formatted = styles.reset(this.options.formatValue(value, options));
 
+    // todo: or formatted includes \n
     if (removeStyles(formatted).length <= this.options.maxInlineLength) {
       return formatted;
     } else {
-      return styles.cyan('#' + this.ref(this.options.formatValue(value, { compact: false, breakLength: 1 })));
+      return styles.cyan(
+        '#' + this.ref(this.options.formatValue(value, { compact: false, breakLength: 1, ...options }))
+      );
     }
   }
 

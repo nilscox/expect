@@ -8,7 +8,6 @@ import { AnyAssertionDefinition, AnyAssertionParams, AnyAssertionResult, Helpers
 
 export const helpers: Helpers = {
   deepEqual,
-  formatValue: () => '',
 };
 
 const checkAssertionGuard = (assertion: AnyAssertionDefinition, actual: unknown) => {

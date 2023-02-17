@@ -4,8 +4,6 @@ import { MessageFormatter, ValueFormatter } from '../helpers/message-formatter';
 export type Helpers = {
   // rename to compare
   deepEqual: (a: unknown, b: unknown) => boolean;
-  // todo: remove
-  formatValue: ValueFormatter;
 };
 
 export interface AssertionDefinition<Name extends AssertionNames, Subject, Value, Meta> {
@@ -32,7 +30,7 @@ export interface AssertionDefinition<Name extends AssertionNames, Subject, Value
   ): ReturnType<Expect.Assertions[Name]> | Promise<ReturnType<Expect.Assertions[Name]>>;
 
   getMessage(
-    this: Helpers & { not: boolean; formatter: MessageFormatter },
+    this: { not: boolean; formatter: MessageFormatter; formatValue: ValueFormatter },
     error: AssertionFailed<Meta>
   ): string;
 }
