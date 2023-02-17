@@ -1,11 +1,6 @@
 import { AssertionFailed } from '../errors/assertion-failed';
 import { MessageFormatter, ValueFormatter } from '../helpers/message-formatter';
 
-export type Helpers = {
-  // rename to compare
-  deepEqual: (a: unknown, b: unknown) => boolean;
-};
-
 export interface AssertionDefinition<Name extends AssertionNames, Subject, Value, Meta> {
   name: Name;
 
@@ -23,7 +18,7 @@ export interface AssertionDefinition<Name extends AssertionNames, Subject, Value
   ): Promise<{ actual: Value; expected?: Value; meta?: Meta }>;
 
   assert(
-    this: Helpers,
+    this: { compare: (a: unknown, b: unknown) => boolean },
     actual: Value,
     expected: Value,
     meta: Meta

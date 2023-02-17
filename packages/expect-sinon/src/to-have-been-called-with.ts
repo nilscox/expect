@@ -33,7 +33,7 @@ expect.addAssertion({
       let idx = 0;
 
       for (const argOrMatcher of args) {
-        if (!this.deepEqual(call.args[idx++], argOrMatcher)) {
+        if (!this.compare(call.args[idx++], argOrMatcher)) {
           continue callsLoop;
         }
       }

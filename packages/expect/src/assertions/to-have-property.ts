@@ -61,7 +61,7 @@ expect.addAssertion({
     assertion(hasProperty);
 
     if (hasExpectedValue) {
-      assertion(this.deepEqual(actual, expected));
+      assertion(this.compare(actual, expected));
     }
   },
 

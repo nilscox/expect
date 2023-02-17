@@ -4,11 +4,7 @@ import { GuardError } from '../errors/guard-error';
 import { deepEqual } from '../helpers/deep-equal';
 import { messageFormatter } from '../helpers/message-formatter';
 import { expect } from './expect';
-import { AnyAssertionDefinition, AnyAssertionParams, AnyAssertionResult, Helpers } from './expect-types';
-
-export const helpers: Helpers = {
-  deepEqual,
-};
+import { AnyAssertionDefinition, AnyAssertionParams, AnyAssertionResult } from './expect-types';
 
 const checkAssertionGuard = (assertion: AnyAssertionDefinition, actual: unknown) => {
   if (assertion.guard && !assertion.guard(actual)) {
@@ -57,7 +53,7 @@ const handleAssertion = (
   let error: AssertionFailed | undefined = undefined;
 
   try {
-    result = assertion.assert.call(helpers, actual, expected, meta);
+    result = assertion.assert.call({ compare: deepEqual }, actual, expected, meta);
 
     if (not) {
       error = new AssertionFailed();
@@ -85,7 +81,6 @@ const handleAssertion = (
   });
 
   const context: ThisParameterType<AnyAssertionDefinition['getMessage']> = {
-    ...helpers,
     not,
     formatter,
     formatValue: formatter.formatValue.bind(formatter),

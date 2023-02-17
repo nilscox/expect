@@ -54,7 +54,7 @@ expect.addAssertion({
     assertion(errorMessageElement, Reason.errorMessageNotFound);
 
     if (hasExpectedMessage) {
-      assertion(this.deepEqual(expected, actual), Reason.unexpectedMessage);
+      assertion(this.compare(expected, actual), Reason.unexpectedMessage);
     }
   },
 

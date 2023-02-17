@@ -32,7 +32,7 @@ expect.addAssertion({
       return;
     }
 
-    assertion(this.deepEqual(value, expected));
+    assertion(this.compare(value, expected));
   },
 
   getMessage(error) {

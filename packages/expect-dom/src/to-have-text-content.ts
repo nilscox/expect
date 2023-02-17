@@ -25,7 +25,7 @@ expect.addAssertion({
   },
 
   assert(actual, expected) {
-    assertion(this.deepEqual(actual, expected));
+    assertion(this.compare(actual, expected));
   },
 
   getMessage(error) {

@@ -39,7 +39,7 @@ expect.addAssertion({
     }
 
     for (const value of actual) {
-      if (this.deepEqual(value, element)) {
+      if (this.compare(value, element)) {
         return;
       }
     }

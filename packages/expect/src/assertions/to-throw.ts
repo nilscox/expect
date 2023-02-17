@@ -43,7 +43,7 @@ expect.addAssertion({
     assertion(didThrow);
 
     if (hasExpected) {
-      assertion(this.deepEqual(actual, expected));
+      assertion(this.compare(actual, expected));
     }
 
     return actual;
