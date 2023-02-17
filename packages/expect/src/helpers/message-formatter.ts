@@ -27,9 +27,8 @@ class MessageFormatter {
 
   result() {
     return [
-      //
       this.chunks.join(' '),
-      ...this.refs.map((value, index) => `#${index + 1}: ${value}`),
+      ...this.refs.map((value, index) => `${styles.cyan('#' + (index + 1))}: ${value}`),
     ].join('\n\n');
   }
 
@@ -99,7 +98,7 @@ class MessageFormatter {
     if (removeStyles(formatted).length <= this.options.maxInlineLength) {
       return formatted;
     } else {
-      return styles.reset('#' + this.ref(formatValue(value, { compact: false, breakLength: 1 })));
+      return styles.cyan('#' + this.ref(this.options.formatValue(value, { compact: false, breakLength: 1 })));
     }
   }
 
