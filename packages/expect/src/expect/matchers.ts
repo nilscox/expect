@@ -16,9 +16,7 @@ declare global {
     interface CustomMatchers {}
 
     interface ExpectFunction extends BuiltinMatchers, CustomMatchers {
-      _customMatchers: Set<string>;
       addMatcher(name: keyof CustomMatchers, matcher: unknown): void;
-      addCustomMatcher(name: keyof CustomMatchers, matcher: unknown): void;
     }
   }
 }
@@ -39,21 +37,4 @@ export const addMatcher: Expect.ExpectFunction['addMatcher'] = function (
   Object.assign(this, {
     [name]: matcher,
   });
-};
-
-export const addCustomMatcher: Expect.ExpectFunction['addMatcher'] = function (
-  this: Expect.ExpectFunction,
-  name,
-  matcher
-) {
-  this.addMatcher(name, matcher);
-  this._customMatchers.add(name);
-};
-
-export const cleanupMatchers = function (this: Expect.ExpectFunction) {
-  for (const prop of this._customMatchers) {
-    delete this[prop as keyof typeof this];
-  }
-
-  this._customMatchers.clear();
 };

@@ -1,10 +1,9 @@
-import { formatValue } from '../helpers/format-value';
 import { mapObject } from '../helpers/map-object';
 import { any } from '../matchers/any';
 import { anything } from '../matchers/anything';
 import { objectWith } from '../matchers/object-with';
 import { stringMatching } from '../matchers/string-matching';
-import { addAssertion, addCustomAssertion, cleanupAssertion } from './assertions';
+import { addAssertion } from './assertions';
 import { createAssertion } from './create-assertion';
 import {
   AnyAssertionDefinition,
@@ -12,7 +11,7 @@ import {
   AssertionDefinitions,
   AssertionNames,
 } from './expect-types';
-import { addCustomMatcher, addMatcher, cleanupMatchers } from './matchers';
+import { addMatcher } from './matchers';
 
 type AnyArray = any[];
 type AnyFunction = (...args: any[]) => any;
@@ -55,11 +54,6 @@ declare global {
       <Actual extends AnyObject>(actual: Actual): ExpectResult<Expect.ObjectAssertions<Actual>, Actual>;
       <Actual>(actual: Actual): ExpectResult<Expect.GenericAssertions<Actual>, Actual>;
     }
-
-    interface ExpectFunction {
-      formatValue: typeof formatValue;
-      cleanup(): void;
-    }
   }
 }
 
@@ -76,22 +70,11 @@ export const expect: Expect.ExpectFunction = (actual: unknown) => ({
 });
 
 expect._assertions = {} as AssertionDefinitions;
-expect._customAssertions = new Set();
 expect.addAssertion = addAssertion.bind(expect);
-expect.addCustomAssertion = addCustomAssertion.bind(expect);
-
-expect.formatValue = formatValue;
 
 expect.anything = anything;
 expect.any = any;
 expect.stringMatching = stringMatching;
 expect.objectWith = objectWith;
 
-expect._customMatchers = new Set();
 expect.addMatcher = addMatcher.bind(expect);
-expect.addCustomMatcher = addCustomMatcher.bind(expect);
-
-expect.cleanup = () => {
-  cleanupAssertion.call(expect);
-  cleanupMatchers.call(expect);
-};

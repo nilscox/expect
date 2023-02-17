@@ -26,12 +26,8 @@ const completedTodo = createMatcher((value: Todo) => {
 });
 
 export const mochaHooks: RootHookObject = {
-  afterAll() {
-    expect.cleanup();
-  },
-
   beforeAll() {
-    expect.addCustomAssertion({
+    expect.addAssertion({
       name: 'toBeCompleted',
 
       expectedType: 'a Todo',
@@ -71,6 +67,6 @@ export const mochaHooks: RootHookObject = {
       },
     });
 
-    expect.addCustomMatcher('completedTodo', completedTodo);
+    expect.addMatcher('completedTodo', completedTodo);
   },
 };
