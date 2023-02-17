@@ -49,9 +49,15 @@ describe('todo', () => {
     const todo = new Todo('Buy beers');
 
     expect(todo.toJSON()).toEqual({
-      text: 'Buy shoes',
+      text: expect.stringMatching(/beers$/),
       isCompleted: true,
       completedAt: undefined,
     });
+  });
+
+  it('custom formatter', () => {
+    const todo = new Todo('Buy beers');
+
+    expect(todo).toBeCompleted();
   });
 });

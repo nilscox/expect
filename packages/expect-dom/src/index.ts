@@ -4,6 +4,8 @@ import './to-have-value';
 import './to-have-text-content';
 import './to-have-error-message';
 
+export * from './dom-formatter';
+
 declare global {
   namespace Expect {
     interface HTMLElementAssertions<Actual extends HTMLElement> {}
@@ -11,7 +13,10 @@ declare global {
     interface Assertions extends HTMLElementAssertions<any> {}
 
     interface ExpectFunction {
-      <Actual extends HTMLElement>(actual: Actual): ExpectResult<Expect.HTMLElementAssertions<Actual>, Actual>;
+      <Actual extends HTMLElement>(actual: Actual): ExpectResult<
+        Expect.HTMLElementAssertions<Actual>,
+        Actual
+      >;
     }
   }
 }

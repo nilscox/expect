@@ -1,12 +1,22 @@
 import assert from 'assert';
-import { messageFormatter, MessageFormatter } from './message-formatter';
+import { expect } from '../expect';
+import { FormatterOptions, messageFormatter, MessageFormatter } from './message-formatter';
 import { removeStyles } from './styles';
 
-describe('formatMessage', () => {
+describe('messageFormatter', () => {
   let formatter: MessageFormatter;
 
+  const createFormatter = (overrides?: Partial<FormatterOptions>) => {
+    return messageFormatter({
+      formatValue: expect.format,
+      not: false,
+      maxInlineLength: 60,
+      ...overrides,
+    });
+  };
+
   beforeEach(() => {
-    formatter = messageFormatter({ not: false, maxInlineLength: 60 });
+    formatter = createFormatter();
   });
 
   it('empty value', () => {
@@ -59,7 +69,7 @@ describe('formatMessage', () => {
   });
 
   it('inverted message', () => {
-    formatter = messageFormatter({ not: true, maxInlineLength: 60 });
+    formatter = createFormatter({ not: true });
 
     const message = formatter.append('undefined is').not.append('defined').result();
 
@@ -73,7 +83,7 @@ describe('formatMessage', () => {
   });
 
   it('long value formatting', () => {
-    formatter = messageFormatter({ not: false, maxInlineLength: 1 });
+    formatter = createFormatter({ maxInlineLength: 1 });
 
     const value = { foo: 'bar' };
     const message = formatter.value(value).result();
@@ -88,7 +98,7 @@ describe('formatMessage', () => {
   });
 
   it('long value formatting with multiple references', () => {
-    formatter = messageFormatter({ not: false, maxInlineLength: 1 });
+    formatter = createFormatter({ maxInlineLength: 1 });
 
     const message = formatter.value(12).value(34).result();
 
@@ -102,7 +112,7 @@ describe('formatMessage', () => {
   });
 
   it('full message formatting', () => {
-    formatter = messageFormatter({ not: true, maxInlineLength: 20 });
+    formatter = createFormatter({ not: true, maxInlineLength: 20 });
 
     const value = {
       foo: { toto: ['tata', 'tutu'] },

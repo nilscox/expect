@@ -47,26 +47,14 @@ export const mochaHooks: RootHookObject = {
       },
 
       getMessage(error) {
-        let message = 'expected todo';
-
-        message += ` ${this.formatValue(error.meta.text)}`;
-
-        if (this.not) {
-          message += ' not';
-        }
-
-        message += ' to be completed';
-
-        if (this.not) {
-          message += ' but is';
-        } else {
-          message += ' but it is not';
-        }
-
-        return message;
+        return this.formatter.expected(error.subject).not.append('to be completed').result();
       },
     });
 
     expect.addMatcher('completedTodo', completedTodo);
+
+    expect.addFormatter(Todo.isTodo, function (todo) {
+      return `todo ${this.formatValue(todo.text)}`;
+    });
   },
 };

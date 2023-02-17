@@ -15,6 +15,17 @@ import './assertions/to-reject-with';
 import './assertions/to-resolve';
 import './assertions/to-throw';
 
+import './formatters/format-object';
+import './formatters/format-function';
+import './formatters/format-matcher';
+import './formatters/format-error';
+import './formatters/format-array';
+import './formatters/format-string';
+import './formatters/format-number';
+import './formatters/format-boolean';
+import './formatters/format-null';
+import './formatters/format-undefined';
+
 export default expect;
 export type Expect = typeof expect;
 

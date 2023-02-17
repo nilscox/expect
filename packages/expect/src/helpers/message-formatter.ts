@@ -1,7 +1,16 @@
-import { styles } from './styles';
-import { formatValue } from './format-value';
+import { removeStyles, styles } from './styles';
 
-type FormatterOptions = {
+export type ValueFormatterOptions = {
+  colors?: boolean;
+  compact?: boolean;
+  breakLength?: number;
+  depth?: number;
+};
+
+export type ValueFormatter = (value: unknown, options?: ValueFormatterOptions) => string;
+
+export type FormatterOptions = {
+  formatValue: ValueFormatter;
   not: boolean;
   maxInlineLength: number;
 };
@@ -85,9 +94,9 @@ class MessageFormatter {
   }
 
   formatValue(value: unknown) {
-    const formatted = styles.reset(formatValue(value));
+    const formatted = styles.reset(this.options.formatValue(value));
 
-    if (formatted.length <= this.options.maxInlineLength) {
+    if (removeStyles(formatted).length <= this.options.maxInlineLength) {
       return formatted;
     } else {
       return styles.reset('#' + this.ref(formatValue(value, { compact: false, breakLength: 1 })));

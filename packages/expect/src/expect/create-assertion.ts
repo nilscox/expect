@@ -3,12 +3,12 @@ import { AssertionFailed } from '../errors/assertion-failed';
 import { GuardError } from '../errors/guard-error';
 import { deepEqual } from '../helpers/deep-equal';
 import { messageFormatter } from '../helpers/message-formatter';
-import { formatValue } from '../helpers/format-value';
+import { expect } from './expect';
 import { AnyAssertionDefinition, AnyAssertionParams, AnyAssertionResult, Helpers } from './expect-types';
 
 export const helpers: Helpers = {
   deepEqual,
-  formatValue,
+  formatValue: () => '',
 };
 
 const checkAssertionGuard = (assertion: AnyAssertionDefinition, actual: unknown) => {
@@ -79,7 +79,11 @@ const handleAssertion = (
     return result;
   }
 
-  const formatter = messageFormatter({ not, maxInlineLength: 60 });
+  const formatter = messageFormatter({
+    formatValue: expect.format,
+    not,
+    maxInlineLength: 60,
+  });
 
   const context: ThisParameterType<AnyAssertionDefinition['getMessage']> = {
     ...helpers,

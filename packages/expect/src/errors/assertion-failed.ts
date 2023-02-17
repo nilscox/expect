@@ -12,10 +12,13 @@ export class AssertionFailed<Meta = unknown> extends AssertionError {
     // https://github.com/microsoft/TypeScript/issues/13965
     Object.setPrototypeOf(this, new.target.prototype);
 
-    this.stack = this.stack
-      ?.split('\n')
-      .filter((line) => !line.match(/@nilscox\/expect|assert\/assertion_error/))
-      .join('\n');
+    this.stack =
+      `${new.target.name}\n` +
+      this.stack
+        ?.split('\n')
+        .slice(1)
+        .filter((line) => !line.match(/@nilscox\/expect|assert\/assertion_error/))
+        .join('\n');
   }
 }
 

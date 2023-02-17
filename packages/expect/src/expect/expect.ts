@@ -1,3 +1,4 @@
+import { inspect } from 'util';
 import { mapObject } from '../helpers/map-object';
 import { any } from '../matchers/any';
 import { anything } from '../matchers/anything';
@@ -11,6 +12,7 @@ import {
   AssertionDefinitions,
   AssertionNames,
 } from './expect-types';
+import { addFormatter, format } from './formatters';
 import { addMatcher } from './matchers';
 
 type AnyArray = any[];
@@ -70,11 +72,15 @@ export const expect: Expect.ExpectFunction = (actual: unknown) => ({
 });
 
 expect._assertions = {} as AssertionDefinitions;
+expect._formatters = [];
+
 expect.addAssertion = addAssertion.bind(expect);
+expect.addMatcher = addMatcher.bind(expect);
+expect.addFormatter = addFormatter.bind(expect);
 
 expect.anything = anything;
 expect.any = any;
 expect.stringMatching = stringMatching;
 expect.objectWith = objectWith;
 
-expect.addMatcher = addMatcher.bind(expect);
+expect.format = format.bind(expect);
