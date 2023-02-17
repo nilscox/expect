@@ -1,6 +1,4 @@
-This is a monorepo including some tools to make assertions.
-
-It's purpose was mostly to learn how to implement this kind of library, but also to improve the readability of [another project](https://github.com/nilscox/shakala)'s tests, and most importantly... to have fun!
+This is a monorepo providing some tools to make assertions.
 
 The library is made of 3 distinct packages, take a look at their respective readme for a complete API documentation.
 
@@ -8,7 +6,7 @@ The library is made of 3 distinct packages, take a look at their respective read
 - [expect-sinon](./packages/expect-sinon): assertions related to [Sinon.JS](https://sinonjs.org/)
 - [expect-dom](./packages/expect-dom): assertions related to the DOM
 
-It's inspired by jest's [expect](https://github.com/facebook/jest/tree/main/packages/expect) function, while adding some interesting features. Some of jest's "matchers" are implemented using the same API, allowing a pretty smooth transition:
+It's inspired by jest's [expect](https://github.com/facebook/jest/tree/main/packages/expect) function, but with some interesting additions. Some of jest's "matchers" are implemented with the same API, allowing a pretty smooth transition.
 
 ```ts
 import expect from '<this package>';
@@ -18,7 +16,7 @@ expect({ foo: 'bar' }).toHaveProperty('foo', 'bar');
 expect({ foo: 'bar' }).toEqual({ foo: expect.stringMatching(/^b/) });
 ```
 
-But not all of jest's matchers are implemented, so it's not a drop-in replacement, unlike [vitest](https://vitest.dev/api/#expect) does. There are also some differences that make testing things a bit easier:
+But not all of jest's matchers are implemented, so it's not a drop-in replacement, unlike [vitest](https://vitest.dev/api/#expect). The differences with jest's assertion library aim to make testing a bit easier, by implementing new features, improving TypeScript integration, and allowing extensibility at different levels.
 
 ```ts
 // typescript error because we expected foo to be a string

@@ -1,6 +1,6 @@
 This is the documentation for an assertion library's core logic. The full library is divided into three packages, take a look at [the main readme](../../../../) for more information.
 
-In this documentation, we talk about:
+This documentation covers:
 
 - [Basics](#basics)
   - [The expect function](#the-expect-function)
@@ -9,7 +9,7 @@ In this documentation, we talk about:
 - [Extensions](#extensions)
   - [Custom assertions](#custom-assertions)
   - [Custom matchers](#custom-matchers)
-  - Custom formatters (not yet implemented)
+  - [Custom formatters](#custom-formatters)
 - [API documentation](#custom-matchers)
   - [Assertions](#assertions)
   - [Matchers](#matchers)
@@ -18,7 +18,7 @@ In this documentation, we talk about:
 
 ### The expect function
 
-The library's default export is a function that must be called with only one argument: the value under test (i.e. the value on which we will execute an assertion). This function returns an object containing all assertions from the core package, along with the ones registered through a plugin and the custom assertions that you may have implemented.
+The library's default export is a function that must be called with only one argument: the value under test (i.e. the value on which we will execute an assertion). This function returns an object containing all assertions from the core package, along with the ones registered through plugins and your own.
 
 ```ts
 import expect from '<this package>';
@@ -34,11 +34,11 @@ expect(add(0.1, 0.2)).toBeCloseTo(0.3);
 expect(add(4, 2)).toEqual(42);
 ```
 
-When an assertion fails, it throws an error containing two properties named "expected" and "actual". These are conventionally used by test runners to print a diff between the two values.
+When an assertion fails, it throws an instance of node's [AssertionError](https://nodejs.org/api/assert.html#class-assertassertionerror) containing two properties named "expected" and "actual" (when they make sense). These are conventionally used by test runners to print a diff between the two values.
 
 Check out the [API documentation](#api-documentation) section for more information about the assertions available in the core package.
 
-> Note that in this library, an "assertion" represents the fact to check that a requirement is met, like `expect.toEqual()` (this is what jest calls a "matcher"). And a "matcher" in this library is a way to extend the comparaison function, like `expect.stringMatching()` (I don't know how jest calls this).
+> Note that in this library, an "assertion" represents the fact to check that a requirement is met, like `expect(value).toEqual()` (this is what jest calls a "matcher"). And a "matcher" in this library is a way to extend the comparaison function, like `expect.stringMatching()` (I don't know how jest calls this).
 
 ### Inverting assertions
 
@@ -47,7 +47,7 @@ Assertions can be inverted using the `.not` operator right after the call to `ex
 ```ts
 expect(42).not.toEqual(51); // pass
 expect(() => {}).not.toThrow(); // pass
-expect({ foo: 'bar' }).not.toHaveProperty('foo'); // fail
+expect({ foo: 'bar' }).not.toHaveProperty('foo'); // expected { foo: 'bar' } not to have property "foo"
 ```
 
 ## Extensions
@@ -192,6 +192,31 @@ expect(user).toEqual({
 
 // we can also combine matchers
 expect(user).toHaveProperty('friends', expect.arrayIncluding(expect.stringMatching(/^Will/)));
+```
+
+## Custom formatter
+
+### Formatting
+
+Formatting values correctly is crucial to be able to debug assertions easily. The way values are displayed in error messages can be customized using custom formatters.
+
+```ts
+class User {
+  constructor(public name: string) {}
+}
+
+const isUser = (value: unknown): value is User => {
+  return value instanceof User;
+};
+
+addFormatter(isUser, (user) => `User (name: ${user.name})`);
+```
+
+When an instance of the `User` class needs to be included in an error message, the custom formatter will be used to serialize it into a string.
+
+```ts
+expect(new User('Roger')).toHaveProperty('name', 'Gaston');
+// expected User (name: Roger) to have property "name" = "Gaston"
 ```
 
 ## API documentation
