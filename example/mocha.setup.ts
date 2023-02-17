@@ -31,14 +31,11 @@ export const mochaHooks: RootHookObject = {
   },
 
   beforeAll() {
-    // mocha clears the require cache in watch mode or something like that
-    const TodoRequire: typeof Todo = require('./src/todo').Todo;
-
     expect.addCustomAssertion({
       name: 'toBeCompleted',
 
       expectedType: 'a Todo',
-      guard: TodoRequire.isTodo,
+      guard: Todo.isTodo,
 
       prepare(todo) {
         return {

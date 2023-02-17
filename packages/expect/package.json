@@ -2,6 +2,7 @@
   "name": "@nilscox/expect",
   "version": "0.3.0",
   "license": "Beerware",
+  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
