@@ -1,7 +1,14 @@
 import expect, { assertion, createMatcher } from '@nilscox/expect';
 import { RootHookObject } from 'mocha';
 
+import '@nilscox/expect-dom';
+import '@nilscox/expect-sinon';
+
+import { setupDOMFormatter } from '@nilscox/expect-dom';
+import { prettyDOM } from '@testing-library/dom';
 import { Todo } from './src/todo';
+
+setupDOMFormatter(prettyDOM);
 
 declare global {
   namespace Expect {

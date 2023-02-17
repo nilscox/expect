@@ -6,12 +6,13 @@
     "test:watch": "nodemon --exec 'mocha || exit 1'"
   },
   "mocha": {
-    "spec": "src/todo.spec.ts",
+    "spec": "src/*.spec.ts",
     "extension": "ts",
     "node-option": [
       "loader=ts-node/esm"
     ],
     "require": [
+      "./happy-dom.ts",
       "./mocha.setup.ts"
     ]
   },
@@ -20,8 +21,14 @@
     "ext": "ts"
   },
   "devDependencies": {
+    "@happy-dom/global-registrator": "^8.4.3",
+    "happy-dom": "^8.4.3",
     "mocha": "^10.0.0",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.5"
+  },
+  "dependencies": {
+    "@testing-library/dom": "^9.0.0",
+    "@testing-library/user-event": "^14.4.3"
   }
 }
