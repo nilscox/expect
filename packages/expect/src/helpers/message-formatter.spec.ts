@@ -111,6 +111,17 @@ describe('messageFormatter', () => {
     assert.equal(removeStyles(message), expected);
   });
 
+  it('value containing new lines', () => {
+    const message = formatter.value('a\nb').result();
+
+    const expected = `#1
+
+#1: "a
+b"`;
+
+    assert.equal(removeStyles(message), expected);
+  });
+
   it('full message formatting', () => {
     formatter = createFormatter({ not: true, maxInlineLength: 20 });
 

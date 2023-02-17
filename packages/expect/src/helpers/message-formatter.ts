@@ -93,10 +93,9 @@ class MessageFormatter {
   }
 
   formatValue(value: unknown, options?: ValueFormatterOptions) {
-    const formatted = styles.reset(this.options.formatValue(value, options));
+    const formatted = this.options.formatValue(value, options);
 
-    // todo: or formatted includes \n
-    if (removeStyles(formatted).length <= this.options.maxInlineLength) {
+    if (removeStyles(formatted).length <= this.options.maxInlineLength && !formatted.includes('\n')) {
       return formatted;
     } else {
       return styles.cyan(
