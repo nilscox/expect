@@ -1,7 +1,6 @@
 import { expect } from '../expect';
+import { isNull } from '../utils/guards';
 
-const isNull = (value: unknown): value is null => {
-  return value === null;
-};
-
-expect.addFormatter(isNull, () => 'null');
+expect.addFormatter(isNull, function () {
+  return this.inspect(null);
+});

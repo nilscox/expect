@@ -1,8 +1,8 @@
 import assert from 'assert';
 import { isPromise } from 'util/types';
 import { assertion } from '../errors/assertion-failed';
-import { isFunction } from '../errors/guard-error';
 import { expect } from '../expect';
+import { isFunction } from '../utils/guards';
 
 declare global {
   namespace Expect {

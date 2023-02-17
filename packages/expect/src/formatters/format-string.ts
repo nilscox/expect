@@ -1,6 +1,6 @@
-import { isString } from '../errors/guard-error';
 import { expect } from '../expect';
 import { styles } from '../helpers/styles';
+import { isString } from '../utils/guards';
 
 const quote = styles.dim('"');
 

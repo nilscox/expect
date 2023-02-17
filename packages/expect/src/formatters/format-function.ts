@@ -1,5 +1,5 @@
-import { isFunction } from '../errors/guard-error';
 import { expect } from '../expect';
+import { isFunction } from '../utils/guards';
 
 expect.addFormatter(isFunction, function (func) {
   if (func.name) {

@@ -1,8 +1,5 @@
 import { expect } from '../expect';
-
-const isObject = (value: unknown): value is object => {
-  return typeof value === 'object';
-};
+import { isObject } from '../utils/guards';
 
 expect.addFormatter(isObject, function (value) {
   return this.inspect(value);

@@ -1,7 +1,4 @@
 import { expect } from '../expect';
-
-const isUndefined = (value: unknown): value is undefined => {
-  return value === undefined;
-};
+import { isUndefined } from '../utils/guards';
 
 expect.addFormatter(isUndefined, () => 'undefined');

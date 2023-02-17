@@ -1,6 +1,6 @@
 import { assertion, AssertionFailed } from '../errors/assertion-failed';
-import { isArray, isString } from '../errors/guard-error';
 import { expect } from '../expect';
+import { isArray, isString } from '../utils/guards';
 
 declare global {
   namespace Expect {
