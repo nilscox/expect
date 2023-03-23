@@ -79,6 +79,14 @@ describe('toHaveProperty', () => {
     testError(() => expect([]).toHaveProperty('length', 1), 'expected [] to have property "length" = 1');
   });
 
+  it('class instance having the property as an attribute', () => {
+    class Toto {
+      foo = 'bar';
+    }
+
+    expect(new Toto()).toHaveProperty('foo', 'bar');
+  });
+
   it('not.notHaveProperty()', () => {
     expect({}).not.toHaveProperty('foo');
     testError(
