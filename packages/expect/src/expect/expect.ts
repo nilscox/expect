@@ -24,7 +24,7 @@ declare global {
     interface StringAssertions<Actual extends string> {}
     interface NumberAssertions<Actual extends number> {}
     interface BooleanAssertions<Actual extends boolean> {}
-    interface ArrayAssertions<Actual extends unknown[]> {}
+    interface ArrayAssertions<Actual extends AnyArray> {}
     interface FunctionAssertions<Actual extends AnyFunction> {}
     interface PromiseAssertions<Actual extends Promise<unknown>> {}
     interface ObjectAssertions<Actual extends AnyObject> {}

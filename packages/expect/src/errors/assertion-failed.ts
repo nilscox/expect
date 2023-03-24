@@ -1,4 +1,6 @@
+import util from 'util';
 import { AssertionError } from 'assert';
+import { styles } from '../helpers/styles';
 
 export class AssertionFailed<Meta = unknown> extends AssertionError {
   public subject!: unknown;
@@ -11,14 +13,19 @@ export class AssertionFailed<Meta = unknown> extends AssertionError {
 
     // https://github.com/microsoft/TypeScript/issues/13965
     Object.setPrototypeOf(this, new.target.prototype);
+  }
 
-    this.stack =
-      `${new.target.name}\n` +
-      this.stack
-        ?.split('\n')
-        .slice(1)
-        .filter((line) => !line.match(/@nilscox\/expect|assert\/assertion_error/))
-        .join('\n');
+  [util.inspect.custom]() {
+    if (!this.stack) {
+      return this.message;
+    }
+
+    const stack = this.stack
+      .split('\n')
+      .filter((line) => !line.match(/@nilscox\/expect/))
+      .join('\n');
+
+    return [this.message, styles.dim(stack)].join('\n');
   }
 }
 
