@@ -47,14 +47,14 @@ declare global {
       };
 
     interface ExpectFunction {
-      <Actual extends string>(actual: Actual): ExpectResult<Expect.StringAssertions<Actual>, Actual>;
-      <Actual extends number>(actual: Actual): ExpectResult<Expect.NumberAssertions<Actual>, Actual>;
-      <Actual extends boolean>(actual: Actual): ExpectResult<Expect.BooleanAssertions<Actual>, Actual>;
-      <Actual extends AnyArray>(actual: Actual): ExpectResult<Expect.ArrayAssertions<Actual>, Actual>;
-      <Actual extends AnyFunction>(actual: Actual): ExpectResult<Expect.FunctionAssertions<Actual>, Actual>;
-      <Actual extends AnyPromise>(actual: Actual): ExpectResult<Expect.PromiseAssertions<Actual>, Actual>;
-      <Actual extends AnyObject>(actual: Actual): ExpectResult<Expect.ObjectAssertions<Actual>, Actual>;
-      <Actual>(actual: Actual): ExpectResult<Expect.GenericAssertions<Actual>, Actual>;
+      <Actual extends string>(actual?: Actual): ExpectResult<Expect.StringAssertions<Actual>, Actual>;
+      <Actual extends number>(actual?: Actual): ExpectResult<Expect.NumberAssertions<Actual>, Actual>;
+      <Actual extends boolean>(actual?: Actual): ExpectResult<Expect.BooleanAssertions<Actual>, Actual>;
+      <Actual extends AnyArray>(actual?: Actual): ExpectResult<Expect.ArrayAssertions<Actual>, Actual>;
+      <Actual extends AnyFunction>(actual?: Actual): ExpectResult<Expect.FunctionAssertions<Actual>, Actual>;
+      <Actual extends AnyPromise>(actual?: Actual): ExpectResult<Expect.PromiseAssertions<Actual>, Actual>;
+      <Actual extends AnyObject>(actual?: Actual): ExpectResult<Expect.ObjectAssertions<Actual>, Actual>;
+      <Actual>(actual?: Actual): ExpectResult<Expect.GenericAssertions<Actual>, Actual>;
     }
   }
 }
