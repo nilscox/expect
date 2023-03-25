@@ -13,6 +13,7 @@ This documentation covers:
 - [API documentation](#custom-matchers)
   - [Assertions](#assertions)
   - [Matchers](#matchers)
+  - [Assert value](#assert-value)
 
 ## Basics
 
@@ -437,4 +438,18 @@ The `expect.objectWith()` matcher allows any object containing a subset of the g
 ```ts
 expect({ foo: 'bar', baz: 'qux' }).toEqual(expect.objectWith({ foo: 'bar' })); // pass
 expect({ foo: 'bar' }).toEqual(expect.objectWith({ foo: 'bar', baz: 'qux' })); // fail
+```
+
+### Assert value
+
+The `expect` function also allows to assert that a value is truthy, using `expect.assert()`. If the value is
+falsy, the function with throw an `AssertionFailed` error. This is mostly to avoid having to import node's
+assert module.
+
+```ts
+expect.assert(undefined); // fails
+
+const someValue: user | undefined = getUser();
+expect.assert(someValue); // we make sure that someValue is not undefined
+expect(someValue).toHaveProperty('id');
 ```

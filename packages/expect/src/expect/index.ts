@@ -1,3 +1,4 @@
+import './assert';
 import './assertions';
 import './formatters';
 import './matchers';

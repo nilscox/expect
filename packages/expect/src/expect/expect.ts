@@ -1,3 +1,4 @@
+import { assert } from './assert';
 import { any } from '../matchers/any';
 import { anything } from '../matchers/anything';
 import { objectWith } from '../matchers/object-with';
@@ -82,4 +83,5 @@ expect.any = any;
 expect.stringMatching = stringMatching;
 expect.objectWith = objectWith;
 
+expect.assert = assert;
 expect.format = format.bind(expect);
