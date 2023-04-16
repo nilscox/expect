@@ -1,6 +1,6 @@
 {
   "name": "@nilscox/expect-dom",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "license": "Beerware",
   "type": "module",
   "main": "dist/index.js",
@@ -29,6 +29,6 @@
     "tsconfig-paths": "^4.1.2"
   },
   "peerDependencies": {
-    "@nilscox/expect": "^0.1.0"
+    "@nilscox/expect": "0.3.4"
   }
 }

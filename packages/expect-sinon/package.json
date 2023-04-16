@@ -1,6 +1,6 @@
 {
   "name": "@nilscox/expect-sinon",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "license": "Beerware",
   "type": "module",
   "main": "dist/index.js",
@@ -27,7 +27,7 @@
     "sinon": "^14.0.1"
   },
   "peerDependencies": {
-    "@nilscox/expect": "^0.1.0",
+    "@nilscox/expect": "0.3.4",
     "sinon": "^14.0.0"
   }
 }
